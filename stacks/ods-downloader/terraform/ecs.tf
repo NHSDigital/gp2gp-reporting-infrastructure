@@ -10,8 +10,8 @@ data "aws_ssm_parameter" "cloud_watch_log_group" {
   name = var.log_group_param_name
 }
 
-data "aws_iam_role" "ecs_execution" {
-  name = "${var.environment}-gp2gp-data-pipeline-ecs-exectuion"
+data "aws_ssm_parameter" "execution_role_arn" {
+  name = var.ods_downloader_repo_param_name
 }
 
 resource "aws_ecs_task_definition" "ods_downloader" {
@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
     Name = "${var.environment}-ods-downloader"
   }
   )
-  execution_role_arn = data.aws_iam_role.ecs_execution.arn
+  execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value
   task_role_arn      = aws_iam_role.ods_downloader.arn
 }
 

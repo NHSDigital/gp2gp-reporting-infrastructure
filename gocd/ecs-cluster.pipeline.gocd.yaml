@@ -39,3 +39,20 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-plan ecs-cluster dev
+      - apply_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: dev.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply ecs-cluster dev

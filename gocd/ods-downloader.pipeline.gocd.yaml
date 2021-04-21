@@ -14,6 +14,9 @@ pipelines:
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader
         stage: build_ods_downloader
+      ecs_cluster:
+        pipeline: data-pipeline-ecs-cluster
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true
@@ -42,3 +45,20 @@ pipelines:
                     arguments:
                       - -c
                       - TF_VAR_image_id=$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE ./tasks dojo-plan ods-downloader dev
+      - apply_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: dev.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply ods-downloader dev

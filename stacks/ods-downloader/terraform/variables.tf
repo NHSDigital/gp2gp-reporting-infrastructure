@@ -20,6 +20,11 @@ variable "ods_downloader_repo_param_name" {
   description = "Docker repository of Ods Downloader"
 }
 
+variable "execution_role_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing ecs execution role arn"
+}
+
 variable "ods_downloader_image_tag" {
   type        = string
   description = "Docker image tag of Ods Downloader"
