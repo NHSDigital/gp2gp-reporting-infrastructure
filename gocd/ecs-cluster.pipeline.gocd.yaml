@@ -7,7 +7,6 @@ pipelines:
       mydependency:
         pipeline: data-pipeline-container-repositories
         stage: apply_dev
-        ignore_for_scheduling: false
       git:
         type: configrepo
         includes:
