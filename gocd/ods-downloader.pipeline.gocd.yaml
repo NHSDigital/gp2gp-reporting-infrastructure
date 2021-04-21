@@ -44,7 +44,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - TF_VAR_image_id=$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE ./tasks dojo-plan ods-downloader dev
+                      - TF_VAR_ods_downloader_image_tag=$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE ./tasks dojo-plan ods-downloader dev
       - apply_dev:
           clean_workspace: true
           jobs:
