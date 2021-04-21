@@ -11,7 +11,7 @@ data "aws_ssm_parameter" "cloud_watch_log_group" {
 }
 
 data "aws_ssm_parameter" "execution_role_arn" {
-  name = var.ods_downloader_repo_param_name
+  name = var.execution_role_arn_param_name
 }
 
 resource "aws_ecs_task_definition" "ods_downloader" {
