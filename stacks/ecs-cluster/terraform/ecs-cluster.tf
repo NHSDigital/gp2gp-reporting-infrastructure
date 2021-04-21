@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 resource "aws_iam_role" "ecs_execution" {
-  name               = "${var.environment}-gp2gp-data-pipeline-ecs-exectuion"
+  name               = "${var.environment}-gp2gp-data-pipeline-ecs-execution"
   description        = "ECS execution role for data-pipeline tasks"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
