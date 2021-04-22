@@ -10,6 +10,10 @@ data "aws_ssm_parameter" "cloud_watch_log_group" {
   name = var.log_group_param_name
 }
 
+data "aws_ssm_parameter" "execution_role_arn" {
+  name = var.execution_role_arn_param_name
+}
+
 resource "aws_ecs_task_definition" "ods_downloader" {
   family = "${var.environment}-ods-downloader"
   container_definitions = jsonencode([
@@ -37,5 +41,6 @@ resource "aws_ecs_task_definition" "ods_downloader" {
     Name = "${var.environment}-ods-downloader"
   }
   )
+  execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value
   task_role_arn      = aws_iam_role.ods_downloader.arn
 }
