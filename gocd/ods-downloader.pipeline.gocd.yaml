@@ -2,7 +2,7 @@ format_version: 4
 pipelines:
   "data-pipeline-ods-downloader-infra":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${git_ods_downloader[:8]}"
     materials:
       container_repositories:
         pipeline: data-pipeline-container-repositories
