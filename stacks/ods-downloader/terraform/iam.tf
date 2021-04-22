@@ -17,8 +17,8 @@ data "aws_iam_policy_document" "ecs_assume" {
   }
 }
 
-resource "aws_iam_policy_attachment" "ods_input_bucket_read_access" {
-  name = aws_iam_role.ods_downloader.name
+resource "aws_iam_role_policy_attachment" "ods_input_bucket_read_access" {
+  role = aws_iam_role.ods_downloader.name
   policy_arn = aws_iam_policy.ods_input_bucket_read_access.arn
 }
 
