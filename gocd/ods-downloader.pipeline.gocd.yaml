@@ -7,7 +7,7 @@ pipelines:
       container_repositories:
         pipeline: data-pipeline-container-repositories
         stage: apply_dev
-      git:
+      git_ods_downloader:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
