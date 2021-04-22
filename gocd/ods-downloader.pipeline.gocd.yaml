@@ -2,21 +2,15 @@ format_version: 4
 pipelines:
   "data-pipeline-ods-downloader-infra":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git_ods_downloader[:8]}"
+    label_template: "${git[:8]}"
     materials:
-      container_repositories:
-        pipeline: data-pipeline-container-repositories
-        stage: apply_dev
-      git_ods_downloader:
+      git:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader
         stage: build_ods_downloader
-      ecs_cluster:
-        pipeline: data-pipeline-ecs-cluster
-        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true

@@ -4,9 +4,6 @@ pipelines:
     group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
-      container_repositories:
-        pipeline: data-pipeline-container-repositories
-        stage: apply_dev
       git:
         type: configrepo
         includes:
