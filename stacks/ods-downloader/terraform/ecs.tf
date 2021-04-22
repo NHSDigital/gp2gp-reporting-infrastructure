@@ -44,22 +44,3 @@ resource "aws_ecs_task_definition" "ods_downloader" {
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value
   task_role_arn      = aws_iam_role.ods_downloader.arn
 }
-
-resource "aws_iam_role" "ods_downloader" {
-  name               = "${var.environment}-registrations-ods-downloader"
-  description        = "Role for ods downloader ECS task"
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-}
-
-data "aws_iam_policy_document" "ecs_assume" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "ecs-tasks.amazonaws.com"
-      ]
-    }
-  }
-}
