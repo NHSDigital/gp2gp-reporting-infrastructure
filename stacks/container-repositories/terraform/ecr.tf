@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "ods_downloader" {
-  name = "registrations/ods-downloader-${var.environment}"
+  name = "registrations/${var.environment}/ods-downloader"
 
   tags = {
     Name        = "Ods data downloader"
