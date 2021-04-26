@@ -10,7 +10,7 @@ pipelines:
           - stacks/ods-downloader/**/*
       ecs_cluster:
         pipeline: data-pipeline-ecs-cluster
-        stage: apply_pre_prod
+        stage: apply_preprod
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader
         stage: build_ods_downloader
