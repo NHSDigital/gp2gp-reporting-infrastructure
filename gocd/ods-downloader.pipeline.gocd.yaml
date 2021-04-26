@@ -56,6 +56,21 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply ods-downloader dev
+      - promote_to_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/promote-image dev preprod ods-downloader:$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE
       - plan_preprod:
           clean_workspace: true
           jobs:
@@ -70,7 +85,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan ods-downloader preprod
+                      - TF_VAR_ods_downloader_image_tag=$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE ./tasks dojo-plan ods-downloader preprod
       - apply_preprod:
           clean_workspace: true
           approval:
