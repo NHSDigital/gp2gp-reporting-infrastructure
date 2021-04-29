@@ -14,6 +14,9 @@ pipelines:
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader
         stage: build_ods_downloader
+      container_repositories:
+        pipeline: data-pipeline-container-repositories
+        stage: apply_preprod
     stages:
       - validate:
           clean_workspace: true
