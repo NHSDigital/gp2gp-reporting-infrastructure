@@ -46,6 +46,14 @@ resource "aws_iam_policy" "ecs_execution" {
   policy = data.aws_iam_policy_document.ecs_execution.json
 }
 
+locals {
+  ecr_arn_prefix = "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}"
+}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "ecs_execution" {
   statement {
     sid = "GetEcrAuthToken"
@@ -65,7 +73,7 @@ data "aws_iam_policy_document" "ecs_execution" {
       "ecr:BatchGetImage"
     ]
     resources = [
-      data.aws_ecr_repository.ods_downloader.arn
+      "${local.ecr_arn_prefix}:repository/registrations/${var.environment}/data-pipeline/*"
     ]
   }
 
@@ -79,12 +87,4 @@ data "aws_iam_policy_document" "ecs_execution" {
       "${aws_cloudwatch_log_group.data_pipeline.arn}:*"
     ]
   }
-}
-
-data "aws_ecr_repository" "ods_downloader" {
-  name = data.aws_ssm_parameter.ods_downloader.value
-}
-
-data "aws_ssm_parameter" "ods_downloader" {
-  name = var.ods_downloader_repo_param_name
 }
