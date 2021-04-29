@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
         includes:
           - stacks/ecs-cluster/**/*
+          - stacks/ods-downloader/**/*
     stages:
       - validate:
           clean_workspace: true
