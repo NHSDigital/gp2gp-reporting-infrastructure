@@ -19,6 +19,9 @@ Rolling out terraform against each environment is managed by the GoCD pipeline. 
 2. Invoke terraform locally
 
 ```
-  ./tasks validate dev
-  ./tasks plan dev
+  ./tasks validate <stack-name> <environment>
+  ./tasks plan <stack-name> <environment>
 ```
+
+The stack name denotes the specific stack you would like to validate.
+The environment can be `dev` or `preprod`.
