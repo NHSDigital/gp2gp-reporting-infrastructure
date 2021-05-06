@@ -3,10 +3,10 @@ resource "aws_security_group" "outbound_only" {
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
-  local.common_tags,
-  {
-    Name = "${var.environment}-data-pipeline-outbound-only"
-  }
+    local.common_tags,
+    {
+      Name = "${var.environment}-data-pipeline-outbound-only"
+    }
   )
 }
 

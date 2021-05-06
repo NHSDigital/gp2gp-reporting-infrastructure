@@ -18,8 +18,8 @@ resource "aws_ecs_task_definition" "ods_downloader" {
   family = "${var.environment}-ods-downloader"
   container_definitions = jsonencode([
     {
-      name  = "ods-downloader"
-      image = "${data.aws_ecr_repository.ods_downloader.repository_url}:${var.ods_downloader_image_tag}"
+      name      = "ods-downloader"
+      image     = "${data.aws_ecr_repository.ods_downloader.repository_url}:${var.ods_downloader_image_tag}"
       essential = true
       logConfiguration = {
         logDriver = "awslogs"
@@ -36,10 +36,10 @@ resource "aws_ecs_task_definition" "ods_downloader" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags = merge(
-  local.common_tags,
-  {
-    Name = "${var.environment}-ods-downloader"
-  }
+    local.common_tags,
+    {
+      Name = "${var.environment}-ods-downloader"
+    }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value
   task_role_arn      = aws_iam_role.ods_downloader.arn

@@ -10,10 +10,10 @@ resource "aws_ecs_cluster" "data_pipeline_cluster" {
 resource "aws_cloudwatch_log_group" "data_pipeline" {
   name = "/ecs/${var.environment}-data-pipeline"
   tags = merge(
-  local.common_tags,
-  {
-    Name = "${var.environment}-data-pipeline"
-  }
+    local.common_tags,
+    {
+      Name = "${var.environment}-data-pipeline"
+    }
   )
 }
 

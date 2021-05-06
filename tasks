@@ -74,6 +74,9 @@ apply)
 dojo-apply)
   dojo "./tasks apply ${stack_name} ${stack_env}"
   ;;
+format)
+  terraform fmt stacks/${stack_name}/terraform
+  ;;
 *)
   echo "Invalid task: '${task}'"
   exit 1

@@ -3,11 +3,11 @@ resource "aws_vpc_endpoint" "s3" {
   service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
 
   tags = merge(
-  local.common_tags,
-  {
-    Name = "${var.environment}-data-pipeline-private"
+    local.common_tags,
+    {
+      Name = "${var.environment}-data-pipeline-private"
 
-  }
+    }
   )
 }
 resource "aws_vpc_endpoint_route_table_association" "s3" {

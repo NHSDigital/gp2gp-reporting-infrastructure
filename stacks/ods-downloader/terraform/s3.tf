@@ -3,10 +3,10 @@ resource "aws_s3_bucket" "ods_input" {
   acl    = "private"
 
   tags = merge(
-  local.common_tags,
-  {
-    Name = "ASID lookup used to supplement ODS data"
-  }
+    local.common_tags,
+    {
+      Name = "ASID lookup used to supplement ODS data"
+    }
   )
 }
 
@@ -15,10 +15,10 @@ resource "aws_s3_bucket" "ods_output" {
   acl    = "private"
 
   tags = merge(
-  local.common_tags,
-  {
-    Name = "Organisational metadata"
-  }
+    local.common_tags,
+    {
+      Name = "Organisational metadata"
+    }
   )
 }
 
