@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
         includes:
           - stacks/base-networking/**/*
+          - stacks/step-function/**/*
     stages:
       - validate:
           clean_workspace: true

@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
+          - stacks/step-function/**/*
       ecs_cluster:
         pipeline: data-pipeline-ecs-cluster
         stage: apply_preprod
