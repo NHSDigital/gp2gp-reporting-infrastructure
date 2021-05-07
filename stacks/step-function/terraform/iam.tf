@@ -94,3 +94,44 @@ data "aws_ssm_parameter" "execution_role_arn" {
 data "aws_ssm_parameter" "ods_downloader_iam_role_arn" {
   name = var.ods_downloader_iam_role_arn_param_name
 }
+
+data "aws_iam_policy_document" "data_pipeline_trigger" {
+  statement {
+    sid = "TriggerStepFunction"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      aws_sfn_state_machine.data_pipeline.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "data_pipeline_trigger" {
+  name   = "${var.environment}-data-pipeline-trigger"
+  policy = data.aws_iam_policy_document.data_pipeline_trigger.json
+}
+
+resource "aws_iam_role" "data_pipeline_trigger" {
+  name               = "${var.environment}-data-pipeline-trigger"
+  assume_role_policy = data.aws_iam_policy_document.assume_event.json
+}
+
+resource "aws_iam_role_policy_attachment" "data_pipeline_trigger" {
+  role       = aws_iam_role.data_pipeline_trigger.name
+  policy_arn = aws_iam_policy.data_pipeline_trigger.arn
+}
+
+data "aws_iam_policy_document" "assume_event" {
+  statement {
+    actions = [
+    "sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com"
+      ]
+    }
+  }
+}
