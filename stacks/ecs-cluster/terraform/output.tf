@@ -11,3 +11,10 @@ resource "aws_ssm_parameter" "execution_role_arn" {
   value = aws_iam_role.ecs_execution.arn
   tags  = local.common_tags
 }
+
+resource "aws_ssm_parameter" "ecs_cluster_arn" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecs-cluster/ecs-cluster-arn"
+  type  = "String"
+  value = aws_ecs_cluster.data_pipeline_cluster.arn
+  tags  = local.common_tags
+}
