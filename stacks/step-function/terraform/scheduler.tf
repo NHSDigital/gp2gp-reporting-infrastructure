@@ -8,8 +8,8 @@ resource "aws_cloudwatch_event_target" "data_pipeline" {
       "time" : "$.time"
     }
     input_template = replace(replace(jsonencode({
-      "mappingFileUrl" : "s3://prm-gp2gp-asid-lookup-dev/2021/05/asidLookup.csv.gz",
-      "outputFileUrl" : "s3://prm-gp2gp-ods-metadata-dev/2021/05/organisationMetadata.json",
+      "mappingBucket" : "prm-gp2gp-asid-lookup-${var.environment}",
+      "outputBucket" : "prm-gp2gp-ods-metadata-${var.environment}",
       "time" : "<time>"
     }), "\\u003e", ">"), "\\u003c", "<")
   }

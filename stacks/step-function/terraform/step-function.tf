@@ -34,12 +34,12 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                 "Name" : "ods-downloader",
                 "Environment" : [
                   {
-                    "Name" : "MAPPING_FILE",
-                    "Value.$" : "$.mappingFileUrl"
+                    "Name" : "MAPPING_BUCKET",
+                    "Value.$" : "$.mappingBucket"
                   },
                   {
-                    "Name" : "OUTPUT_FILE",
-                    "Value.$" : "$.outputFileUrl"
+                    "Name" : "OUTPUT_BUCKET",
+                    "Value.$" : "$.outputBucket"
                   }
                 ]
               }
