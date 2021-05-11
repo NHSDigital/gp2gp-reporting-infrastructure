@@ -10,7 +10,9 @@ resource "aws_cloudwatch_event_target" "data_pipeline" {
     input_template = replace(replace(jsonencode({
       "mappingBucket" : "prm-gp2gp-asid-lookup-${var.environment}",
       "outputBucket" : "prm-gp2gp-ods-metadata-${var.environment}",
-      "time" : "<time>"
+      "time" : "<time>",
+      "month": null,
+      "year" : null
     }), "\\u003e", ">"), "\\u003c", "<")
   }
 }
@@ -18,7 +20,6 @@ resource "aws_cloudwatch_event_target" "data_pipeline" {
 resource "aws_cloudwatch_event_rule" "run_every_three_mins" {
   name        = "${var.environment}-data-pipeline-trigger"
   description = "Trigger Step Function"
-
-  schedule_expression = "cron(0/0 1 23 * ? *)"
+  schedule_expression = "cron(0/0 1 15 * ? *)"
   tags                = local.common_tags
 }

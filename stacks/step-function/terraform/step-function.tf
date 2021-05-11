@@ -40,8 +40,16 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                   {
                     "Name" : "OUTPUT_BUCKET",
                     "Value.$" : "$.outputBucket"
+                  },
+                  {
+                    "Name" : "YEAR",
+                    "Value.$" : "$.year"
+                  },
+                  {
+                    "Name" : "MONTH",
+                    "Value.$" : "$.month"
                   }
-                ]
+                ],
               }
             ]
           }
