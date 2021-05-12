@@ -14,3 +14,9 @@ variable "repo_name" {
   default     = "prm-gp2gp-data-pipeline-infra"
   description = "Name of this repository"
 }
+
+variable "retention_period_in_days" {
+  type        = number
+  default     = 120
+  description = "The number of days for cloudwatch logs retention period"
+}

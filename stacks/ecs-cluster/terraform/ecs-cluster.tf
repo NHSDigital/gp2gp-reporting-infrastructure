@@ -8,7 +8,8 @@ resource "aws_ecs_cluster" "data_pipeline_cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "data_pipeline" {
-  name = "/ecs/${var.environment}-data-pipeline"
+  name              = "/ecs/${var.environment}-data-pipeline"
+  retention_in_days = var.retention_period_in_days
   tags = merge(
     local.common_tags,
     {
