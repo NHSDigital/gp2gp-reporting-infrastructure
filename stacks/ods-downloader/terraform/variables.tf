@@ -1,6 +1,6 @@
 variable "environment" {
   type        = string
-  description = "Uniquely idenities each deployment, i.e. dev, prod."
+  description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
 variable "team" {
