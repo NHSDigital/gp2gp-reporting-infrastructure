@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "platform_metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Raw spine data"
+      Name = "Output transfer data for platform metrics calculator"
     }
   )
 }
