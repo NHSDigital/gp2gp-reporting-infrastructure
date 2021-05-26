@@ -1,0 +1,90 @@
+format_version: 4
+pipelines:
+  "data-pipeline-platform-metrics-calculator":
+    group: gp2gp-data-pipeline-infra
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+        includes:
+          - stacks/platform-metrics-calculator/**/*
+    stages:
+      - validate:
+          clean_workspace: true
+          jobs:
+            test:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-validate platform-metrics-calculator dev
+      - plan_dev:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: dev.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan platform-metrics-calculator dev
+      - apply_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: dev.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply platform-metrics-calculator dev
+      - plan_preprod:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: preprod.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan platform-metrics-calculator preprod
+      - apply_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_preprod
+                    job: plan
+                    source: preprod.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply platform-metrics-calculator preprod
