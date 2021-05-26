@@ -6,8 +6,10 @@ resource "aws_ssm_parameter" "ods_downloader" {
 }
 
 resource "aws_ssm_parameter" "platform_metrics_calculator" {
-  name  = "/registrations/${var.environment}/data-pipeline/ecr/platform-metrics-calculator"
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/platform-metrics-calculator"
   type  = "String"
-  value = aws_ecr_repository.platform_metrics_calculator.name
+  value = aws_ecr_repository.platform_metrics_calculator.repository_url
   tags  = local.common_tags
 }
+
+
