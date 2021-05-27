@@ -1,7 +1,7 @@
 resource "aws_ssm_parameter" "ods_downloader" {
-  name  = "/registrations/${var.environment}/data-pipeline/ecr/ods-downloader"
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/ods-downloader"
   type  = "String"
-  value = aws_ecr_repository.ods_downloader.name
+  value = aws_ecr_repository.ods_downloader.repository_url
   tags  = local.common_tags
 }
 
