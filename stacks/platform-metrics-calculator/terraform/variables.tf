@@ -34,3 +34,13 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
+
+variable "spine_messages_input_bucket_param_name" {
+  type        = string
+  description = "SSM parameter containing raw transfer input bucket name"
+}
+
+variable "ods_metadata_input_bucket_param_name" {
+  type        = string
+  description = "SSM parameter containing organisation metadata bucket name"
+}
