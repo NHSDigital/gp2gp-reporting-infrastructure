@@ -1,8 +1,4 @@
-data "aws_ecr_repository" "ods_downloader" {
-  name = data.aws_ssm_parameter.ods_downloader.value
-}
-
-data "aws_ssm_parameter" "ods_downloader" {
+data "aws_ssm_parameter" "ods_downloader_repo_url" {
   name = var.ods_downloader_repo_param_name
 }
 
@@ -19,7 +15,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
   container_definitions = jsonencode([
     {
       name      = "ods-downloader"
-      image     = "${data.aws_ecr_repository.ods_downloader.repository_url}:${var.ods_downloader_image_tag}"
+      image     = "${data.aws_ssm_parameter.ods_downloader_repo_url.value}:${var.ods_downloader_image_tag}"
       essential = true
       logConfiguration = {
         logDriver = "awslogs"
