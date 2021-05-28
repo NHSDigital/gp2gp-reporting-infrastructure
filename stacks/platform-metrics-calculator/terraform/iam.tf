@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "platform_metrics_calculator_transfers_input_buck
 }
 
 resource "aws_iam_policy" "platform_metrics_calculator_ods_metadata_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}-read"
+  name   = "${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}-read"
   policy = data.aws_iam_policy_document.platform_metrics_calculator_ods_metadata_input_bucket_read_access.json
 }
 
