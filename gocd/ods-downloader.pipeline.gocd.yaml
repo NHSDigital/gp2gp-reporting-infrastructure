@@ -71,7 +71,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./scripts/promote-image dev preprod ods-downloader:$GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE
+                      - ./scripts/promote-image dev preprod ods-downloader $GO_DEPENDENCY_LABEL_ODS_DOWNLOADER_IMAGE
       - plan_preprod:
           clean_workspace: true
           jobs:

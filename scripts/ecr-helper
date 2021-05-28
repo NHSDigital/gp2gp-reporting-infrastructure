@@ -5,6 +5,9 @@ set -Eeo pipefail
 aws_region=eu-west-2
 
 function assume_role() {
+  env=$1
+  role_param="/registrations/${env}/user-input/cross-account-admin-role"
+
   role_arn=$(
     aws ssm get-parameters \
         --region ${aws_region} \
@@ -32,39 +35,47 @@ function assume_role() {
   export AWS_SESSION_TOKEN=$(echo $sts | jq -r .Credentials.SessionToken)
 }
 
+function get_repo_url() {
+  env=$1
+  image=$2
 
-function get_repo_uri_prefix() {
-  assume_role
-  aws_account_id=$(aws sts get-caller-identity --query Account --output text)
-  repository_uri_prefix=${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com
-  echo $repository_uri_prefix
+  repo_url_param="/registrations/${env}/data-pipeline/ecr/url/${image}"
+
+  aws ssm get-parameters \
+      --region ${aws_region} \
+      --names ${repo_url_param} \
+      --query 'Parameters[0].Value' \
+      --output text
+
 }
 
 function get_login() {
-  assume_role
   aws ecr get-login --no-include-email --region ${aws_region}
 }
 
 function usage() {
     echo "Usage:"
-    echo "ecr-helper [get-login|get-repo-prefix] ROLE-PARAM"
+    echo "ecr-helper [get-login environment] | [get-repo-url environment image]"
     exit 1
 }
 
 task=$1
-role_param=$2
+environment=$2
 
-if [ "$#" -ne 2 ]; then
-    echo "Illegal number of parameters"
+if [ "$#" -le 1 ]; then
+    echo "Incorrect number of parameters"
     usage
 fi
 
 case "${task}" in
   get-login)
+    assume_role $environment
     get_login
     ;;
-  get-repo-uri-prefix)
-    get_repo_uri_prefix
+  get-repo-url)
+    assume_role $environment
+    image=$3
+    get_repo_url $environment $image
     ;;
   *)
     echo "Invalid command: '${task}'"

@@ -5,29 +5,27 @@ set -Eeo pipefail
 source_environment=$1
 destination_environment=$2
 image_name=$3
+image_tag=$4
 
 function usage() {
     echo "Usage:"
-    echo "promote-image SOURCE-ENV DESTINATION-ENV IMAGE-NAME"
+    echo "promote-image SOURCE-ENV DESTINATION-ENV IMAGE-NAME IMAGE-TAG"
     exit 1
 }
 
-if [ "$#" -ne 3 ]; then
-    echo "Illegal number of parameters"
+if [ "$#" -ne 4 ]; then
+    echo "Incorrect number of parameters"
     usage
 fi
 
-source_role_param="/registrations/${source_environment}/user-input/cross-account-admin-role"
-destination_role_param="/registrations/${destination_environment}/user-input/cross-account-admin-role"
+source_login=$(dojo "./scripts/ecr-helper get-login $source_environment")
+destination_login=$(dojo "./scripts/ecr-helper get-login $destination_environment")
 
-source_uri_prefix=$(dojo "./scripts/ecr-helper get-repo-uri-prefix $source_role_param")
-destination_uri_prefix=$(dojo "./scripts/ecr-helper get-repo-uri-prefix $destination_role_param")
+source_repo_url=$(dojo "./scripts/ecr-helper get-repo-url $source_environment $image_name")
+destination_repo_url=$(dojo "./scripts/ecr-helper get-repo-url $destination_environment $image_name")
 
-source_repo="${source_uri_prefix}/registrations/${source_environment}/data-pipeline/${image_name}"
-destination_repo="${destination_uri_prefix}/registrations/${destination_environment}/data-pipeline/${image_name}"
-
-source_login=$(dojo "./scripts/ecr-helper get-login $source_role_param")
-destination_login=$(dojo "./scripts/ecr-helper get-login $destination_role_param")
+source_repo=$source_repo_url:$image_tag
+destination_repo=$destination_repo_url:$image_tag
 
 eval $source_login
 docker pull $source_repo
