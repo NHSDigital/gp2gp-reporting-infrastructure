@@ -34,9 +34,3 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
-
-variable "region" {
-  type        = string
-  description = "AWS region."
-  default     = "eu-west-2"
-}

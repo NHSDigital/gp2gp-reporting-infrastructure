@@ -10,6 +10,8 @@ data "aws_ssm_parameter" "execution_role_arn" {
   name = var.execution_role_arn_param_name
 }
 
+data "aws_region" "current" {}
+
 resource "aws_ecs_task_definition" "ods_downloader" {
   family = "${var.environment}-ods-downloader"
   container_definitions = jsonencode([
@@ -21,7 +23,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = data.aws_ssm_parameter.cloud_watch_log_group.value
-          awslogs-region        = var.region
+          awslogs-region        = data.aws_region.current.name
           awslogs-stream-prefix = "ods-downloader/${var.ods_downloader_image_tag}"
         }
       }
