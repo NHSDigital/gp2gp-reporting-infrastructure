@@ -8,6 +8,9 @@ pipelines:
         type: configrepo
         includes:
           - stacks/platform-metrics-calculator/**/*
+      platform_metrics_calculator:
+        pipeline: prm-gp2gp-data-pipeline
+        stage: apply_preprod
     stages:
       - validate:
           clean_workspace: true
@@ -35,7 +38,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan platform-metrics-calculator dev
+                      - TF_VAR_platform_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_PLATFORM_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan platform-metrics-calculator dev
       - apply_dev:
           clean_workspace: true
           jobs:
