@@ -8,16 +8,10 @@ pipelines:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
-          - stacks/step-function/**/*
-      ecs_cluster:
-        pipeline: data-pipeline-ecs-cluster
-        stage: apply_preprod
+          - gocd/ods-downloader.pipeline.gocd.yaml
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader
         stage: build_ods_downloader
-      container_repositories:
-        pipeline: data-pipeline-container-repositories
-        stage: apply_preprod
     stages:
       - validate:
           clean_workspace: true
