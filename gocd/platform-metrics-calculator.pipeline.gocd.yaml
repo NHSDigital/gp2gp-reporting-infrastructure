@@ -8,7 +8,7 @@ pipelines:
         type: configrepo
         includes:
           - stacks/platform-metrics-calculator/**/*
-      platform_metrics_calculator:
+      platform_metrics_calculator_image:
         pipeline: prm-gp2gp-data-pipeline
         stage: apply_preprod
     stages:
