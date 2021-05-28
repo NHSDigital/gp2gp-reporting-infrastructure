@@ -2,11 +2,7 @@ resource "aws_iam_role" "data_pipeline_step_function" {
   name               = "${var.environment}-data-pipeline-step-function"
   description        = "StepFunction role for data pipeline"
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
-}
-
-resource "aws_iam_role_policy_attachment" "step_function_data_pipeline" {
-  role       = aws_iam_role.data_pipeline_step_function.name
-  policy_arn = aws_iam_policy.data_pipeline_step_function.arn
+  managed_policy_arns= [aws_iam_policy.data_pipeline_step_function.arn]
 }
 
 data "aws_iam_policy_document" "step_function_assume" {
@@ -30,6 +26,8 @@ resource "aws_iam_policy" "data_pipeline_step_function" {
 }
 
 data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "data_pipeline_step_function" {
   statement {
@@ -71,7 +69,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
       "events:DescribeRule"
     ]
     resources = [
-      "arn:aws:events:${var.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
   }
 
@@ -108,18 +106,15 @@ data "aws_iam_policy_document" "data_pipeline_trigger" {
 }
 
 resource "aws_iam_policy" "data_pipeline_trigger" {
-  name   = "${var.environment}-data-pipeline-trigger"
-  policy = data.aws_iam_policy_document.data_pipeline_trigger.json
+  name                = "${var.environment}-data-pipeline-trigger"
+  policy              = data.aws_iam_policy_document.data_pipeline_trigger.json
 }
 
 resource "aws_iam_role" "data_pipeline_trigger" {
-  name               = "${var.environment}-data-pipeline-trigger"
-  assume_role_policy = data.aws_iam_policy_document.assume_event.json
-}
-
-resource "aws_iam_role_policy_attachment" "data_pipeline_trigger" {
-  role       = aws_iam_role.data_pipeline_trigger.name
-  policy_arn = aws_iam_policy.data_pipeline_trigger.arn
+  name                = "${var.environment}-data-pipeline-trigger"
+  description         = "Role used by EventBridge to trigger step function"
+  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  managed_policy_arns = [aws_iam_policy.data_pipeline_trigger.arn]
 }
 
 data "aws_iam_policy_document" "assume_event" {

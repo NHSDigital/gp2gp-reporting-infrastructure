@@ -15,12 +15,6 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
-variable "region" {
-  type        = string
-  description = "AWS region."
-  default     = "eu-west-2"
-}
-
 variable "data_pipeline_ecs_cluster_arn_param_name" {
   type        = string
   description = "SSM parameter containing Data Pipeline ECS Cluster ARN"
