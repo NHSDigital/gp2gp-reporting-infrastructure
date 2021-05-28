@@ -10,7 +10,7 @@ pipelines:
           - stacks/platform-metrics-calculator/**/*
       platform_metrics_calculator_image:
         pipeline: prm-gp2gp-data-pipeline
-        stage: apply_preprod
+        stage: build_and_publish
     stages:
       - validate:
           clean_workspace: true
