@@ -87,8 +87,8 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                     "Value.$" : "$.inputTransferDataBucket"
                   },
                   {
-                    "Name" : "ORGANISATION_LIST_BUCKET",
-                    "Value.$" : "$.organisationListBucket"
+                    "Name" : "ORGANISATION_METADATA_BUCKET",
+                    "Value.$" : "$.organisationMetadataBucket"
                   },
                   {
                     "Name" : "YEAR",
