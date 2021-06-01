@@ -8,9 +8,9 @@ resource "aws_sfn_state_machine" "data_pipeline" {
     }
   )
   definition = jsonencode({
-    "StartAt" : "odsdownloader",
+    "StartAt" : "ODSDownloader",
     "States" : {
-      "odsdownloader" : {
+      "ODSDownloader" : {
         "Type" : "Task",
         "Comment" : "ODS Downloader - responsible for fetching ODS codes and names of all active GP practices and saving it to JSON file.",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
