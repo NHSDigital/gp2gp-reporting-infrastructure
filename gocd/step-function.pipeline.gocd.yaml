@@ -8,12 +8,6 @@ pipelines:
         type: configrepo
         includes:
           - stacks/step-function/**/*
-      ods_downloader:
-        pipeline: data-pipeline-ods-downloader-task
-        stage: apply_preprod
-      base_networking:
-        pipeline: data-pipeline-base-networking
-        stage: apply_preprod
     stages:
       - validate:
           clean_workspace: true
