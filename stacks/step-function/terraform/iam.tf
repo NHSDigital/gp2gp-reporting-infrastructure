@@ -1,8 +1,8 @@
 resource "aws_iam_role" "data_pipeline_step_function" {
-  name               = "${var.environment}-data-pipeline-step-function"
-  description        = "StepFunction role for data pipeline"
-  assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns= [aws_iam_policy.data_pipeline_step_function.arn]
+  name                = "${var.environment}-data-pipeline-step-function"
+  description         = "StepFunction role for data pipeline"
+  assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
+  managed_policy_arns = [aws_iam_policy.data_pipeline_step_function.arn]
 }
 
 data "aws_iam_policy_document" "step_function_assume" {
@@ -46,7 +46,8 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
       "ecs:RunTask"
     ]
     resources = [
-      data.aws_ssm_parameter.ods_downloader_task_definition_arn.value
+      data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
+      data.aws_ssm_parameter.platform_metrics_calculator_iam_role_arn.value
     ]
   }
 
@@ -57,7 +58,8 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
       "ecs:DescribeTasks"
     ]
     resources = [
-      data.aws_ssm_parameter.ods_downloader_task_definition_arn.value
+      data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
+      data.aws_ssm_parameter.platform_metrics_calculator_iam_role_arn.value
     ]
   }
 
@@ -80,7 +82,8 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
-      data.aws_ssm_parameter.ods_downloader_iam_role_arn.value
+      data.aws_ssm_parameter.ods_downloader_iam_role_arn.value,
+      data.aws_ssm_parameter.platform_metrics_calculator_iam_role_arn.value
     ]
   }
 }
@@ -91,6 +94,10 @@ data "aws_ssm_parameter" "execution_role_arn" {
 
 data "aws_ssm_parameter" "ods_downloader_iam_role_arn" {
   name = var.ods_downloader_iam_role_arn_param_name
+}
+
+data "aws_ssm_parameter" "platform_metrics_calculator_iam_role_arn" {
+  name = var.platform_metrics_calculator_iam_role_arn_param_name
 }
 
 data "aws_iam_policy_document" "data_pipeline_trigger" {
@@ -106,15 +113,15 @@ data "aws_iam_policy_document" "data_pipeline_trigger" {
 }
 
 resource "aws_iam_policy" "data_pipeline_trigger" {
-  name                = "${var.environment}-data-pipeline-trigger"
-  policy              = data.aws_iam_policy_document.data_pipeline_trigger.json
+  name   = "${var.environment}-data-pipeline-trigger"
+  policy = data.aws_iam_policy_document.data_pipeline_trigger.json
 }
 
 resource "aws_iam_role" "data_pipeline_trigger" {
   name                = "${var.environment}-data-pipeline-trigger"
   description         = "Role used by EventBridge to trigger step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.data_pipeline_trigger.arn]
+  managed_policy_arns = [aws_iam_policy.data_pipeline_trigger.arn, ]
 }
 
 data "aws_iam_policy_document" "assume_event" {
