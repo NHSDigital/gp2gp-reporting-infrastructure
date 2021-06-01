@@ -54,55 +54,55 @@ resource "aws_sfn_state_machine" "data_pipeline" {
             ]
           }
         },
-        "Next" : "PlatformMetricsCalculator"
-      },
-      "PlatformMetricsCalculator" : {
-        "Type" : "Task",
-        "Comment" : "Platform metrics calculator - responsible for taking raw spine transfer data and organisation meta data and allocating transfers a status",
-        "Resource" : "arn:aws:states:::ecs:runTask.sync",
-        "ResultPath" : null,
-        "Parameters" : {
-          "LaunchType" : "FARGATE",
-          "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
-          "TaskDefinition" : data.aws_ssm_parameter.platform_metrics_calculator_task_definition_arn.value,
-          "NetworkConfiguration" : {
-            "AwsvpcConfiguration" : {
-              "Subnets" : [
-                data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
-              ],
-              "SecurityGroups" : [
-              data.aws_ssm_parameter.outbound_only_security_group_id.value],
-            }
-          },
-          "Overrides" : {
-            "ContainerOverrides" : [
-              {
-                "Name" : "platform-metrics-calculator",
-                "Environment" : [
-                  {
-                    "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
-                    "Value.$" : "$.inputTransferDataBucket"
-                  },                  {
-                    "Name" : "INPUT_TRANSFER_DATA_BUCKET",
-                    "Value.$" : "$.inputTransferDataBucket"
-                  },
-                  {
-                    "Name" : "ORGANISATION_LIST_BUCKET",
-                    "Value.$" : "$.organisationListBucket"
-                  },
-                  {
-                    "Name" : "YEAR",
-                    "Value.$" : "$.year"
-                  },
-                  {
-                    "Name" : "MONTH",
-                    "Value.$" : "$.month"
-                  }
-                ],
-              }
-            ]
-          }
-        },
+//        "Next" : "PlatformMetricsCalculator"
+//      },
+//      "PlatformMetricsCalculator" : {
+//        "Type" : "Task",
+//        "Comment" : "Platform metrics calculator - responsible for taking raw spine transfer data and organisation meta data and allocating transfers a status",
+//        "Resource" : "arn:aws:states:::ecs:runTask.sync",
+//        "ResultPath" : null,
+//        "Parameters" : {
+//          "LaunchType" : "FARGATE",
+//          "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
+//          "TaskDefinition" : data.aws_ssm_parameter.platform_metrics_calculator_task_definition_arn.value,
+//          "NetworkConfiguration" : {
+//            "AwsvpcConfiguration" : {
+//              "Subnets" : [
+//                data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
+//              ],
+//              "SecurityGroups" : [
+//              data.aws_ssm_parameter.outbound_only_security_group_id.value],
+//            }
+//          },
+//          "Overrides" : {
+//            "ContainerOverrides" : [
+//              {
+//                "Name" : "platform-metrics-calculator",
+//                "Environment" : [
+//                  {
+//                    "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
+//                    "Value.$" : "$.outputTransferDataBucket"
+//                  },                  {
+//                    "Name" : "INPUT_TRANSFER_DATA_BUCKET",
+//                    "Value.$" : "$.inputTransferDataBucket"
+//                  },
+//                  {
+//                    "Name" : "ORGANISATION_LIST_BUCKET",
+//                    "Value.$" : "$.organisationListBucket"
+//                  },
+//                  {
+//                    "Name" : "YEAR",
+//                    "Value.$" : "$.year"
+//                  },
+//                  {
+//                    "Name" : "MONTH",
+//                    "Value.$" : "$.month"
+//                  }
+//                ],
+//              }
+//            ]
+//          }
+//        },
         "End" : true
       }
     }
