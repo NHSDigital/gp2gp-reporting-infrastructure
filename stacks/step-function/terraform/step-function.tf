@@ -39,15 +39,11 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                   },
                   {
                     "Name" : "OUTPUT_BUCKET",
-                    "Value.$" : "$.outputBucket"
+                    "Value.$" : "$.outputOdsMetadataBucket"
                   },
                   {
-                    "Name" : "YEAR",
-                    "Value.$" : "$.year"
-                  },
-                  {
-                    "Name" : "MONTH",
-                    "Value.$" : "$.month"
+                    "Name" : "DATE_ANCHOR",
+                    "Value.$" : "$.time"
                   }
                 ],
               }
@@ -82,7 +78,7 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                   {
                     "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
                     "Value.$" : "$.outputTransferDataBucket"
-                  },                  {
+                    }, {
                     "Name" : "INPUT_TRANSFER_DATA_BUCKET",
                     "Value.$" : "$.inputTransferDataBucket"
                   },
@@ -91,12 +87,8 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                     "Value.$" : "$.organisationMetadataBucket"
                   },
                   {
-                    "Name" : "YEAR",
-                    "Value.$" : "$.year"
-                  },
-                  {
-                    "Name" : "MONTH",
-                    "Value.$" : "$.month"
+                    "Name" : "DATE_ANCHOR",
+                    "Value.$" : "$.time"
                   }
                 ],
               }
