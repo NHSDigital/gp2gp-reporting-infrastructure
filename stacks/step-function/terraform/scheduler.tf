@@ -22,5 +22,6 @@ resource "aws_cloudwatch_event_rule" "run_once_a_month_cron_expression" {
   name                = "${var.environment}-data-pipeline-trigger"
   description         = "Trigger Step Function with the cron expression"
   schedule_expression = "cron(0/0 1 15 * ? *)"
+  is_enabled          = false
   tags                = local.common_tags
 }
