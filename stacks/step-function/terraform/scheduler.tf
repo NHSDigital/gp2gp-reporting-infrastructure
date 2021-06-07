@@ -10,7 +10,7 @@ resource "aws_cloudwatch_event_target" "data_pipeline" {
     input_template = replace(replace(jsonencode({
       "mappingBucket" : "prm-gp2gp-asid-lookup-${var.environment}",
       "outputOdsMetadataBucket" : "prm-gp2gp-ods-metadata-${var.environment}",
-      "outputTransferDataBucket" : "prm-gp2gp-platform-metrics-${var.environment}",
+      "outputTransferDataBucket" : "prm-gp2gp-metrics-${var.environment}",
       "inputTransferDataBucket" : "prm-gp2gp-raw-spine-data-${var.environment}",
       "organisationMetadataBucket" : "prm-gp2gp-ods-metadata-${var.environment}",
       "time" : "<time>"

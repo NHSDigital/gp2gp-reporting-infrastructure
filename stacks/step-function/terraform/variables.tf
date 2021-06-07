@@ -45,12 +45,12 @@ variable "ods_downloader_task_definition_arn_param_name" {
   description = "SSM parameter containing ODS downloader Task Definition ARN"
 }
 
-variable "platform_metrics_calculator_iam_role_arn_param_name" {
+variable "metrics_calculator_iam_role_arn_param_name" {
   type        = string
-  description = "SSM parameter containing platform metrics calculator iam role arn"
+  description = "SSM parameter containing metrics calculator iam role arn"
 }
 
-variable "platform_metrics_calculator_task_definition_arn_param_name" {
+variable "metrics_calculator_task_definition_arn_param_name" {
   type        = string
-  description = "SSM parameter containing platform metrics calculator Task Definition ARN"
+  description = "SSM parameter containing metrics calculator Task Definition ARN"
 }

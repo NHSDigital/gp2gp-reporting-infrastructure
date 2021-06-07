@@ -4,5 +4,5 @@ data_pipeline_outbound_only_security_group_id_param_name="/registrations/preprod
 data_pipeline_execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-execution-role-arn"
 ods_downloader_iam_role_arn_param_name="/registrations/preprod/data-pipeline/ods-downloader/iam-role-arn"
 ods_downloader_task_definition_arn_param_name="/registrations/preprod/data-pipeline/ods-downloader/task-definition-arn"
-platform_metrics_calculator_task_definition_arn_param_name="/registrations/preprod/data-pipeline/platform-metrics-calculator/task-definition-arn"
-platform_metrics_calculator_iam_role_arn_param_name="/registrations/preprod/data-pipeline/platform-metrics-calculator/iam-role-arn"
+metrics_calculator_task_definition_arn_param_name="/registrations/preprod/data-pipeline/metrics-calculator/task-definition-arn"
+metrics_calculator_iam_role_arn_param_name="/registrations/preprod/data-pipeline/metrics-calculator/iam-role-arn"

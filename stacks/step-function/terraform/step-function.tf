@@ -50,17 +50,17 @@ resource "aws_sfn_state_machine" "data_pipeline" {
             ]
           }
         },
-        "Next" : "PlatformMetricsCalculator"
+        "Next" : "MetricsCalculator"
       },
-      "PlatformMetricsCalculator" : {
+      "MetricsCalculator" : {
         "Type" : "Task",
-        "Comment" : "Platform metrics calculator - responsible for taking raw spine transfer data and organisation meta data and allocating transfers a status",
+        "Comment" : "Metrics calculator - responsible for taking raw spine transfer data and organisation meta data and allocating transfers a status",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
         "ResultPath" : null,
         "Parameters" : {
           "LaunchType" : "FARGATE",
           "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
-          "TaskDefinition" : data.aws_ssm_parameter.platform_metrics_calculator_task_definition_arn.value,
+          "TaskDefinition" : data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value,
           "NetworkConfiguration" : {
             "AwsvpcConfiguration" : {
               "Subnets" : [
@@ -73,7 +73,7 @@ resource "aws_sfn_state_machine" "data_pipeline" {
           "Overrides" : {
             "ContainerOverrides" : [
               {
-                "Name" : "platform-metrics-calculator",
+                "Name" : "metrics-calculator",
                 "Environment" : [
                   {
                     "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
@@ -105,8 +105,8 @@ data "aws_ssm_parameter" "ods_downloader_task_definition_arn" {
   name = var.ods_downloader_task_definition_arn_param_name
 }
 
-data "aws_ssm_parameter" "platform_metrics_calculator_task_definition_arn" {
-  name = var.platform_metrics_calculator_task_definition_arn_param_name
+data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
+  name = var.metrics_calculator_task_definition_arn_param_name
 }
 
 data "aws_ssm_parameter" "data_pipeline_ecs_cluster_arn" {

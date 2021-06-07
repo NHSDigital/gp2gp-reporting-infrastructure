@@ -11,6 +11,9 @@ pipelines:
       ods_downloader_task:
         pipeline: data-pipeline-ods-downloader-task
         stage: apply_dev
+      metrics_calculator_task:
+        pipeline: data-pipeline-metrics-calculator-task
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true
