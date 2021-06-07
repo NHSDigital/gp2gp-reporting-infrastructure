@@ -34,14 +34,6 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                 "Name" : "ods-downloader",
                 "Environment" : [
                   {
-                    "Name" : "MAPPING_BUCKET",
-                    "Value.$" : "$.mappingBucket"
-                  },
-                  {
-                    "Name" : "OUTPUT_BUCKET",
-                    "Value.$" : "$.outputOdsMetadataBucket"
-                  },
-                  {
                     "Name" : "DATE_ANCHOR",
                     "Value.$" : "$.time"
                   }
@@ -75,17 +67,6 @@ resource "aws_sfn_state_machine" "data_pipeline" {
               {
                 "Name" : "metrics-calculator",
                 "Environment" : [
-                  {
-                    "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
-                    "Value.$" : "$.outputTransferDataBucket"
-                    }, {
-                    "Name" : "INPUT_TRANSFER_DATA_BUCKET",
-                    "Value.$" : "$.inputTransferDataBucket"
-                  },
-                  {
-                    "Name" : "ORGANISATION_METADATA_BUCKET",
-                    "Value.$" : "$.organisationMetadataBucket"
-                  },
                   {
                     "Name" : "DATE_ANCHOR",
                     "Value.$" : "$.time"

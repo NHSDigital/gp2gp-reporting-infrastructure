@@ -21,6 +21,11 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
       name      = "metrics-calculator"
       image     = "${data.aws_ssm_parameter.metrics_calculator_repository_url.value}:${var.metrics_calculator_image_tag}"
       essential = true
+      environment = [
+        {"name": "ORGANISATION_METADATA_BUCKET", "value": data.aws_ssm_parameter.ods_metadata_input_bucket_name.value},
+        {"name": "INPUT_TRANSFER_DATA_BUCKET", "value": data.aws_ssm_parameter.spine_messages_input_bucket_name.value},
+        {"name": "OUTPUT_TRANSFER_DATA_BUCKET", "value": aws_s3_bucket.metrics_calculator.bucket}
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
