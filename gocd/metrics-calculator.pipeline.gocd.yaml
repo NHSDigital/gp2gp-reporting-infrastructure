@@ -1,15 +1,16 @@
 format_version: 4
 pipelines:
-  "data-pipeline-platform-metrics-calculator":
+  "data-pipeline-metrics-calculator-task":
     group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
       git:
         type: configrepo
         includes:
-          - stacks/platform-metrics-calculator/**/*
-          - gocd/platform-metrics-calculator.pipeline.gocd.yaml
-      platform_metrics_calculator_image:
+          - stacks/metrics-calculator/**/*
+          - stacks/step-function/**/*
+          - gocd/metrics-calculator.pipeline.gocd.yaml
+      metrics_calculator_image:
         pipeline: prm-gp2gp-data-pipeline
         stage: build_and_publish
     stages:
@@ -24,7 +25,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate platform-metrics-calculator dev
+                      - ./tasks dojo-validate metrics-calculator dev
       - plan_dev:
           clean_workspace: true
           jobs:
@@ -39,7 +40,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - TF_VAR_platform_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_PLATFORM_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan platform-metrics-calculator dev
+                      - TF_VAR_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan metrics-calculator dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -56,7 +57,22 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply platform-metrics-calculator dev
+                      - ./tasks dojo-apply metrics-calculator dev
+      - promote_to_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/promote-image dev preprod metrics-calculator $GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE
       - plan_preprod:
           clean_workspace: true
           jobs:
@@ -71,7 +87,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan platform-metrics-calculator preprod
+                      - ./tasks dojo-plan metrics-calculator preprod
       - apply_preprod:
           clean_workspace: true
           approval:
@@ -91,4 +107,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply platform-metrics-calculator preprod
+                      - ./tasks dojo-apply metrics-calculator preprod

@@ -15,9 +15,9 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
-variable "platform_metrics_calculator_repo_param_name" {
+variable "metrics_calculator_repo_param_name" {
   type        = string
-  description = "Docker repository of the platform metrics calculator"
+  description = "Docker repository of the metrics calculator"
 }
 
 variable "execution_role_arn_param_name" {
@@ -25,9 +25,9 @@ variable "execution_role_arn_param_name" {
   description = "SSM parameter containing ecs execution role arn"
 }
 
-variable "platform_metrics_calculator_image_tag" {
+variable "metrics_calculator_image_tag" {
   type        = string
-  description = "Docker image tag of the platform metrics calculator"
+  description = "Docker image tag of the metrics calculator"
 }
 
 variable "log_group_param_name" {
