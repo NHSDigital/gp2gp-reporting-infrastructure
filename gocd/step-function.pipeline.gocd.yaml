@@ -9,7 +9,7 @@ pipelines:
         includes:
           - stacks/step-function/**/*
       ods_downloader_task:
-        pipeline: prm-gp2gp-ods-downloader-task
+        pipeline: data-pipeline-ods-downloader-task
         stage: plan_preprod
     stages:
       - validate:
