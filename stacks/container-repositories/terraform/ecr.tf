@@ -8,11 +8,11 @@ resource "aws_ecr_repository" "ods_downloader" {
   }
 }
 
-resource "aws_ecr_repository" "platform_metrics_calculator" {
-  name = "registrations/${var.environment}/data-pipeline/platform-metrics-calculator"
+resource "aws_ecr_repository" "metrics_calculator" {
+  name = "registrations/${var.environment}/data-pipeline/metrics-calculator"
 
   tags = {
-    Name      = "Platform metrics calculator"
+    Name      = "Metrics calculator"
     CreatedBy = var.repo_name
     Team      = var.team
   }

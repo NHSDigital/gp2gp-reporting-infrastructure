@@ -5,10 +5,10 @@ resource "aws_ssm_parameter" "ods_downloader" {
   tags  = local.common_tags
 }
 
-resource "aws_ssm_parameter" "platform_metrics_calculator" {
-  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/platform-metrics-calculator"
+resource "aws_ssm_parameter" "metrics_calculator" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/metrics-calculator"
   type  = "String"
-  value = aws_ecr_repository.platform_metrics_calculator.repository_url
+  value = aws_ecr_repository.metrics_calculator.repository_url
   tags  = local.common_tags
 }
 
