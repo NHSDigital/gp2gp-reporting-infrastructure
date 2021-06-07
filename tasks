@@ -77,6 +77,12 @@ dojo-apply)
 format)
   terraform fmt stacks/${stack_name}/terraform
   ;;
+destroy)
+  tf_init
+  terraform destroy -var environment=$env_name \
+    -var-file=stacks/${stack_name}/vars/${stack_env}.tfvars \
+    ${tf_dir}
+  ;;
 *)
   echo "Invalid task: '${task}'"
   exit 1
