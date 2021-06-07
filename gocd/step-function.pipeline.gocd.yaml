@@ -10,7 +10,7 @@ pipelines:
           - stacks/step-function/**/*
       ods_downloader_task:
         pipeline: data-pipeline-ods-downloader-task
-        stage: plan_preprod
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true
