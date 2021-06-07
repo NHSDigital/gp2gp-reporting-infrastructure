@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
         includes:
           - stacks/ods-downloader/**/*
+          - stacks/step-function/**/*
           - gocd/ods-downloader.pipeline.gocd.yaml
       ods_downloader_image:
         pipeline: prm-gp2gp-ods-downloader

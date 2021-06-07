@@ -8,6 +8,9 @@ pipelines:
         type: configrepo
         includes:
           - stacks/step-function/**/*
+      ods_downloader_task:
+        pipeline: prm-gp2gp-ods-downloader-task
+        stage: plan_preprod
     stages:
       - validate:
           clean_workspace: true

@@ -8,7 +8,6 @@ pipelines:
         type: configrepo
         includes:
           - stacks/container-repositories/**/*
-          - stacks/ods-downloader/**/*
     stages:
       - validate:
           clean_workspace: true
