@@ -87,7 +87,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan metrics-calculator preprod
+                      - TF_VAR_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan metrics-calculator preprod
       - apply_preprod:
           clean_workspace: true
           approval:
