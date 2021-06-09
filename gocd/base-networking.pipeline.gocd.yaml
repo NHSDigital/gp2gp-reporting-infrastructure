@@ -22,11 +22,6 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ls
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
                       - ./tasks dojo-validate base-networking dev
       - plan_dev:
           clean_workspace: true
