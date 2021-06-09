@@ -2,13 +2,14 @@ format_version: 4
 pipelines:
   "data-pipeline-ecs-cluster":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${ecs_cluster[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/ecs-cluster/**/*
-          - stacks/ods-downloader/**/*
+      ecs_cluster:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/ecs-cluster
     stages:
       - validate:
           clean_workspace: true

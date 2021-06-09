@@ -2,12 +2,14 @@ format_version: 4
 pipelines:
   "data-pipeline-container-repositories":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${container_repositories[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/container-repositories/**/*
+      container_repositories:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/container-repositories
     stages:
       - validate:
           clean_workspace: true

@@ -2,12 +2,14 @@ format_version: 4
 pipelines:
   "data-pipeline-spine-exporter":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${spine_exporter[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/spine-exporter/**/*
+      spine_exporter:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/spine-exporter
     stages:
       - validate:
           clean_workspace: true
