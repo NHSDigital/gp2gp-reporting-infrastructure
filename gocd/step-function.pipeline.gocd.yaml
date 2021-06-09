@@ -2,12 +2,14 @@ format_version: 4
 pipelines:
   "data-pipeline-step-function":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${step_function[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/step-function/**/*
+      step_function:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/step-function
       ods_downloader_task:
         pipeline: data-pipeline-ods-downloader-task
         stage: apply_dev
