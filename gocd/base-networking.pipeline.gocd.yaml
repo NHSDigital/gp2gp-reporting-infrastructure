@@ -2,7 +2,7 @@ format_version: 4
 pipelines:
   "data-pipeline-base-networking":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${base_networking[:8]}"
     materials:
       base_networking:
         plugin_configuration:
