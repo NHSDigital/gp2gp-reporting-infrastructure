@@ -2,14 +2,14 @@ format_version: 4
 pipelines:
   "data-pipeline-metrics-calculator-task":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${metrics_calculator_task[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/metrics-calculator/**/*
-          - stacks/step-function/**/*
-          - gocd/metrics-calculator.pipeline.gocd.yaml
+      metrics_calculator_task:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/metrics-calculator
       metrics_calculator_image:
         pipeline: prm-gp2gp-data-pipeline
         stage: build_and_publish
