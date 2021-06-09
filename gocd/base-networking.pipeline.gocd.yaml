@@ -4,11 +4,12 @@ pipelines:
     group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
-      git:
-        type: configrepo
-        includes:
-          - stacks/base-networking/**/*
-          - stacks/step-function/**/*
+      base_networking:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline.git
+          path: stacks/base-networking
     stages:
       - validate:
           clean_workspace: true
