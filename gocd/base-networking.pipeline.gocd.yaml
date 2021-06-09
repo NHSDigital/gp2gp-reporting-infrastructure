@@ -8,7 +8,7 @@ pipelines:
         plugin_configuration:
           id: git-path
         options:
-          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline.git
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
           path: stacks/base-networking
     stages:
       - validate:
