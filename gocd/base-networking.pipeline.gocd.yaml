@@ -18,7 +18,7 @@ pipelines:
               resources:
                 - docker
               tasks:
-               - exec:
+                - exec:
                     command: /bin/bash
                     arguments:
                       - -c
