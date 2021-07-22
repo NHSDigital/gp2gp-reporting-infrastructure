@@ -1,0 +1,92 @@
+format_version: 4
+pipelines:
+  "data-pipeline-transfer-classifier-task":
+    group: gp2gp-data-pipeline-infra
+    label_template: "${transfer_classifier_task[:8]}"
+    materials:
+      transfer_classifier_task:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/transfer-classifier
+    stages:
+      - validate:
+          clean_workspace: true
+          jobs:
+            test:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-validate transfer-classifier dev
+      - plan_dev:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: dev.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan transfer-classifier dev
+      - apply_dev:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: dev.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply transfer-classifier dev
+      - plan_preprod:
+          clean_workspace: true
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: preprod.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-plan transfer-classifier preprod
+      - apply_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_preprod
+                    job: plan
+                    source: preprod.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-apply transfer-classifier preprod
