@@ -34,3 +34,8 @@ variable "execution_role_arn_param_name" {
   type        = string
   description = "SSM parameter containing ecs execution role arn"
 }
+
+variable "ods_metadata_input_bucket_param_name" {
+  type        = string
+  description = "SSM parameter containing organisation metadata bucket name"
+}
