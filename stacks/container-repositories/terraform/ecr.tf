@@ -17,3 +17,13 @@ resource "aws_ecr_repository" "metrics_calculator" {
     Team      = var.team
   }
 }
+
+resource "aws_ecr_repository" "transfer_classifier" {
+  name = "registrations/${var.environment}/data-pipeline/transfer-classifier"
+
+  tags = {
+    Name      = "Transfer classifier"
+    CreatedBy = var.repo_name
+    Team      = var.team
+  }
+}
