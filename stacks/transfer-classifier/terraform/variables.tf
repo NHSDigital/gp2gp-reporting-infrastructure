@@ -29,3 +29,8 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
+
+variable "execution_role_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing ecs execution role arn"
+}
