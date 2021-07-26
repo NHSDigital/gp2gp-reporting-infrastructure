@@ -12,4 +12,9 @@ resource "aws_ssm_parameter" "metrics_calculator" {
   tags  = local.common_tags
 }
 
-
+resource "aws_ssm_parameter" "transfer_classifier" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/transfer-classifier"
+  type  = "String"
+  value = aws_ecr_repository.transfer_classifier.repository_url
+  tags  = local.common_tags
+}
