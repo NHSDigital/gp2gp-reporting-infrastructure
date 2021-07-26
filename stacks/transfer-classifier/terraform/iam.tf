@@ -8,6 +8,8 @@ resource "aws_iam_role" "transfer_classifier" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     aws_iam_policy.transfer_classifier_transfers_input_bucket_read_access.arn,
+    aws_iam_policy.transfer_classifier_output_bucket_write_access.arn,
+
   ]
 }
 
@@ -24,7 +26,7 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 resource "aws_iam_policy" "transfer_classifier_transfers_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}-read"
+  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}--read"
   policy = data.aws_iam_policy_document.transfer_classifier_transfers_input_bucket_read_access.json
 }
 
@@ -38,7 +40,7 @@ data "aws_iam_policy_document" "transfer_classifier_transfers_input_bucket_read_
     ]
 
     resources = [
-      "arn:aws:s3:::${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}"
+      "arn:aws:s3:::${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}",
     ]
   }
 
@@ -51,6 +53,25 @@ data "aws_iam_policy_document" "transfer_classifier_transfers_input_bucket_read_
 
     resources = [
       "arn:aws:s3:::${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "transfer_classifier_output_bucket_write_access" {
+  name   = "${aws_s3_bucket.transfer_classifier.bucket}-write"
+  policy = data.aws_iam_policy_document.transfer_classifier_output_bucket_write_access.json
+}
+
+data "aws_iam_policy_document" "transfer_classifier_output_bucket_write_access" {
+  statement {
+    sid = "WriteObjects"
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}/*"
     ]
   }
 }
