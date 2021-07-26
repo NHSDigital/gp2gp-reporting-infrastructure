@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 resource "aws_iam_policy" "metrics_calculator_transfers_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}-read"
+  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}-read-duplicate"
   policy = data.aws_iam_policy_document.metrics_calculator_transfers_input_bucket_read_access.json
 }
 
