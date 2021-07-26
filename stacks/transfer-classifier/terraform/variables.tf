@@ -14,3 +14,8 @@ variable "repo_name" {
   default     = "prm-gp2gp-data-pipeline-infra"
   description = "Name of this repository"
 }
+
+variable "transfer_classifier_repo_param_name" {
+  type        = string
+  description = "Docker repository of the transfer classifier"
+}
