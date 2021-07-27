@@ -3,3 +3,4 @@ execution_role_arn_param_name="/registrations/dev/data-pipeline/ecs-execution-ro
 spine_messages_input_bucket_param_name="/registrations/dev/data-pipeline/spine-exporter/output-bucket-name"
 log_group_param_name="/registrations/dev/data-pipeline/cloudwatch-log-group-name"
 ods_metadata_input_bucket_param_name="/registrations/dev/data-pipeline/ods-downloader/output-bucket-name"
+transfer_classifier_image_tag="c8687208"
