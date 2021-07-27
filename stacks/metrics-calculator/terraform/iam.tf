@@ -61,8 +61,12 @@ data "aws_iam_policy_document" "metrics_calculator_transfers_input_bucket_read_a
 }
 
 resource "aws_iam_policy" "metrics_calculator_ods_metadata_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}-read"
+  name   = "metrics-calculator-read-${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}"
   policy = data.aws_iam_policy_document.metrics_calculator_ods_metadata_input_bucket_read_access.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "aws_iam_policy_document" "metrics_calculator_ods_metadata_input_bucket_read_access" {
