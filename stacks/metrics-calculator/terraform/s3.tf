@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Output transfer data for metrics calculator"
+      Name = "Output metrics data for metrics calculator"
     }
   )
 }

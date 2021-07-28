@@ -1,5 +1,5 @@
-data "aws_ssm_parameter" "spine_messages_input_bucket_name" {
-  name = var.spine_messages_input_bucket_param_name
+data "aws_ssm_parameter" "transfers_input_bucket_name" {
+  name = var.transfers_input_bucket_param_name
 }
 
 data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 resource "aws_iam_policy" "metrics_calculator_transfers_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}-read"
+  name   = "${data.aws_ssm_parameter.transfers_input_bucket_name.value}-read"
   policy = data.aws_iam_policy_document.metrics_calculator_transfers_input_bucket_read_access.json
 }
 
@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "metrics_calculator_transfers_input_bucket_read_a
     ]
 
     resources = [
-      "arn:aws:s3:::${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}"
+      "arn:aws:s3:::${data.aws_ssm_parameter.transfers_input_bucket_name.value}"
     ]
   }
 
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "metrics_calculator_transfers_input_bucket_read_a
     ]
 
     resources = [
-      "arn:aws:s3:::${data.aws_ssm_parameter.spine_messages_input_bucket_name.value}/*"
+      "arn:aws:s3:::${data.aws_ssm_parameter.transfers_input_bucket_name.value}/*"
     ]
   }
 }
