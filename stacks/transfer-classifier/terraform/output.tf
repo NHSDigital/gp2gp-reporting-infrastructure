@@ -11,3 +11,10 @@ resource "aws_ssm_parameter" "transfer_classifier_iam_role_arn" {
   value = aws_iam_role.transfer_classifier.arn
   tags  = local.common_tags
 }
+
+resource "aws_ssm_parameter" "transfer_classifier_output_bucket_name" {
+  name  = "/registrations/${var.environment}/data-pipeline/transfer-classifier/output-bucket-name"
+  type  = "String"
+  value = aws_s3_bucket.transfer_classifier.bucket
+  tags  = local.common_tags
+}
