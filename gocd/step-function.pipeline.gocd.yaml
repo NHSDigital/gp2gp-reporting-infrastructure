@@ -16,6 +16,9 @@ pipelines:
       metrics_calculator_task:
         pipeline: data-pipeline-metrics-calculator-task
         stage: apply_dev
+      transfer_classifier_task:
+        pipeline: data-pipeline-transfer-classifier-task
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true
