@@ -86,6 +86,10 @@ data "aws_ssm_parameter" "ods_downloader_task_definition_arn" {
   name = var.ods_downloader_task_definition_arn_param_name
 }
 
+data "aws_ssm_parameter" "transfer_classifier_task_definition_arn" {
+  name = var.transfer_classifier_task_definition_arn_param_name
+}
+
 data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
   name = var.metrics_calculator_task_definition_arn_param_name
 }

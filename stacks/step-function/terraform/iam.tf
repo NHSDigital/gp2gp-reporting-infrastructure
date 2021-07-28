@@ -47,6 +47,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
+      data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value,
       data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
@@ -59,6 +60,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
+      data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value,
       data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
