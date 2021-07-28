@@ -10,6 +10,9 @@ pipelines:
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
           path: stacks/transfer-classifier
+      transfer_classifier_image:
+        pipeline: prm-gp2gp-data-pipeline
+        stage: build_and_publish
     stages:
       - validate:
           clean_workspace: true
@@ -37,7 +40,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan transfer-classifier dev
+                      - TF_VAR_transfer_classifier_image_tag=$GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE ./tasks dojo-plan transfer-classifier dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -55,6 +58,21 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply transfer-classifier dev
+      - promote_to_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/promote-image dev preprod transfer-classifier $GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE
       - plan_preprod:
           clean_workspace: true
           jobs:
@@ -69,7 +87,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan transfer-classifier preprod
+                      - TF_VAR_transfer_classifier_image_tag=$GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE ./tasks dojo-plan transfer-classifier preprod
       - apply_preprod:
           clean_workspace: true
           approval:
