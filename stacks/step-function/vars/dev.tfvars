@@ -6,3 +6,4 @@ ods_downloader_task_definition_arn_param_name="/registrations/dev/data-pipeline/
 ods_downloader_iam_role_arn_param_name="/registrations/dev/data-pipeline/ods-downloader/iam-role-arn"
 metrics_calculator_task_definition_arn_param_name="/registrations/dev/data-pipeline/metrics-calculator/task-definition-arn"
 metrics_calculator_iam_role_arn_param_name="/registrations/dev/data-pipeline/metrics-calculator/iam-role-arn"
+transfer_classifier_iam_role_arn_param_name="/registrations/dev/data-pipeline/transfer-classifier/iam-role-arn"

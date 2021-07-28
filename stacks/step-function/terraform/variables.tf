@@ -54,3 +54,8 @@ variable "metrics_calculator_task_definition_arn_param_name" {
   type        = string
   description = "SSM parameter containing metrics calculator Task Definition ARN"
 }
+
+variable "transfer_classifier_iam_role_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing transfer classifier iam role arn"
+}

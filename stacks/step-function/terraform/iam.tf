@@ -83,7 +83,8 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.ods_downloader_iam_role_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value
+      data.aws_ssm_parameter.transfer_classifier_iam_role_arn.value,
+      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value,
     ]
   }
 }
@@ -98,6 +99,10 @@ data "aws_ssm_parameter" "ods_downloader_iam_role_arn" {
 
 data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
   name = var.metrics_calculator_iam_role_arn_param_name
+}
+
+data "aws_ssm_parameter" "transfer_classifier_iam_role_arn" {
+  name = var.transfer_classifier_iam_role_arn_param_name
 }
 
 data "aws_iam_policy_document" "data_pipeline_trigger" {
