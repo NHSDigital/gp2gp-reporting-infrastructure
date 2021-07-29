@@ -35,11 +35,6 @@ variable "execution_role_arn_param_name" {
   description = "SSM parameter containing ecs execution role arn"
 }
 
-variable "ods_metadata_input_bucket_param_name" {
-  type        = string
-  description = "SSM parameter containing organisation metadata bucket name"
-}
-
 variable "transfer_classifier_image_tag" {
   type        = string
   description = "Docker image tag of the transfer classifier"
