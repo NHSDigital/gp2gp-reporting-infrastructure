@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" transfer_classifier {
       essential = true
       environment = [
         { "name" : "ORGANISATION_METADATA_BUCKET", "value" : data.aws_ssm_parameter.ods_metadata_input_bucket_name.value },
-        { "name" : "INPUT_TRANSFER_DATA_BUCKET", "value" : data.aws_ssm_parameter.spine_messages_input_bucket_name.value },
+        { "name" : "INPUT_SPINE_DATA_BUCKET", "value" : data.aws_ssm_parameter.spine_messages_input_bucket_name.value },
         { "name" : "OUTPUT_TRANSFER_DATA_BUCKET", "value" : aws_s3_bucket.transfer_classifier.bucket }
       ]
       logConfiguration = {
