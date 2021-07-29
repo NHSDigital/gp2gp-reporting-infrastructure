@@ -36,8 +36,8 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
       }
     },
   ])
-  cpu                      = 2048
-  memory                   = 12288
+  cpu                      = 512
+  memory                   = 1024
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags = merge(
