@@ -11,7 +11,7 @@ pipelines:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
           path: stacks/transfer-classifier
       transfer_classifier_image:
-        pipeline: prm-gp2gp-data-pipeline
+        pipeline: prm-gp2gp-transfer-classifier
         stage: build_and_publish
     stages:
       - validate:
