@@ -18,3 +18,10 @@ resource "aws_ssm_parameter" "ods_downloader_output_bucket_name" {
   value = aws_s3_bucket.ods_output.bucket
   tags  = local.common_tags
 }
+
+resource "aws_ssm_parameter" "ods_downloader_input_bucket_name" {
+  name  = "/registrations/${var.environment}/data-pipeline/ods-downloader/asid-lookup-bucket-name"
+  type  = "String"
+  value = aws_s3_bucket.ods_input.bucket
+  tags  = local.common_tags
+}
