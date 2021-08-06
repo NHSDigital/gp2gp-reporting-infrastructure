@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
         { "name" : "INPUT_TRANSFER_DATA_BUCKET", "value" : data.aws_ssm_parameter.transfers_input_bucket_name.value },
         { "name" : "ORGANISATION_METADATA_BUCKET", "value" : data.aws_ssm_parameter.ods_metadata_input_bucket_name.value },
         { "name" : "OUTPUT_METRICS_BUCKET", "value" : aws_s3_bucket.metrics_calculator.bucket },
-        { "name" : "NUMBER_OF_MONTHS", "value" : "1" }
+        { "name" : "NUMBER_OF_MONTHS", "value" : "3" }
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -37,8 +37,8 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
       }
     },
   ])
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 2048
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags = merge(
