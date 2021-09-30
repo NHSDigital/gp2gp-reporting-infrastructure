@@ -70,9 +70,6 @@ pipelines:
             plan:
               resources:
                 - docker
-              artifacts:
-                - build:
-                    source: preprod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
