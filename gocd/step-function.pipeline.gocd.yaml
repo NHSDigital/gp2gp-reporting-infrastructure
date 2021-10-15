@@ -66,6 +66,9 @@ pipelines:
                       - ./tasks dojo-apply step-function dev
       - validate_preprod:
           clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
           jobs:
             plan:
               resources:
@@ -78,9 +81,6 @@ pipelines:
                       - ./tasks dojo-validate step-function preprod
       - plan_preprod:
           clean_workspace: true
-          approval:
-            type: manual
-            allow_only_on_success: true
           jobs:
             plan:
               resources:
@@ -96,6 +96,9 @@ pipelines:
                       - ./tasks dojo-plan step-function preprod
       - apply_preprod:
           clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
           jobs:
             apply:
               resources:
