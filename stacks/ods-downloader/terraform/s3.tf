@@ -2,6 +2,10 @@ resource "aws_s3_bucket" "ods_input" {
   bucket = "prm-gp2gp-asid-lookup-${var.environment}"
   acl    = "private"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = merge(
     local.common_tags,
     {
@@ -13,6 +17,10 @@ resource "aws_s3_bucket" "ods_input" {
 resource "aws_s3_bucket" "ods_output" {
   bucket = "prm-gp2gp-ods-metadata-${var.environment}"
   acl    = "private"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = merge(
     local.common_tags,

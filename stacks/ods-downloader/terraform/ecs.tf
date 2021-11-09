@@ -20,9 +20,9 @@ resource "aws_ecs_task_definition" "ods_downloader" {
       image     = "${data.aws_ssm_parameter.ods_downloader_repo_url.value}:${var.ods_downloader_image_tag}"
       essential = true
       environment = [
-            {"name": "MAPPING_BUCKET", "value": aws_s3_bucket.ods_input.bucket},
-            {"name": "OUTPUT_BUCKET", "value": aws_s3_bucket.ods_output.bucket}
-        ]
+        { "name" : "MAPPING_BUCKET", "value" : aws_s3_bucket.ods_input.bucket },
+        { "name" : "OUTPUT_BUCKET", "value" : aws_s3_bucket.ods_output.bucket }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {

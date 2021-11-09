@@ -2,6 +2,10 @@ resource "aws_s3_bucket" "metrics_calculator" {
   bucket = "prm-gp2gp-metrics-${var.environment}"
   acl    = "private"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = merge(
     local.common_tags,
     {

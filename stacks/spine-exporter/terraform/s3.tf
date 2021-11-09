@@ -2,6 +2,10 @@ resource "aws_s3_bucket" "spine_exporter" {
   bucket = "prm-gp2gp-raw-spine-data-${var.environment}"
   acl    = "private"
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   tags = merge(
     local.common_tags,
     {
