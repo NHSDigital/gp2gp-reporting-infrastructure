@@ -18,3 +18,10 @@ resource "aws_ssm_parameter" "transfer_classifier" {
   value = aws_ecr_repository.transfer_classifier.repository_url
   tags  = local.common_tags
 }
+
+resource "aws_ssm_parameter" "spine_exporter" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/spine-exporter"
+  type  = "String"
+  value = aws_ecr_repository.spine_exporter.repository_url
+  tags  = local.common_tags
+}
