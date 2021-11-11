@@ -1,15 +1,18 @@
 format_version: 4
 pipelines:
-  "data-pipeline-spine-exporter":
+  "data-pipeline-spine-exporter-task":
     group: gp2gp-data-pipeline-infra
-    label_template: "${spine_exporter[:8]}"
+    label_template: "${spine_exporter_task[:8]}"
     materials:
-      spine_exporter:
+      spine_exporter_task:
         plugin_configuration:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
           path: stacks/spine-exporter
+      spine_exporter_image:
+        pipeline: prm-spine-exporter
+        stage: build_and_publish
     stages:
       - validate:
           clean_workspace: true
@@ -37,7 +40,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan spine-exporter dev
+                      - TF_VAR_spine_exporter_image_tag=$GO_DEPENDENCY_LABEL_SPINE_EXPORTER_IMAGE ./tasks dojo-plan spine-exporter dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -55,6 +58,21 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply spine-exporter dev
+      - promote_to_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/promote-image dev preprod spine-exporter $GO_DEPENDENCY_LABEL_SPINE_EXPORTER_IMAGE
       - plan_preprod:
           clean_workspace: true
           jobs:
@@ -69,7 +87,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan spine-exporter preprod
+                      - TF_VAR_spine_exporter_image_tag=$GO_DEPENDENCY_LABEL_SPINE_EXPORTER_IMAGE ./tasks dojo-plan spine-exporter preprod
       - apply_preprod:
           clean_workspace: true
           approval:
