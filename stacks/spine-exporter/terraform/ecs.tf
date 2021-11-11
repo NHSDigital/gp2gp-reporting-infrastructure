@@ -17,7 +17,7 @@ resource "aws_ecs_task_definition" "spine_exporter" {
   container_definitions = jsonencode([
     {
       name      = "spine-exporter"
-      image     = "${data.aws_ssm_parameter.spine_exporter_repo_url.value}:${var.spine_exporter_repo_param_name}"
+      image     = "${data.aws_ssm_parameter.spine_exporter_repo_url.value}:${var.spine_exporter_image_tag}"
       essential = true
       logConfiguration = {
         logDriver = "awslogs"
