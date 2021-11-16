@@ -10,6 +10,10 @@ data "aws_ssm_parameter" "execution_role_arn" {
   name = var.execution_role_arn_param_name
 }
 
+data "aws_ssm_parameter" "splunk_url" {
+  name = var.splunk_url_param_name
+}
+
 data "aws_region" "current" {}
 
 resource "aws_ecs_task_definition" "spine_exporter" {
@@ -19,6 +23,9 @@ resource "aws_ecs_task_definition" "spine_exporter" {
       name      = "spine-exporter"
       image     = "${data.aws_ssm_parameter.spine_exporter_repo_url.value}:${var.spine_exporter_image_tag}"
       essential = true
+      environment = [
+        { "name" : "SPLUNK_URL", "value" : data.aws_ssm_parameter.splunk_url.value }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {

@@ -34,3 +34,8 @@ variable "spine_exporter_image_tag" {
   type        = string
   description = "Docker image tag of the spine exporter"
 }
+
+variable "splunk_url_param_name" {
+  type        = string
+  description = "Splunk URL"
+}
