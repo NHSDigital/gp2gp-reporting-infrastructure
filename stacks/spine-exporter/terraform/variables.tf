@@ -37,5 +37,10 @@ variable "spine_exporter_image_tag" {
 
 variable "splunk_url_param_name" {
   type        = string
-  description = "Splunk URL"
+  description = "Splunk URL param name"
+}
+
+variable "splunk_api_token_param_name" {
+  type        = string
+  description = "Splunk API token param name"
 }

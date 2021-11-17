@@ -24,7 +24,8 @@ resource "aws_ecs_task_definition" "spine_exporter" {
       image     = "${data.aws_ssm_parameter.spine_exporter_repo_url.value}:${var.spine_exporter_image_tag}"
       essential = true
       environment = [
-        { "name" : "SPLUNK_URL", "value" : data.aws_ssm_parameter.splunk_url.value }
+        { "name" : "SPLUNK_URL", "value" : data.aws_ssm_parameter.splunk_url.value },
+        { "name" : "SPLUNK_API_TOKEN_PARAM_NAME", "value" : var.splunk_api_token_param_name }
       ]
       logConfiguration = {
         logDriver = "awslogs"

@@ -2,3 +2,4 @@ spine_exporter_repo_param_name="/registrations/dev/data-pipeline/ecr/url/spine-e
 log_group_param_name="/registrations/dev/data-pipeline/cloudwatch-log-group-name"
 execution_role_arn_param_name="/registrations/dev/data-pipeline/ecs-execution-role-arn"
 splunk_url_param_name="/registrations/dev/user-input/splunk-api-url"
+splunk_api_token_param_name="/registrations/dev/user-input/splunk-api-token"
