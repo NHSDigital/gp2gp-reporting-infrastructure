@@ -3,6 +3,12 @@ variable "environment" {
   description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "eu-west-2"
+}
+
 variable "team" {
   type        = string
   default     = "Registrations"
