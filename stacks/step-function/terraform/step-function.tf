@@ -116,6 +116,68 @@ resource "aws_sfn_state_machine" "data_pipeline" {
   })
 }
 
+resource "aws_sfn_state_machine" "transfer_classifer" {
+  name     = "transfer-classifer"
+  role_arn = aws_iam_role.data_pipeline_step_function.arn
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "Transfer Classifier Step Function"
+    }
+  )
+  definition = jsonencode({
+    "StartAt" : "TransferClassifier",
+    "States" : {
+      "TransferClassifier" : {
+        "Type" : "Task",
+        "Comment" : "Transfer Classifier - responsible for taking raw spine transfer data and organisation meta data and allocating transfers a status",
+        "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "ResultPath" : null,
+        "Parameters" : {
+          "LaunchType" : "FARGATE",
+          "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
+          "TaskDefinition" : data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value,
+          "NetworkConfiguration" : {
+            "AwsvpcConfiguration" : {
+              "Subnets" : [
+                data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
+              ],
+              "SecurityGroups" : [
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
+            }
+          },
+          "Overrides" : {
+            "ContainerOverrides" : [
+              {
+                "Name" : "transfer-classifier",
+                "Environment" : [
+                  {
+                    "Name" : "DATE_ANCHOR",
+                    "Value.$" : "$.DATE_ANCHOR"
+                  },
+                  {
+                    "Name" : "INPUT_SPINE_DATA_BUCKET",
+                    "Value.$" : "$.INPUT_SPINE_DATA_BUCKET"
+                  },
+                  {
+                    "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
+                    "Value.$" : "$.OUTPUT_TRANSFER_DATA_BUCKET"
+                  },
+                  {
+                    "Name" : "CONVERSATION_CUTOFF_DAYS",
+                    "Value.$" : "$.CONVERSATION_CUTOFF_DAYS"
+                  }
+                ],
+              }
+            ]
+          }
+        },
+        "End" : true
+      }
+    }
+  })
+}
+
 data "aws_ssm_parameter" "ods_downloader_task_definition_arn" {
   name = var.ods_downloader_task_definition_arn_param_name
 }
