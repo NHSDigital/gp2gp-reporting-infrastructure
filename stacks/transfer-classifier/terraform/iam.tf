@@ -79,7 +79,8 @@ data "aws_iam_policy_document" "transfer_classifier_output_bucket_write_access" 
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}/*"
+      "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}/*",
+      "arn:aws:s3:::${aws_ssm_parameter.transfer_classifier_notebook_data_bucket_name.value}/*"
     ]
   }
 }
