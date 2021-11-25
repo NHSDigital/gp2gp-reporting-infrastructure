@@ -39,3 +39,8 @@ variable "transfer_classifier_image_tag" {
   type        = string
   description = "Docker image tag of the transfer classifier"
 }
+
+variable "transfer_classifier_notebook_data_name" {
+  type        = string
+  description = "Location of the bucket name for transfer classifier notebook output data"
+}

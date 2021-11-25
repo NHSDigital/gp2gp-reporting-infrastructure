@@ -22,6 +22,6 @@ resource "aws_ssm_parameter" "transfer_classifier_output_bucket_name" {
 resource "aws_ssm_parameter" "transfer_classifier_notebook_data_bucket_name" {
   name  = "/registrations/${var.environment}/data-pipeline/transfer-classifier/notebook-data"
   type  = "String"
-  value = "prm-gp2gp-notebook-data-${var.environment}"
+  value = var.transfer_classifier_notebook_data_name
   tags  = local.common_tags
 }
