@@ -18,10 +18,3 @@ resource "aws_ssm_parameter" "transfer_classifier_output_bucket_name" {
   value = aws_s3_bucket.transfer_classifier.bucket
   tags  = local.common_tags
 }
-
-resource "aws_ssm_parameter" "transfer_classifier_notebook_data_bucket_name" {
-  name  = "/registrations/${var.environment}/data-pipeline/transfer-classifier/notebook-data"
-  type  = "String"
-  value = var.transfer_classifier_notebook_data_name
-  tags  = local.common_tags
-}
