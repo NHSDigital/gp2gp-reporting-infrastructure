@@ -25,7 +25,8 @@ resource "aws_ecs_task_definition" "spine_exporter" {
       essential = true
       environment = [
         { "name" : "SPLUNK_URL", "value" : data.aws_ssm_parameter.splunk_url.value },
-        { "name" : "SPLUNK_API_TOKEN_PARAM_NAME", "value" : var.splunk_api_token_param_name }
+        { "name" : "SPLUNK_API_TOKEN_PARAM_NAME", "value" : var.splunk_api_token_param_name },
+        { "name" : "OUTPUT_SPINE_DATA_BUCKET", "value" : aws_s3_bucket.spine_exporter.bucket }
       ]
       logConfiguration = {
         logDriver = "awslogs"
