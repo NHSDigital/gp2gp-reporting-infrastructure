@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "run_task" {
 resource "aws_cloudwatch_event_rule" "ecs_event_rule" {
   name                = "run-spine-exported-every-10-minutes"
   description         = "Cloudwatch Event Rule that runs Spine Exporter ECS task every 10 minutes"
-  schedule_expression = "rate(2 minutes)"
+  schedule_expression = "cron(0 2 * * *)"
 
   tags = merge(
     local.common_tags,
