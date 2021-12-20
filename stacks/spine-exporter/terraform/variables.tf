@@ -50,3 +50,8 @@ variable "splunk_api_token_param_name" {
   type        = string
   description = "Splunk API token param name"
 }
+
+variable "data_pipeline_ecs_cluster_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline ECS Cluster ARN"
+}
