@@ -4,3 +4,5 @@ execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-executio
 splunk_url_param_name="/registrations/preprod/user-input/splunk-api-url"
 splunk_api_token_param_name="/registrations/preprod/user-input/splunk-api-token"
 data_pipeline_ecs_cluster_arn_param_name="/registrations/preprod/data-pipeline/ecs-cluster/ecs-cluster-arn"
+data_pipeline_private_subnet_id_param_name="/registrations/preprod/data-pipeline/base-networking/private-subnet-id"
+data_pipeline_outbound_only_security_group_id_param_name="/registrations/preprod/data-pipeline/base-networking/outbound-only-security-group-id"

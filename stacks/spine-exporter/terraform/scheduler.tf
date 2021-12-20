@@ -51,6 +51,13 @@ resource "aws_cloudwatch_event_rule" "ecs_event_rule" {
   name                = "run-spine-exported-every-10-minutes"
   description         = "Cloudwatch Event Rule that runs Spine Exporter ECS task every 10 minutes"
   schedule_expression = "rate(10 minutes)"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "Cloudwatch Event Rule"
+    }
+  )
 }
 
 resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
@@ -60,11 +67,29 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
   role_arn  = aws_iam_role.ecs_events.arn
 
   ecs_target {
-    task_count          = 1
+    launch_type = "FARGATE"
+    network_configuration {
+      subnets         = [data.aws_ssm_parameter.data_pipeline_private_subnet_id.value]
+      security_groups = [data.aws_ssm_parameter.outbound_only_security_group_id.value]
+    }
     task_definition_arn = aws_ecs_task_definition.spine_exporter.arn
+    tags = merge(
+      local.common_tags,
+      {
+        Name = "Cloudwatch Event Target"
+      }
+    )
   }
 }
 
 data "aws_ssm_parameter" "data_pipeline_ecs_cluster_arn" {
   name = var.data_pipeline_ecs_cluster_arn_param_name
+}
+
+data "aws_ssm_parameter" "data_pipeline_private_subnet_id" {
+  name = var.data_pipeline_private_subnet_id_param_name
+}
+
+data "aws_ssm_parameter" "outbound_only_security_group_id" {
+  name = var.data_pipeline_outbound_only_security_group_id_param_name
 }
