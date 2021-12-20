@@ -27,6 +27,16 @@ resource "aws_iam_policy" "ecs_events_run_task" {
 
 data "aws_iam_policy_document" "run_task" {
   statement {
+    sid = "PassIamRole"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      data.aws_ssm_parameter.execution_role_arn.value
+    ]
+  }
+
+  statement {
     sid = "RunSpineExporterEcsTask"
     actions = [
       "ecs:RunTask"
