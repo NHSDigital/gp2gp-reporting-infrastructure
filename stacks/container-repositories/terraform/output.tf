@@ -25,3 +25,10 @@ resource "aws_ssm_parameter" "spine_exporter" {
   value = aws_ecr_repository.spine_exporter.repository_url
   tags  = local.common_tags
 }
+
+resource "aws_ssm_parameter" "reports_generator" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/reports-generator"
+  type  = "String"
+  value = aws_ecr_repository.reports_generator.repository_url
+  tags  = local.common_tags
+}

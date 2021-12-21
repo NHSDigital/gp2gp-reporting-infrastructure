@@ -41,3 +41,14 @@ resource "aws_ecr_repository" "spine_exporter" {
     }
   )
 }
+
+resource "aws_ecr_repository" "reports_generator" {
+  name = "registrations/${var.environment}/data-pipeline/reports-generator"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "Reports generator"
+    }
+  )
+}
