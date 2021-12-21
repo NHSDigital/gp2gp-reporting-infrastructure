@@ -84,3 +84,39 @@ data "aws_iam_policy_document" "transfer_classifier_output_bucket_write_access" 
     ]
   }
 }
+
+resource "aws_iam_policy" "transfer_classifier_output_bucket_read_access" {
+  name        = "${aws_s3_bucket.transfer_classifier.bucket}-read"
+  description = "Transfer Classifier S3 bucket read access needed for metrics calculator and reports generator"
+  policy      = data.aws_iam_policy_document.transfer_classifier_output_bucket_read_access.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+data "aws_iam_policy_document" "transfer_classifier_output_bucket_read_access" {
+  statement {
+    sid = "ListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}"
+    ]
+  }
+
+  statement {
+    sid = "ReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}/*"
+    ]
+  }
+}
