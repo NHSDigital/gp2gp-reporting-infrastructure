@@ -64,3 +64,13 @@ variable "transfer_classifier_task_definition_arn_param_name" {
   type        = string
   description = "SSM parameter containing transfer classifier Task Definition ARN"
 }
+
+variable "reports_generator_iam_role_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing reports generator iam role arn"
+}
+
+variable "reports_generator_task_definition_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing reports generator Task Definition ARN"
+}

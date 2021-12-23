@@ -19,6 +19,9 @@ pipelines:
       transfer_classifier_task:
         pipeline: data-pipeline-transfer-classifier-task
         stage: apply_dev
+      spine_exporter_task:
+        pipeline: data-pipeline-spine-exporter-task
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true

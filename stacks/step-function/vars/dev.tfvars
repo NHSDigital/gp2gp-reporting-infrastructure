@@ -8,3 +8,5 @@ metrics_calculator_task_definition_arn_param_name="/registrations/dev/data-pipel
 metrics_calculator_iam_role_arn_param_name="/registrations/dev/data-pipeline/metrics-calculator/iam-role-arn"
 transfer_classifier_iam_role_arn_param_name="/registrations/dev/data-pipeline/transfer-classifier/iam-role-arn"
 transfer_classifier_task_definition_arn_param_name="/registrations/dev/data-pipeline/transfer-classifier/task-definition-arn"
+reports_generator_iam_role_arn_param_name="/registrations/dev/data-pipeline/reports-generator/iam-role-arn"
+reports_generator_task_definition_arn_param_name="/registrations/dev/data-pipeline/reports-generator/task-definition-arn"

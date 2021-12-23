@@ -42,6 +42,40 @@ resource "aws_sfn_state_machine" "data_pipeline" {
             ]
           }
         },
+        "Next" : "ReportsGenerator"
+      },
+      "ReportsGenerator" : {
+        "Type" : "Task",
+        "Comment" : "Reports Generator - responsible for generating various reports needed for reporting on GP2GP",
+        "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "ResultPath" : null,
+        "Parameters" : {
+          "LaunchType" : "FARGATE",
+          "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
+          "TaskDefinition" : data.aws_ssm_parameter.reports_generator_task_definition_arn.value,
+          "NetworkConfiguration" : {
+            "AwsvpcConfiguration" : {
+              "Subnets" : [
+                data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
+              ],
+              "SecurityGroups" : [
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
+            }
+          },
+          "Overrides" : {
+            "ContainerOverrides" : [
+              {
+                "Name" : "reports-generator",
+                "Environment" : [
+                  {
+                    "Name" : "DATE_ANCHOR",
+                    "Value.$" : "$.time"
+                  }
+                ],
+              }
+            ]
+          }
+        },
         "Next" : "ODSDownloader"
       },
       "ODSDownloader" : {
@@ -188,6 +222,10 @@ data "aws_ssm_parameter" "transfer_classifier_task_definition_arn" {
 
 data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
   name = var.metrics_calculator_task_definition_arn_param_name
+}
+
+data "aws_ssm_parameter" "reports_generator_task_definition_arn" {
+  name = var.reports_generator_task_definition_arn_param_name
 }
 
 data "aws_ssm_parameter" "data_pipeline_ecs_cluster_arn" {
