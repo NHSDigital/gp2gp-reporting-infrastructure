@@ -3,3 +3,4 @@ log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-
 execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-execution-role-arn"
 transfers_input_bucket_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-name"
 transfer_input_bucket_read_access_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-read-access-arn"
+notebook_data_bucket_name="prm-gp2gp-notebook-data-prod"

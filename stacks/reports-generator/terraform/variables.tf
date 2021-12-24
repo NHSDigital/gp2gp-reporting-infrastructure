@@ -44,3 +44,8 @@ variable "transfer_input_bucket_read_access_param_name" {
   type        = string
   description = "SSM parameter containing transfer input bucket read access IAM policy ARN"
 }
+
+variable "notebook_data_bucket_name" {
+  type        = string
+  description = "Location of the bucket name for notebook data (that the reports generator can output to)"
+}
