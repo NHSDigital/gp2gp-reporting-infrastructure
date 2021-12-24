@@ -12,7 +12,8 @@ resource "aws_iam_role" "reports_generator" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     data.aws_ssm_parameter.transfers_input_bucket_read_access_arn.value,
-    aws_iam_policy.reports_generator_output_buckets_write_access.arn
+    aws_iam_policy.reports_generator_output_buckets_write_access.arn,
+    aws_iam_policy.notebook_data_bucket_read_access.arn
   ]
 }
 
@@ -43,6 +44,41 @@ data "aws_iam_policy_document" "reports_generator_output_buckets_write_access" {
 
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.reports_generator.bucket}/*",
+      "arn:aws:s3:::${var.notebook_data_bucket_name}/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "notebook_data_bucket_read_access" {
+  name   = "${var.notebook_data_bucket_name}-read"
+  policy = data.aws_iam_policy_document.notebook_data_output_bucket_read_access.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+data "aws_iam_policy_document" "notebook_data_output_bucket_read_access" {
+  statement {
+    sid = "ListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${var.notebook_data_bucket_name}"
+    ]
+  }
+
+  statement {
+    sid = "ReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
       "arn:aws:s3:::${var.notebook_data_bucket_name}/*"
     ]
   }
