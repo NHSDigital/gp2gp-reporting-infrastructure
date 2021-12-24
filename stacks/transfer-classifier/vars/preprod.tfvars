@@ -2,4 +2,4 @@ transfer_classifier_repo_param_name="/registrations/preprod/data-pipeline/ecr/ur
 execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-execution-role-arn"
 spine_messages_input_bucket_param_name="/registrations/preprod/data-pipeline/spine-exporter/output-bucket-name"
 log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-name"
-transfer_classifier_notebook_data_name="prm-gp2gp-notebook-data-prod"
+notebook_data_bucket_name="prm-gp2gp-notebook-data-prod"

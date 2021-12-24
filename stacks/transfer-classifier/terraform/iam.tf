@@ -8,8 +8,7 @@ resource "aws_iam_role" "transfer_classifier" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     aws_iam_policy.transfer_classifier_transfers_input_bucket_read_access.arn,
-    aws_iam_policy.transfer_classifier_output_bucket_write_access.arn,
-
+    aws_iam_policy.transfer_classifier_output_buckets_write_access.arn,
   ]
 }
 
@@ -61,16 +60,16 @@ data "aws_iam_policy_document" "transfer_classifier_transfers_input_bucket_read_
   }
 }
 
-resource "aws_iam_policy" "transfer_classifier_output_bucket_write_access" {
-  name   = "${aws_s3_bucket.transfer_classifier.bucket}-write"
-  policy = data.aws_iam_policy_document.transfer_classifier_output_bucket_write_access.json
+resource "aws_iam_policy" "transfer_classifier_output_buckets_write_access" {
+  name   = "transfer-classifier-output-buckets-${var.environment}-write"
+  policy = data.aws_iam_policy_document.transfer_classifier_output_buckets_write_access.json
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-data "aws_iam_policy_document" "transfer_classifier_output_bucket_write_access" {
+data "aws_iam_policy_document" "transfer_classifier_output_buckets_write_access" {
   statement {
     sid = "WriteObjects"
 
@@ -80,7 +79,7 @@ data "aws_iam_policy_document" "transfer_classifier_output_bucket_write_access" 
 
     resources = [
       "arn:aws:s3:::${aws_s3_bucket.transfer_classifier.bucket}/*",
-      "arn:aws:s3:::${var.transfer_classifier_notebook_data_name}/*"
+      "arn:aws:s3:::${var.notebook_data_bucket_name}/*"
     ]
   }
 }
