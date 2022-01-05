@@ -67,15 +67,6 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
   rule      = aws_cloudwatch_event_rule.ecs_event_rule.name
   role_arn  = aws_iam_role.ecs_events.arn
 
-  input_transformer {
-    input_paths = {
-      "EVENT_BRIDGE_START_DATETIME" : "$.time"
-    }
-    input_template = replace(replace(jsonencode({
-      "EVENT_BRIDGE_START_DATETIME" : "<EVENT_BRIDGE_START_DATETIME>"
-    }), "\\u003e", ">"), "\\u003c", "<")
-  }
-
   ecs_target {
     launch_type = "FARGATE"
     network_configuration {
