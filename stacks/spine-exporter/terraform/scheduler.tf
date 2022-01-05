@@ -72,7 +72,7 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
       "EVENT_BRIDGE_START_DATETIME" : "$.time"
     }
     input_template = replace(replace(jsonencode({
-      "time" : "<time>"
+      "EVENT_BRIDGE_START_DATETIME" : "<EVENT_BRIDGE_START_DATETIME>"
     }), "\\u003e", ">"), "\\u003c", "<")
   }
 
