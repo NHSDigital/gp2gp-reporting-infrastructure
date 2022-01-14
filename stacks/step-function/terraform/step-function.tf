@@ -36,6 +36,10 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                   {
                     "Name" : "DATE_ANCHOR",
                     "Value.$" : "$.time"
+                  },
+                  {
+                    "Name" : "CONVERSATION_CUTOFF_DAYS",
+                    "Value.$" : "$.conversation_cutoff_days"
                   }
                 ],
               }
