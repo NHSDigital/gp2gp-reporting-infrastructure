@@ -186,8 +186,12 @@ resource "aws_sfn_state_machine" "transfer_classifer" {
                 "Name" : "transfer-classifier",
                 "Environment" : [
                   {
-                    "Name" : "DATE_ANCHOR",
-                    "Value.$" : "$.DATE_ANCHOR"
+                    "Name" : "START_DATETIME",
+                    "Value.$" : "$.START_DATETIME"
+                  },
+                  {
+                    "Name" : "END_DATETIME",
+                    "Value.$" : "$.END_DATETIME"
                   },
                   {
                     "Name" : "INPUT_SPINE_DATA_BUCKET",
