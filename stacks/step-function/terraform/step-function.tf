@@ -38,8 +38,7 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                     "Value.$" : "$.time"
                   },
                   {
-                    "Name" : "CONVERSATION_CUTOFF_DAYS",
-                    "StaticValue" : "14"
+                    "CONVERSATION_CUTOFF_DAYS" : "14"
                   }
                 ],
               }
