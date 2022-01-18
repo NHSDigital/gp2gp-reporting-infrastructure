@@ -22,11 +22,20 @@ resource "aws_cloudwatch_event_rule" "run_once_a_month_cron_expression" {
 }
 
 resource "aws_cloudwatch_event_target" "transfer_classifier_one_day_cutoff_event_target" {
-  target_id = "${var.environment}-transfer-classifier-step-function"
+  target_id = "${var.environment}-transfer-classifier-1-day-cutoff-step-function"
   rule      = aws_cloudwatch_event_rule.transfer_classifier_event_rule.name
   arn       = aws_sfn_state_machine.transfer_classifier.arn
   role_arn  = aws_iam_role.transfer_classifier_trigger.arn
-  input     = jsonencode({ "CONVERSATION_CUTOFF_DAYS" : 1, "OUTPUT_TRANSFER_DATA_BUCKET" : var.transfer_data_bucket_name })
+  input     = jsonencode({ "CONVERSATION_CUTOFF_DAYS" : "1", "OUTPUT_TRANSFER_DATA_BUCKET" : var.transfer_data_bucket_name })
+}
+
+
+resource "aws_cloudwatch_event_target" "transfer_classifier_14_day_cutoff_event_target" {
+  target_id = "${var.environment}-transfer-classifier-14-day-cutoff-step-function"
+  rule      = aws_cloudwatch_event_rule.transfer_classifier_event_rule.name
+  arn       = aws_sfn_state_machine.transfer_classifier.arn
+  role_arn  = aws_iam_role.transfer_classifier_trigger.arn
+  input     = jsonencode({ "CONVERSATION_CUTOFF_DAYS" : "14", "OUTPUT_TRANSFER_DATA_BUCKET" : var.transfer_data_bucket_name })
 }
 
 
