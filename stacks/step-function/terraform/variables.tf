@@ -74,3 +74,8 @@ variable "reports_generator_task_definition_arn_param_name" {
   type        = string
   description = "SSM parameter containing reports generator Task Definition ARN"
 }
+
+variable "transfer_data_bucket_name" {
+  type        = string
+  description = "Location of the bucket name for transfer data (that the transfer classifier outputs to)"
+}

@@ -135,7 +135,33 @@ resource "aws_iam_role" "data_pipeline_trigger" {
   name                = "${var.environment}-data-pipeline-trigger"
   description         = "Role used by EventBridge to trigger step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.data_pipeline_trigger.arn, ]
+  managed_policy_arns = [aws_iam_policy.data_pipeline_trigger.arn]
+}
+
+resource "aws_iam_policy" "transfer_classifier_trigger" {
+  name   = "${var.environment}-transfer-classifier-trigger"
+  policy = data.aws_iam_policy_document.transfer_classifier_trigger.json
+}
+
+
+data "aws_iam_policy_document" "transfer_classifier_trigger" {
+  statement {
+    sid = "TriggerStepFunction"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      aws_sfn_state_machine.transfer_classifier.arn
+    ]
+  }
+}
+
+
+resource "aws_iam_role" "transfer_classifier_trigger" {
+  name                = "${var.environment}-transfer-classifier-trigger"
+  description         = "Role used by EventBridge to trigger transfer classifier step function"
+  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  managed_policy_arns = [aws_iam_policy.transfer_classifier_trigger.arn]
 }
 
 data "aws_iam_policy_document" "assume_event" {

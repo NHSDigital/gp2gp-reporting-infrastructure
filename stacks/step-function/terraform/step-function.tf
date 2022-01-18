@@ -154,8 +154,8 @@ resource "aws_sfn_state_machine" "data_pipeline" {
   })
 }
 
-resource "aws_sfn_state_machine" "transfer_classifer" {
-  name     = "transfer-classifer"
+resource "aws_sfn_state_machine" "transfer_classifier" {
+  name     = "transfer-classifier"
   role_arn = aws_iam_role.data_pipeline_step_function.arn
   tags = merge(
     local.common_tags,
@@ -166,24 +166,24 @@ resource "aws_sfn_state_machine" "transfer_classifer" {
   definition = jsonencode({
     "StartAt" : "Has Start and End Datetime",
     "States" : {
-      "Has Start and End Datetime": {
-        "Type": "Choice",
-        "Choices": [
+      "Has Start and End Datetime" : {
+        "Type" : "Choice",
+        "Choices" : [
           {
-            "And": [
+            "And" : [
               {
-                "Variable": "$.START_DATETIME",
-                "IsPresent": true
+                "Variable" : "$.START_DATETIME",
+                "IsPresent" : true
               },
               {
-                "Variable": "$.END_DATETIME",
-                "IsPresent": true
+                "Variable" : "$.END_DATETIME",
+                "IsPresent" : true
               }
             ],
-            "Next": "TransferClassifier (with start/end datetime)"
+            "Next" : "TransferClassifier (with start/end datetime)"
           }
         ],
-        "Default": "TransferClassifier (without start/end datetime)"
+        "Default" : "TransferClassifier (without start/end datetime)"
       },
       "TransferClassifier (with start/end datetime)" : {
         "Type" : "Task",
@@ -215,10 +215,6 @@ resource "aws_sfn_state_machine" "transfer_classifer" {
                   {
                     "Name" : "END_DATETIME",
                     "Value.$" : "$.END_DATETIME"
-                  },
-                  {
-                    "Name" : "INPUT_SPINE_DATA_BUCKET",
-                    "Value.$" : "$.INPUT_SPINE_DATA_BUCKET"
                   },
                   {
                     "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
@@ -258,10 +254,6 @@ resource "aws_sfn_state_machine" "transfer_classifer" {
               {
                 "Name" : "transfer-classifier",
                 "Environment" : [
-                  {
-                    "Name" : "INPUT_SPINE_DATA_BUCKET",
-                    "Value.$" : "$.INPUT_SPINE_DATA_BUCKET"
-                  },
                   {
                     "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
                     "Value.$" : "$.OUTPUT_TRANSFER_DATA_BUCKET"
