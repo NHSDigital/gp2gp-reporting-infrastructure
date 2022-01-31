@@ -74,6 +74,10 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                   {
                     "Name" : "NUMBER_OF_MONTHS",
                     "Value" : "1"
+                  },
+                  {
+                    "Name": "CONVERSATION_CUTOFF_DAYS",
+                    "Value": "14"
                   }
                 ],
               }
