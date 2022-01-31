@@ -72,8 +72,8 @@ resource "aws_sfn_state_machine" "data_pipeline" {
                 "Name" : "reports-generator",
                 "Environment" : [
                   {
-                    "Name" : "DATE_ANCHOR",
-                    "Value.$" : "$.time"
+                    "Name" : "NUMBER_OF_MONTHS",
+                    "Value" : "1"
                   }
                 ],
               }
