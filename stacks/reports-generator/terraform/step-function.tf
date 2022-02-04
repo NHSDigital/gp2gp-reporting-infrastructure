@@ -27,17 +27,13 @@ resource "aws_sfn_state_machine" "reports_generator" {
             "Next" : "Custom reporting window"
           },
           {
-            "Variable" : {
-              "Variable" : "$.NUMBER_OF_DAYS",
-              "IsPresent" : true
-            },
+            "Variable" : "$.NUMBER_OF_DAYS",
+            "IsPresent" : true
             "Next" : "Daily/weekly reporting window"
           },
           {
-            "Variable" : {
-              "Variable" : "$.NUMBER_OF_MONTHS",
-              "IsPresent" : true
-            },
+            "Variable" : "$.NUMBER_OF_MONTHS",
+            "IsPresent" : true
             "Next" : "Monthly reporting window"
           }
         ]
