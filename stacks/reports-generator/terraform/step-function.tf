@@ -8,7 +8,7 @@ resource "aws_sfn_state_machine" "reports_generator" {
     }
   )
   definition = jsonencode({
-    "StartAt" : "GenerateReport",
+    "StartAt" : "Determining reporting window",
     "States" : {
       "Determining reporting window" : {
         "Type" : "Choice",
