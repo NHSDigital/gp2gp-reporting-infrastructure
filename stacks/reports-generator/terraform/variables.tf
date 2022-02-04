@@ -49,3 +49,23 @@ variable "notebook_data_bucket_name" {
   type        = string
   description = "Location of the bucket name for notebook data (that the reports generator can output to)"
 }
+
+variable "data_pipeline_ecs_cluster_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline ECS Cluster ARN"
+}
+
+variable "data_pipeline_private_subnet_id_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline Private Subnet ID"
+}
+
+variable "data_pipeline_outbound_only_security_group_id_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline outbound only Security Group ID"
+}
+
+variable "reports_generator_task_definition_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing reports generator Task Definition ARN"
+}
