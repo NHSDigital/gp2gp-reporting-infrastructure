@@ -169,3 +169,42 @@ data "aws_iam_policy_document" "step_function_assume" {
 }
 
 data "aws_caller_identity" "current" {}
+
+# Event trigger
+data "aws_iam_policy_document" "reports_generator_trigger" {
+  statement {
+    sid = "TriggerStepFunction"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      aws_sfn_state_machine.reports_generator.arn
+    ]
+  }
+}
+
+resource "aws_iam_policy" "reports_generator_trigger" {
+  name   = "${var.environment}-reports-generator-trigger"
+  policy = data.aws_iam_policy_document.reports_generator_trigger.json
+}
+
+resource "aws_iam_role" "reports_generator_trigger" {
+  name                = "${var.environment}-reports-generator-trigger"
+  description         = "Role used by EventBridge to trigger step function"
+  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  managed_policy_arns = [aws_iam_policy.reports_generator_trigger.arn]
+}
+
+data "aws_iam_policy_document" "assume_event" {
+  statement {
+    actions = [
+      "sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com"
+      ]
+    }
+  }
+}
