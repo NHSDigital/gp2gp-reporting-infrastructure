@@ -1,15 +1,8 @@
-resource "aws_cloudwatch_event_target" "reports_generator" {
-  target_id = "${var.environment}-reports-generator"
-  rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.id
-  arn       = aws_sfn_state_machine.reports_generator.arn
-  role_arn  = aws_iam_role.reports_generator_trigger.arn
-}
-
 resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression" {
   name                = "${var.environment}-reports-generator-4am-every-monday-trigger"
   description         = "Cloudwatch Event Rule that triggers the Reports Generator Step Function at 4am every monday"
-  schedule_expression = "cron(0 4 ? * 1 *)"
-  is_enabled          = false
+  schedule_expression = "cron(0 4 ? * 2 *)"
+  is_enabled          = true
   tags = merge(
     local.common_tags,
     {
