@@ -19,7 +19,7 @@ resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression"
 }
 
 resource "aws_cloudwatch_event_target" "reports_generator_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
-  target_id = "${var.environment}-reports-generator-transfer-outcomes-per-supplier-pathway-report-step-function"
+  target_id = "${var.environment}-reports-generator-transfer-outcomes-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
   role_arn  = aws_iam_role.reports_generator_trigger.arn
@@ -30,7 +30,7 @@ resource "aws_cloudwatch_event_target" "reports_generator_transfer_outcomes_per_
 }
 
 resource "aws_cloudwatch_event_target" "reports_generator_transfer_level_technical_failures_report_event_trigger" {
-  target_id = "${var.environment}-reports-generator-transfer-level-technical-failures-report-step-function"
+  target_id = "${var.environment}-reports-generator-transfer-level-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
   role_arn  = aws_iam_role.reports_generator_trigger.arn
