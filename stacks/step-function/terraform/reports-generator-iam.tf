@@ -14,6 +14,10 @@ resource "aws_iam_policy" "report_generator_step_function" {
   policy = data.aws_iam_policy_document.report_generator_step_function.json
 }
 
+data "aws_ssm_parameter" "reports_generator_iam_role_arn" {
+  name = var.reports_generator_iam_role_arn_param_name
+}
+
 data "aws_iam_policy_document" "report_generator_step_function" {
   statement {
     sid = "GetEcrAuthToken"
@@ -65,7 +69,7 @@ data "aws_iam_policy_document" "report_generator_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
-      data.aws_ssm_parameter.reports_generator_task_definition_arn.value
+      data.aws_ssm_parameter.reports_generator_iam_role_arn.value
     ]
   }
 }
