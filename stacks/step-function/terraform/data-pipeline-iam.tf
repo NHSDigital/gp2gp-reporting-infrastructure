@@ -5,27 +5,10 @@ resource "aws_iam_role" "data_pipeline_step_function" {
   managed_policy_arns = [aws_iam_policy.data_pipeline_step_function.arn]
 }
 
-data "aws_iam_policy_document" "step_function_assume" {
-  statement {
-    actions = [
-      "sts:AssumeRole"
-    ]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "states.amazonaws.com"
-      ]
-    }
-  }
-}
-
 resource "aws_iam_policy" "data_pipeline_step_function" {
   name   = "${var.environment}-data-pipeline-step-function"
   policy = data.aws_iam_policy_document.data_pipeline_step_function.json
 }
-
-data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
@@ -48,8 +31,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
       data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value,
-      data.aws_ssm_parameter.reports_generator_task_definition_arn.value
+      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
 
@@ -62,8 +44,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
       data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value,
-      data.aws_ssm_parameter.reports_generator_task_definition_arn.value
+      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
 
@@ -88,8 +69,7 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
       data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.ods_downloader_iam_role_arn.value,
       data.aws_ssm_parameter.transfer_classifier_iam_role_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value,
-      data.aws_ssm_parameter.reports_generator_iam_role_arn.value
+      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value
     ]
   }
 }
@@ -108,10 +88,6 @@ data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
 
 data "aws_ssm_parameter" "transfer_classifier_iam_role_arn" {
   name = var.transfer_classifier_iam_role_arn_param_name
-}
-
-data "aws_ssm_parameter" "reports_generator_iam_role_arn" {
-  name = var.reports_generator_iam_role_arn_param_name
 }
 
 data "aws_iam_policy_document" "data_pipeline_trigger" {
@@ -162,18 +138,4 @@ resource "aws_iam_role" "transfer_classifier_trigger" {
   description         = "Role used by EventBridge to trigger transfer classifier step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
   managed_policy_arns = [aws_iam_policy.transfer_classifier_trigger.arn]
-}
-
-data "aws_iam_policy_document" "assume_event" {
-  statement {
-    actions = [
-    "sts:AssumeRole"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com"
-      ]
-    }
-  }
 }
