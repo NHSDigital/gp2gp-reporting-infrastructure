@@ -10,6 +10,11 @@ data "aws_ssm_parameter" "execution_role_arn" {
   name = var.execution_role_arn_param_name
 }
 
+data "aws_ssm_parameter" "transfers_input_bucket_name" {
+  name = var.transfers_input_bucket_param_name
+}
+
+
 data "aws_region" "current" {}
 
 resource "aws_ecs_task_definition" "reports_generator" {
