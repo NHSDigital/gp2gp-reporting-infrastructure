@@ -20,9 +20,9 @@ variable "transfer_classifier_repo_param_name" {
   description = "Docker repository of the transfer classifier"
 }
 
-variable "spine_messages_input_bucket_param_name" {
+variable "spine_messages_bucket_param_name" {
   type        = string
-  description = "SSM parameter containing raw transfer input bucket name"
+  description = "SSM parameter containing raw spine messages (output from Spine Exporter) bucket name"
 }
 
 variable "log_group_param_name" {

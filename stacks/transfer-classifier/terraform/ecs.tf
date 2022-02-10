@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" transfer_classifier {
       image     = "${data.aws_ssm_parameter.transfer_classifier_repository_url.value}:${var.transfer_classifier_image_tag}"
       essential = true
       environment = [
-        { "name" : "INPUT_SPINE_DATA_BUCKET", "value" : data.aws_ssm_parameter.spine_messages_input_bucket_name.value },
+        { "name" : "INPUT_SPINE_DATA_BUCKET", "value" : data.aws_ssm_parameter.spine_messages_bucket_name.value },
         { "name" : "OUTPUT_TRANSFER_DATA_BUCKET", "value" : aws_s3_bucket.transfer_classifier.bucket }
       ]
       logConfiguration = {
