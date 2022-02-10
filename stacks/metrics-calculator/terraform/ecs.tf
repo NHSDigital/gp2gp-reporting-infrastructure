@@ -12,7 +12,7 @@ data "aws_ssm_parameter" "execution_role_arn" {
 }
 
 data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
-  name = var.ods_metadata_input_bucket_param_name
+  name = var.ods_metadata_bucket_param_name
 }
 
 data "aws_region" "current" {}
@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
       image     = "${data.aws_ssm_parameter.metrics_calculator_repository_url.value}:${var.metrics_calculator_image_tag}"
       essential = true
       environment = [
-        { "name" : "INPUT_TRANSFER_DATA_BUCKET", "value" : data.aws_ssm_parameter.transfers_input_bucket_name.value },
+        { "name" : "INPUT_TRANSFER_DATA_BUCKET", "value" : data.aws_ssm_parameter.transfers_data_bucket_name.value },
         { "name" : "ORGANISATION_METADATA_BUCKET", "value" : data.aws_ssm_parameter.ods_metadata_input_bucket_name.value },
         { "name" : "OUTPUT_METRICS_BUCKET", "value" : aws_s3_bucket.metrics_calculator.bucket }
       ]

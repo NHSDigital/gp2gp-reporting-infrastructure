@@ -35,19 +35,19 @@ variable "log_group_param_name" {
   description = "Cloudwatch log group for data pipeline"
 }
 
-variable "transfers_input_bucket_param_name" {
+variable "transfers_data_bucket_param_name" {
   type        = string
-  description = "SSM parameter containing transfer input bucket name"
+  description = "SSM parameter containing transfer data bucket name"
 }
 
-variable "transfer_input_bucket_read_access_param_name" {
+variable "transfer_data_bucket_read_access_param_name" {
   type        = string
-  description = "SSM parameter containing transfer input bucket read access IAM policy ARN"
+  description = "SSM parameter containing transfer data bucket read access IAM policy ARN"
 }
 
-variable "ods_metadata_input_bucket_param_name" {
+variable "ods_metadata_bucket_param_name" {
   type        = string
-  description = "SSM parameter containing organisation metadata bucket name"
+  description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) bucket name"
 }
 
 variable "ods_metadata_bucket_read_access_arn" {
