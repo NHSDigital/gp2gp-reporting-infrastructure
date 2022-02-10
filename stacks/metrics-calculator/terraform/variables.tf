@@ -49,3 +49,8 @@ variable "ods_metadata_input_bucket_param_name" {
   type        = string
   description = "SSM parameter containing organisation metadata bucket name"
 }
+
+variable "ods_metadata_bucket_read_access_arn" {
+  type        = string
+  description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) read access IAM policy ARN"
+}

@@ -4,3 +4,4 @@ execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-executio
 transfers_input_bucket_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-name"
 ods_metadata_input_bucket_param_name="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-name"
 transfer_input_bucket_read_access_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-read-access-arn"
+ods_metadata_bucket_read_access_arn="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-read-access-arn"
