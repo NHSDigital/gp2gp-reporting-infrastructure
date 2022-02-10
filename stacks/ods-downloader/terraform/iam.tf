@@ -70,3 +70,35 @@ data "aws_iam_policy_document" "ods_output_bucket_write_access" {
     ]
   }
 }
+
+resource "aws_iam_policy" "ods_output_bucket_read_access" {
+  name        = "${aws_s3_bucket.ods_output.bucket}-read"
+  description = "ODS Downloader output S3 bucket write access needed for Metrics Calculator and Transfer Classifier"
+  policy      = data.aws_iam_policy_document.ods_output_bucket_read_access.json
+}
+
+data "aws_iam_policy_document" "ods_output_bucket_read_access" {
+  statement {
+    sid = "ListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.ods_output.bucket}/*"
+    ]
+  }
+
+  statement {
+    sid = "ReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.ods_output.bucket}/*"
+    ]
+  }
+}
