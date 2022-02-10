@@ -3,3 +3,4 @@ execution_role_arn_param_name="/registrations/dev/data-pipeline/ecs-execution-ro
 spine_messages_input_bucket_param_name="/registrations/dev/data-pipeline/spine-exporter/output-bucket-name"
 log_group_param_name="/registrations/dev/data-pipeline/cloudwatch-log-group-name"
 notebook_data_bucket_name="prm-gp2gp-notebook-data-dev"
+ods_metadata_bucket_read_access_arn="/registrations/dev/data-pipeline/ods-downloader/output-bucket-read-access-arn"

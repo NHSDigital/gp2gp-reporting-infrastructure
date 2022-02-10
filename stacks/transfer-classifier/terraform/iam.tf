@@ -2,12 +2,17 @@ data "aws_ssm_parameter" "spine_messages_input_bucket_name" {
   name = var.spine_messages_input_bucket_param_name
 }
 
+data "aws_ssm_parameter" "ods_metadata_bucket_read_access_arn" {
+  name = var.ods_metadata_bucket_read_access_arn
+}
+
 resource "aws_iam_role" "transfer_classifier" {
   name               = "${var.environment}-registrations-transfer-classifier"
   description        = "Role for transfer classifier ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     aws_iam_policy.transfer_classifier_transfers_input_bucket_read_access.arn,
+    data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value,
     aws_iam_policy.transfer_classifier_output_buckets_write_access.arn,
   ]
 }
