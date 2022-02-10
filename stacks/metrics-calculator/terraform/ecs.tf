@@ -11,6 +11,10 @@ data "aws_ssm_parameter" "execution_role_arn" {
   name = var.execution_role_arn_param_name
 }
 
+data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
+  name = var.ods_metadata_input_bucket_param_name
+}
+
 data "aws_region" "current" {}
 
 resource "aws_ecs_task_definition" "metrics_calculator" {

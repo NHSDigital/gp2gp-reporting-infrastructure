@@ -2,10 +2,6 @@ data "aws_ssm_parameter" "transfers_input_bucket_name" {
   name = var.transfers_input_bucket_param_name
 }
 
-data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
-  name = var.ods_metadata_input_bucket_param_name
-}
-
 data "aws_ssm_parameter" "transfers_input_bucket_read_access_arn" {
   name = var.transfer_input_bucket_read_access_param_name
 }
@@ -17,7 +13,6 @@ resource "aws_iam_role" "metrics_calculator" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     data.aws_ssm_parameter.transfers_input_bucket_read_access_arn.value,
-    aws_iam_policy.metrics_calculator_ods_metadata_input_bucket_read_access.arn,
     aws_iam_policy.metrics_calculator_output_bucket_write_access.arn
   ]
 }
@@ -31,42 +26,6 @@ data "aws_iam_policy_document" "ecs_assume" {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
-  }
-}
-
-
-resource "aws_iam_policy" "metrics_calculator_ods_metadata_input_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}-read"
-  policy = data.aws_iam_policy_document.metrics_calculator_ods_metadata_input_bucket_read_access.json
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-data "aws_iam_policy_document" "metrics_calculator_ods_metadata_input_bucket_read_access" {
-  statement {
-    sid = "ListBucket"
-
-    actions = [
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}"
-    ]
-  }
-
-  statement {
-    sid = "ReadObjects"
-
-    actions = [
-      "s3:GetObject",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${data.aws_ssm_parameter.ods_metadata_input_bucket_name.value}/*"
-    ]
   }
 }
 
