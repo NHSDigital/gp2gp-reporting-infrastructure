@@ -86,7 +86,7 @@ data "aws_iam_policy_document" "ods_output_bucket_read_access" {
     ]
 
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.ods_output.bucket}/*"
+      "arn:aws:s3:::${aws_s3_bucket.ods_output.bucket}"
     ]
   }
 
