@@ -10,6 +10,10 @@ data "aws_ssm_parameter" "execution_role_arn" {
   name = var.execution_role_arn_param_name
 }
 
+data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
+  name = var.ods_metadata_bucket_param_name
+}
+
 data "aws_region" "current" {}
 
 resource "aws_ecs_task_definition" transfer_classifier {
@@ -22,7 +26,8 @@ resource "aws_ecs_task_definition" transfer_classifier {
       essential = true
       environment = [
         { "name" : "INPUT_SPINE_DATA_BUCKET", "value" : data.aws_ssm_parameter.spine_messages_bucket_name.value },
-        { "name" : "OUTPUT_TRANSFER_DATA_BUCKET", "value" : aws_s3_bucket.transfer_classifier.bucket }
+        { "name" : "OUTPUT_TRANSFER_DATA_BUCKET", "value" : aws_s3_bucket.transfer_classifier.bucket },
+        { "name" : "INPUT_ODS_METADATA_BUCKET", "value" : data.aws_ssm_parameter.ods_metadata_input_bucket_name.value }
       ]
       logConfiguration = {
         logDriver = "awslogs"

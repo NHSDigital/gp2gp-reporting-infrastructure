@@ -45,6 +45,11 @@ variable "notebook_data_bucket_name" {
   description = "Location of the bucket name for notebook data (that the transfer classifier can output to)"
 }
 
+variable "ods_metadata_bucket_param_name" {
+  type        = string
+  description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) bucket name"
+}
+
 variable "ods_metadata_bucket_read_access_arn" {
   type        = string
   description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) read access IAM policy ARN"
