@@ -22,6 +22,10 @@ resource "aws_s3_bucket" "ods_output" {
     prevent_destroy = true
   }
 
+  versioning {
+    enabled = true
+  }
+
   tags = merge(
     local.common_tags,
     {
