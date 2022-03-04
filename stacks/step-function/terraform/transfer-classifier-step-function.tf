@@ -2,10 +2,10 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
   name     = "transfer-classifier"
   role_arn = aws_iam_role.data_pipeline_step_function.arn
   tags = merge(
-  local.common_tags,
-  {
-    Name = "Transfer Classifier Step Function"
-  }
+    local.common_tags,
+    {
+      Name = "Transfer Classifier Step Function"
+    }
   )
   definition = jsonencode({
     "StartAt" : "Has Start and End Datetime",
@@ -44,7 +44,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
                 data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
               ],
               "SecurityGroups" : [
-                data.aws_ssm_parameter.outbound_only_security_group_id.value],
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
           "Overrides" : {
@@ -90,7 +90,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
                 data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
               ],
               "SecurityGroups" : [
-                data.aws_ssm_parameter.outbound_only_security_group_id.value],
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
           "Overrides" : {

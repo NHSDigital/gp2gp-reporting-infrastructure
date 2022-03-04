@@ -11,24 +11,24 @@ resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression"
   )
 }
 
-resource "aws_cloudwatch_event_target" "reports_generator_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
-  target_id = "${var.environment}-reports-generator-transfer-outcomes-trigger"
+resource "aws_cloudwatch_event_target" "weekly_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
+  target_id = "${var.environment}-weekly-reports-generator-transfer-outcomes-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
   role_arn  = aws_iam_role.reports_generator_trigger.arn
-  input     = jsonencode({
+  input = jsonencode({
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "2",
-    "NUMBER_OF_DAYS": "7" })
+    "NUMBER_OF_DAYS" : "7" })
 }
 
-resource "aws_cloudwatch_event_target" "reports_generator_transfer_level_technical_failures_report_event_trigger" {
-  target_id = "${var.environment}-reports-generator-transfer-level-trigger"
+resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures_report_event_trigger" {
+  target_id = "${var.environment}-weekly-reports-generator-transfer-level-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
   role_arn  = aws_iam_role.reports_generator_trigger.arn
-  input     = jsonencode({
+  input = jsonencode({
     "REPORT_NAME" : "TRANSFER_LEVEL_TECHNICAL_FAILURES",
     "CONVERSATION_CUTOFF_DAYS" : "2",
-    "NUMBER_OF_DAYS": "7" })
+    "NUMBER_OF_DAYS" : "7" })
 }

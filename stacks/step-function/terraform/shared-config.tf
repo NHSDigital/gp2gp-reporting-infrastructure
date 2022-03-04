@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "step_function_assume" {
 data "aws_iam_policy_document" "assume_event" {
   statement {
     actions = [
-      "sts:AssumeRole"]
+    "sts:AssumeRole"]
 
     principals {
       type = "Service"
