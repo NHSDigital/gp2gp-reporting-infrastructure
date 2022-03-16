@@ -39,8 +39,8 @@ resource "aws_ecs_task_definition" transfer_classifier {
       }
     },
   ])
-  cpu                      = 2048
-  memory                   = 12288
+  cpu                      = 4096
+  memory                   = 65536
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags = merge(
