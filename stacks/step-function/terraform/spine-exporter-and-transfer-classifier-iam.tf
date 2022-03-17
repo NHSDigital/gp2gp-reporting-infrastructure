@@ -15,6 +15,10 @@ data "aws_ssm_parameter" "spine_exporter_task_definition_arn" {
   name = var.spine_exporter_task_definition_arn_param_name
 }
 
+data "aws_ssm_parameter" "spine_exporter_iam_role_arn" {
+  name = var.spine_exporter_iam_role_arn_param_name
+}
+
 resource "aws_iam_role" "spine_exporter_and_transfer_classifier_step_function" {
   name                = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
   description         = "StepFunction role for spine exporter and transfer classifier"
@@ -23,12 +27,8 @@ resource "aws_iam_role" "spine_exporter_and_transfer_classifier_step_function" {
 }
 
 resource "aws_iam_policy" "spine_exporter_and_transfer_classifier_step_function" {
-  name   = "${var.environment}-reports-generator-and-transfer-classifier-step-function"
+  name   = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
   policy = data.aws_iam_policy_document.spine_exporter_and_transfer_classifier_step_function.json
-}
-
-data "aws_ssm_parameter" "spine_exporter_iam_role_arn" {
-  name = var.spine_exporter_iam_role_arn_param_name
 }
 
 data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_function" {
@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_trigger" 
 }
 
 resource "aws_iam_policy" "spine_exporter_and_transfer_classifier_trigger" {
-  name   = "${var.environment}-reports-generator-and-transfer-classifier-trigger"
+  name   = "${var.environment}-spine-exporter-and-transfer-classifier-trigger"
   policy = data.aws_iam_policy_document.spine_exporter_and_transfer_classifier_trigger.json
 }
 
