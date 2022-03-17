@@ -50,18 +50,3 @@ variable "splunk_api_token_param_name" {
   type        = string
   description = "Splunk API token param name"
 }
-
-variable "data_pipeline_ecs_cluster_arn_param_name" {
-  type        = string
-  description = "SSM parameter containing Data Pipeline ECS Cluster ARN"
-}
-
-variable "data_pipeline_private_subnet_id_param_name" {
-  type        = string
-  description = "SSM parameter containing Data Pipeline Private Subnet ID"
-}
-
-variable "data_pipeline_outbound_only_security_group_id_param_name" {
-  type        = string
-  description = "SSM parameter containing Data Pipeline outbound only Security Group ID"
-}
