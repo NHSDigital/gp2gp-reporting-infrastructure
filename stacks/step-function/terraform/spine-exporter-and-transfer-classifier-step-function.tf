@@ -55,10 +55,6 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
                 "Name" : "transfer-classifier",
                 "Environment" : [
                   {
-                    "Name" : "OUTPUT_TRANSFER_DATA_BUCKET",
-                    "Value.$" : "$.OUTPUT_TRANSFER_DATA_BUCKET"
-                  },
-                  {
                     "Name" : "CONVERSATION_CUTOFF_DAYS",
                     "Value.$" : "$.CONVERSATION_CUTOFF_DAYS"
                   }
