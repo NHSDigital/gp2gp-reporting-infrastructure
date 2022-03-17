@@ -1,5 +1,5 @@
 resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
-  name     = "spine-exporter-and-transfer-classifier"
+  name     = "automated-daily-spine-exporter-and-transfer-classifier"
   role_arn = aws_iam_role.spine_exporter_and_transfer_classifier_step_function.arn
   tags = merge(
     local.common_tags,
