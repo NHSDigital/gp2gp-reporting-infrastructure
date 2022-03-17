@@ -19,7 +19,7 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_outcomes_per_supplier_pa
   input = jsonencode({
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "2",
-    "NUMBER_OF_DAYS" : "7" })
+  "NUMBER_OF_DAYS" : "7" })
 }
 
 resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures_report_event_trigger" {
@@ -30,5 +30,5 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures
   input = jsonencode({
     "REPORT_NAME" : "TRANSFER_LEVEL_TECHNICAL_FAILURES",
     "CONVERSATION_CUTOFF_DAYS" : "2",
-    "NUMBER_OF_DAYS" : "7" })
+  "NUMBER_OF_DAYS" : "7" })
 }

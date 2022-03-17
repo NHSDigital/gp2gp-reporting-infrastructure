@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_func
       "iam:PassRole"
     ]
     resources = [
-      data.aws_ssm_parameter.execution_role_arn.value,  # TODO: check if we can delete
+      data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.spine_exporter_iam_role_arn.value,
       data.aws_ssm_parameter.transfer_classifier_iam_role_arn.value
     ]

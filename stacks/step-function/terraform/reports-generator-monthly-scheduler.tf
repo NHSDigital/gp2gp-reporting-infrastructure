@@ -19,7 +19,7 @@ resource "aws_cloudwatch_event_target" "monthly_transfer_outcomes_per_supplier_p
   input = jsonencode({
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "14",
-    "NUMBER_OF_MONTHS" : "1" })
+  "NUMBER_OF_MONTHS" : "1" })
 }
 
 
@@ -31,5 +31,5 @@ resource "aws_cloudwatch_event_target" "monthly_ccg_level_integration_times_repo
   input = jsonencode({
     "REPORT_NAME" : "CCG_LEVEL_INTEGRATION_TIMES",
     "CONVERSATION_CUTOFF_DAYS" : "14",
-    "NUMBER_OF_MONTHS" : "1" })
+  "NUMBER_OF_MONTHS" : "1" })
 }

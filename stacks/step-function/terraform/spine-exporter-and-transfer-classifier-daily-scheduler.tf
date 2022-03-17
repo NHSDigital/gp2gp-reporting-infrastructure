@@ -1,6 +1,6 @@
-resource "aws_cloudwatch_event_rule" "ecs_event_rule" {
-  name                = "run-spine-exporter-2am-every-morning"
-  description         = "Cloudwatch Event Rule that runs Spine Exporter ECS task 2am every morning"
+resource "aws_cloudwatch_event_rule" "daily_cron_expression" {
+  name                = "${var.environment}-run-daily-spine-exporter-and-transfer-classifier-2am"
+  description         = "Cloudwatch Event Rule that triggers the Daily Spine Export and Transfer Classifier Step function 2am every morning"
   schedule_expression = "cron(0 2 * * ? *)"
 
   tags = merge(
@@ -9,4 +9,11 @@ resource "aws_cloudwatch_event_rule" "ecs_event_rule" {
       Name = "Cloudwatch Event Rule"
     }
   )
+}
+
+resource "aws_cloudwatch_event_target" "event_trigger" {
+  target_id = "${var.environment}-daily-spine-exporter-and-transfer-classifier-trigger"
+  rule      = aws_cloudwatch_event_rule.daily_cron_expression.name
+  arn       = aws_sfn_state_machine.spine_exporter_and_transfer_classifier.arn
+  role_arn  = aws_iam_role.spine_exporter_and_transfer_classifier_trigger.arn
 }
