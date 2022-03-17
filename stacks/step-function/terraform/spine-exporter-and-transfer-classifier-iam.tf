@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_trigger" 
 }
 
 resource "aws_iam_policy" "spine_exporter_and_transfer_classifier_trigger" {
-  name   = "${var.environment}-reports-generator-trigger"
+  name   = "${var.environment}-reports-generator-and-transfer-classifier-trigger"
   policy = data.aws_iam_policy_document.spine_exporter_and_transfer_classifier_trigger.json
 }
 
