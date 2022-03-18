@@ -10,15 +10,18 @@ resource "aws_iam_role" "spine_exporter_and_transfer_classifier_step_function" {
   name                = "${var.environment}-daily-spine-exporter-and-transfer-classifier-step-function"
   description         = "StepFunction role for spine exporter and transfer classifier"
   assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [aws_iam_policy.spine_exporter_and_transfer_classifier_step_function.arn]
+  managed_policy_arns = [
+    aws_iam_policy.spine_exporter_step_function.arn,
+    aws_iam_policy.transfer_classifier_step_function.arn
+  ]
 }
 
-resource "aws_iam_policy" "spine_exporter_and_transfer_classifier_step_function" {
-  name   = "${var.environment}-daily-spine-exporter-and-transfer-classifier-step-function"
-  policy = data.aws_iam_policy_document.spine_exporter_and_transfer_classifier_step_function.json
+resource "aws_iam_policy" "spine_exporter_step_function" {
+  name   = "${var.environment}-daily-spine-exporter-step-function"
+  policy = data.aws_iam_policy_document.spine_exporter_step_function.json
 }
 
-data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_function" {
+data "aws_iam_policy_document" "spine_exporter_step_function" {
   statement {
     sid = "GetEcrAuthToken"
     actions = [
@@ -36,7 +39,6 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_func
     ]
     resources = [
       data.aws_ssm_parameter.spine_exporter_task_definition_arn.value,
-      data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value
     ]
   }
 
@@ -48,7 +50,6 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_func
     ]
     resources = [
       data.aws_ssm_parameter.spine_exporter_task_definition_arn.value,
-      data.aws_ssm_parameter.transfer_classifier_task_definition_arn.value
     ]
   }
 
@@ -72,7 +73,6 @@ data "aws_iam_policy_document" "spine_exporter_and_transfer_classifier_step_func
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.spine_exporter_iam_role_arn.value,
-      data.aws_ssm_parameter.transfer_classifier_iam_role_arn.value
     ]
   }
 }
@@ -101,3 +101,4 @@ resource "aws_iam_role" "spine_exporter_and_transfer_classifier_trigger" {
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
   managed_policy_arns = [aws_iam_policy.spine_exporter_and_transfer_classifier_trigger.arn]
 }
+# /Event trigger

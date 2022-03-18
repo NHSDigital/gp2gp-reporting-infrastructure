@@ -98,3 +98,4 @@ resource "aws_iam_role" "reports_generator_trigger" {
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
   managed_policy_arns = [aws_iam_policy.reports_generator_trigger.arn]
 }
+# /Event trigger
