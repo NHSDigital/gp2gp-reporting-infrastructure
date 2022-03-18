@@ -1,6 +1,6 @@
 resource "aws_sfn_state_machine" "transfer_classifier" {
   name     = "transfer-classifier"
-  role_arn = aws_iam_role.data_pipeline_step_function.arn
+  role_arn = aws_iam_role.transfer_classifier_step_function.arn
   tags = merge(
     local.common_tags,
     {
@@ -115,8 +115,4 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
       }
     }
   })
-}
-
-data "aws_ssm_parameter" "transfer_classifier_task_definition_arn" {
-  name = var.transfer_classifier_task_definition_arn_param_name
 }
