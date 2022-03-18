@@ -1,16 +1,3 @@
-data "aws_iam_policy_document" "ecs_events_assume" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com"
-      ]
-    }
-  }
-}
-
 data "aws_ssm_parameter" "spine_exporter_task_definition_arn" {
   name = var.spine_exporter_task_definition_arn_param_name
 }

@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "report_generator_step_function" {
       "iam:PassRole"
     ]
     resources = [
-      data.aws_ssm_parameter.execution_role_arn.value, # TODO: check if we can delete
+      data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.reports_generator_iam_role_arn.value
     ]
   }

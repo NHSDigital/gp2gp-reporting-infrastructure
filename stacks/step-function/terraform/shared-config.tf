@@ -1,5 +1,7 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_region" "current" {}
+
 data "aws_iam_policy_document" "step_function_assume" {
   statement {
     actions = [
@@ -39,4 +41,8 @@ data "aws_ssm_parameter" "data_pipeline_private_subnet_id" {
 
 data "aws_ssm_parameter" "outbound_only_security_group_id" {
   name = var.data_pipeline_outbound_only_security_group_id_param_name
+}
+
+data "aws_ssm_parameter" "execution_role_arn" {
+  name = var.data_pipeline_execution_role_arn_param_name
 }

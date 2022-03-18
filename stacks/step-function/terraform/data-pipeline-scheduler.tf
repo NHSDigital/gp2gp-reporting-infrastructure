@@ -45,7 +45,6 @@ resource "aws_cloudwatch_event_target" "transfer_classifier_14_day_cutoff_event_
   input     = jsonencode({ "CONVERSATION_CUTOFF_DAYS" : "14", "OUTPUT_TRANSFER_DATA_BUCKET" : var.transfer_data_bucket_name })
 }
 
-
 resource "aws_cloudwatch_event_rule" "transfer_classifier_event_rule" {
   name                = "trigger-transfer-classifier-3am-every-morning"
   description         = "Cloudwatch Event Rule that triggers the Transfer Classifier Step Function at 3am every morning"
