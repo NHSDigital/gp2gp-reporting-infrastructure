@@ -75,6 +75,18 @@ data "aws_iam_policy_document" "report_generator_step_function" {
 }
 
 # Event trigger
+resource "aws_iam_role" "reports_generator_trigger" {
+  name                = "${var.environment}-reports-generator-trigger"
+  description         = "Role used by EventBridge to trigger step function"
+  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  managed_policy_arns = [aws_iam_policy.reports_generator_trigger.arn]
+}
+
+resource "aws_iam_policy" "reports_generator_trigger" {
+  name   = "${var.environment}-reports-generator-trigger"
+  policy = data.aws_iam_policy_document.reports_generator_trigger.json
+}
+
 data "aws_iam_policy_document" "reports_generator_trigger" {
   statement {
     sid = "TriggerStepFunction"
@@ -86,16 +98,3 @@ data "aws_iam_policy_document" "reports_generator_trigger" {
     ]
   }
 }
-
-resource "aws_iam_policy" "reports_generator_trigger" {
-  name   = "${var.environment}-reports-generator-trigger"
-  policy = data.aws_iam_policy_document.reports_generator_trigger.json
-}
-
-resource "aws_iam_role" "reports_generator_trigger" {
-  name                = "${var.environment}-reports-generator-trigger"
-  description         = "Role used by EventBridge to trigger step function"
-  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.reports_generator_trigger.arn]
-}
-# /Event trigger
