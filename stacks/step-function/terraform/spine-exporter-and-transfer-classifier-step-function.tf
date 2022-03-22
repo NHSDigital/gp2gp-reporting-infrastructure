@@ -75,7 +75,7 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
                   ]
                 }
               },
-              "End": true
+              "End" : true
             }
           }
           },
@@ -114,7 +114,7 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
                     ]
                   }
                 },
-                "End": true
+                "End" : true
               }
             }
           },
@@ -153,7 +153,7 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
                     ]
                   }
                 },
-                "End": true
+                "End" : true
               }
             }
         }]

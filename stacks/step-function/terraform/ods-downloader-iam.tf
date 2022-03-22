@@ -1,16 +1,16 @@
-resource "aws_iam_role" "data_pipeline_step_function" {
-  name                = "${var.environment}-data-pipeline-step-function"
-  description         = "StepFunction role for data pipeline"
+resource "aws_iam_role" "ods_downloader_step_function" {
+  name                = "${var.environment}-ods-downloader-step-function"
+  description         = "StepFunction role for ODS Downloader"
   assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [aws_iam_policy.data_pipeline_step_function.arn]
+  managed_policy_arns = [aws_iam_policy.ods_downloader_step_function.arn]
 }
 
-resource "aws_iam_policy" "data_pipeline_step_function" {
-  name   = "${var.environment}-data-pipeline-step-function"
-  policy = data.aws_iam_policy_document.data_pipeline_step_function.json
+resource "aws_iam_policy" "ods_downloader_step_function" {
+  name   = "${var.environment}-ods-downloader-step-function"
+  policy = data.aws_iam_policy_document.ods_downloader_step_function.json
 }
 
-data "aws_iam_policy_document" "data_pipeline_step_function" {
+data "aws_iam_policy_document" "ods_downloader_step_function" {
   statement {
     sid = "GetEcrAuthToken"
     actions = [
@@ -28,7 +28,6 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
 
@@ -40,7 +39,6 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.ods_downloader_task_definition_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
     ]
   }
 
@@ -64,15 +62,10 @@ data "aws_iam_policy_document" "data_pipeline_step_function" {
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.ods_downloader_iam_role_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value
     ]
   }
 }
 
 data "aws_ssm_parameter" "ods_downloader_iam_role_arn" {
   name = var.ods_downloader_iam_role_arn_param_name
-}
-
-data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
-  name = var.metrics_calculator_iam_role_arn_param_name
 }
