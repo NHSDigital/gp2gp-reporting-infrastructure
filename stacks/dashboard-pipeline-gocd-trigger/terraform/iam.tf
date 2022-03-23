@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_policy" "cloudwatch_log_access" {
-  name   = "${var.environment}-dashboard-pipeline-gocd-trigger-get-ssm-access"
+  name   = "${var.environment}-dashboard-pipeline-gocd-trigger-cloudwatch-log-access"
   policy = data.aws_iam_policy_document.cloudwatch_log_access.json
 }
 
