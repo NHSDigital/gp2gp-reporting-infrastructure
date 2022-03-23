@@ -36,3 +36,13 @@ variable "gocd_trigger_api_token_ssm_param_name" {
   type        = string
   description = "Name of SSM parameter containing GoCD API token that will be used to call Dashboard GoCD pipeline URL"
 }
+
+variable "data_pipeline_private_subnet_id_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline Private Subnet ID"
+}
+
+variable "data_pipeline_outbound_only_security_group_id_param_name" {
+  type        = string
+  description = "SSM parameter containing Data Pipeline outbound only Security Group ID"
+}

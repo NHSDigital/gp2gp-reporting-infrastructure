@@ -1,7 +1,9 @@
-data "aws_caller_identity" "current" {}
+data "aws_ssm_parameter" "data_pipeline_private_subnet_id" {
+  name = var.data_pipeline_private_subnet_id_param_name
+}
 
-locals {
-  account_id = data.aws_caller_identity.current.account_id
+data "aws_ssm_parameter" "outbound_only_security_group_id" {
+  name = var.data_pipeline_outbound_only_security_group_id_param_name
 }
 
 resource "aws_lambda_function" "gocd_trigger" {
@@ -21,44 +23,21 @@ resource "aws_lambda_function" "gocd_trigger" {
       GOCD_API_URL_PARAM_NAME   = var.gocd_trigger_api_url_ssm_param_name
     }
   }
+
+  vpc_config {
+    subnet_ids         = [data.aws_ssm_parameter.data_pipeline_private_subnet_id.value]
+    security_group_ids = [data.aws_ssm_parameter.outbound_only_security_group_id.value]
+  }
 }
 
-resource "aws_iam_role" "gocd_trigger" {
-  name               = "${var.environment}-dashboard-pipeline-gocd-trigger"
-  description        = "IAM Role for dashboard-pipeline-gocd-trigger lambda that allows access to SSM Parameter store"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.webhook_ssm_access.arn,
-  ]
-}
-
-data "aws_iam_policy_document" "lambda_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
+resource "aws_cloudwatch_log_group" "gocd_trigger" {
+  name = "/aws/lambda/${var.environment}-dashboard-pipeline-gocd-trigger"
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-dashboard-pipeline-gocd-trigger"
     }
-  }
+  )
+  retention_in_days = 14
 }
 
-resource "aws_iam_policy" "webhook_ssm_access" {
-  name   = "${var.environment}-dashboard-pipeline-gocd-trigger-get-ssm-access"
-  policy = data.aws_iam_policy_document.webhook_ssm_access.json
-}
-
-
-data "aws_iam_policy_document" "webhook_ssm_access" {
-  statement {
-    sid = "GetSSMParameter"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-
-    resources = [
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_url_ssm_param_name}",
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_token_ssm_param_name}"
-    ]
-  }
-}
