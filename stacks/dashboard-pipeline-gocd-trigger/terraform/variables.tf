@@ -14,3 +14,9 @@ variable "repo_name" {
   default     = "prm-gp2gp-data-pipeline-infra"
   description = "Name of this repository"
 }
+
+variable "gocd_trigger_lambda_zip" {
+  type        = string
+  description = "path to zipfile containing lambda code for triggering Dashboard Pipeline GoCD pipeline"
+  default     = "lambda/build/dashboard-pipeline-gocd-trigger.zip"
+}
