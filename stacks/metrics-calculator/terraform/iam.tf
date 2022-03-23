@@ -68,8 +68,8 @@ data "aws_iam_policy_document" "ssm_put_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.national_metrics_location_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.practice_metrics_location_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.national_metrics_s3_uri_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.practice_metrics_s3_uri_param_name}",
     ]
   }
 }
