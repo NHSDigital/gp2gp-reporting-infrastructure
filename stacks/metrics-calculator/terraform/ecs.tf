@@ -28,7 +28,9 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
       environment = [
         { "name" : "INPUT_TRANSFER_DATA_BUCKET", "value" : data.aws_ssm_parameter.transfers_data_bucket_name.value },
         { "name" : "ORGANISATION_METADATA_BUCKET", "value" : data.aws_ssm_parameter.ods_metadata_input_bucket_name.value },
-        { "name" : "OUTPUT_METRICS_BUCKET", "value" : aws_s3_bucket.metrics_calculator.bucket }
+        { "name" : "OUTPUT_METRICS_BUCKET", "value" : aws_s3_bucket.metrics_calculator.bucket },
+        { "name" : "NATIONAL_METRICS_S3_URI_PARAM_NAME", "value" : var.national_metrics_location_param_name.value },
+        { "name" : "PRACTICE_METRICS_S3_URI_PARAM_NAME", "value" : var.practice_metrics_location_param_name.value }
       ]
       logConfiguration = {
         logDriver = "awslogs"
