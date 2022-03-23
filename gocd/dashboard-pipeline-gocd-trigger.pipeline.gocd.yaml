@@ -113,7 +113,7 @@ pipelines:
                     source: preprod.tfplan
                     is_file: yes
                 - fetch:
-                    stage: plan_prod
+                    stage: plan_preprod
                     job: plan
                     source: lambda/build/dashboard-pipeline-gocd-trigger.zip
                     destination: lambda/build/
