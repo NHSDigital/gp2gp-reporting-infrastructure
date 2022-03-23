@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "ecs_assume" {
 }
 
 resource "aws_iam_policy" "ssm_access" {
-  name   = "${var.environment}-ssm-access"
+  name   = "${var.environment}-spine-exporter-get-ssm-access"
   policy = data.aws_iam_policy_document.ssm_access.json
 }
 
