@@ -18,7 +18,8 @@ resource "aws_iam_role" "metrics_calculator" {
   managed_policy_arns = [
     data.aws_ssm_parameter.transfers_data_bucket_read_access_arn.value,
     data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value,
-    aws_iam_policy.metrics_calculator_output_bucket_write_access.arn
+    aws_iam_policy.metrics_calculator_output_bucket_write_access.arn,
+    aws_iam_policy.ssm_put_access.arn
   ]
 }
 
@@ -52,3 +53,29 @@ data "aws_iam_policy_document" "metrics_calculator_output_bucket_write_access" {
     ]
   }
 }
+
+resource "aws_iam_policy" "ssm_put_access" {
+  name   = "${var.environment}-metrics-calculator-ssm-put-access"
+  policy = data.aws_iam_policy_document.ssm_put_access.json
+}
+
+data "aws_iam_policy_document" "ssm_put_access" {
+  statement {
+    sid = "PutSSMParameter"
+
+    actions = [
+      "ssm:PutParameter"
+    ]
+
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.national_metrics_location_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.practice_metrics_location_param_name}",
+    ]
+  }
+}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+}
+
+data "aws_caller_identity" "current" {}
