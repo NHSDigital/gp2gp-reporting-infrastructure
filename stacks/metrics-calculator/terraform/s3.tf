@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "metrics_calculator" {
   bucket = "prm-gp2gp-metrics-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
@@ -12,6 +11,11 @@ resource "aws_s3_bucket" "metrics_calculator" {
       Name = "Output metrics data for metrics calculator"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "metrics_calculator" {
+  bucket = aws_s3_bucket.metrics_calculator.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "metrics_calculator" {
