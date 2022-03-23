@@ -15,8 +15,24 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
+variable "region" {
+  type        = string
+  description = "AWS region."
+  default     = "eu-west-2"
+}
+
 variable "gocd_trigger_lambda_zip" {
   type        = string
   description = "path to zipfile containing lambda code for triggering Dashboard Pipeline GoCD pipeline"
   default     = "lambda/build/dashboard-pipeline-gocd-trigger.zip"
+}
+
+variable "gocd_trigger_api_url_ssm_param_name" {
+  type        = string
+  description = "Name of SSM parameter containing GoCD URL that will trigger the Dashboard GoCD pipeline"
+}
+
+variable "gocd_trigger_api_token_ssm_param_name" {
+  type        = string
+  description = "Name of SSM parameter containing GoCD API token that will be used to call Dashboard GoCD pipeline URL"
 }

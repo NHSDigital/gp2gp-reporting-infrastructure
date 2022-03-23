@@ -5,9 +5,20 @@ import os
 
 http = urllib3.PoolManager()
 
+class SsmSecretManager:
+    def __init__(self, ssm):
+        self._ssm = ssm
+
+    def get_secret(self, name):
+        response = self._ssm.get_parameter(Name=name, WithDecryption=True)
+        return response["Parameter"]["Value"]
+
 def lambda_handler(event, context):
-    gocd_api_token = os.environ["A_KEY"]
-    gocd_dashboard_path = os.environ["GOCD_API_URL"]
+    ssm = boto3.client("ssm")
+    secret_manager = SsmSecretManager(ssm)
+
+    gocd_api_token = secret_manager.get_secret(os.environ["GOCD_API_TOKEN_PARAM_NAME"])
+    gocd_dashboard_path = secret_manager.get_secret(os.environ["GOCD_API_URL_PARAM_NAME"])
 
     headers = {
         "Accept": "application/vnd.go.cd.v1+json",
