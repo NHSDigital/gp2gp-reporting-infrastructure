@@ -43,7 +43,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_policy" "webhook_ssm_access" {
-  name   = "${var.environment}-webhook-ssm-access"
+  name   = "${var.environment}-dashboard-pipeline-gocd-trigger-get-ssm-access"
   policy = data.aws_iam_policy_document.webhook_ssm_access.json
 }
 
