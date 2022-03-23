@@ -57,7 +57,8 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_url_ssm_param_name}"
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_url_ssm_param_name}",
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_token_ssm_param_name}"
     ]
   }
 }
