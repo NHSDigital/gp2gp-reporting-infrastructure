@@ -2,9 +2,9 @@ format_version: 4
 pipelines:
   "dashboard-pipeline-gocd-trigger":
     group: gp2gp-data-pipeline-infra
-    label_template: "${metrics_calculator_task[:8]}"
+    label_template: "${dashboard-pipeline-gocd-trigger[:8]}"
     materials:
-      metrics_calculator_task:
+      dashboard-pipeline-gocd-trigger:
         plugin_configuration:
           id: git-path
         options:
