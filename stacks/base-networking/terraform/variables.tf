@@ -25,3 +25,8 @@ variable "private_cidr_offset" {
   description = "CIDR address offset to begin creating private subnets at"
   default     = 100
 }
+
+variable "gocd_vpc_id_param_name" {
+  type        = string
+  description = "SSM parameter containing GoCD VPC ID (from separate account)"
+}
