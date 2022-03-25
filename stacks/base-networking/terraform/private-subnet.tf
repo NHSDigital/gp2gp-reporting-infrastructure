@@ -7,7 +7,6 @@ resource "aws_subnet" "private" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline-private"
-
     }
   )
 }
@@ -20,10 +19,12 @@ resource "aws_route" "private" {
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
-  tags = {
-    Name        = "${var.environment}-data-pipeline-private"
-    Environment = "${var.environment}"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-data-pipeline-private"
+    }
+  )
 }
 
 resource "aws_route_table_association" "private" {
