@@ -30,3 +30,8 @@ variable "gocd_vpc_id_param_name" {
   type        = string
   description = "SSM parameter containing GoCD VPC ID (from separate account)"
 }
+
+variable "common_account_id_param_name" {
+  type        = string
+  description = "SSM parameter containing Common Account ID (where GoCD VPC lives)"
+}
