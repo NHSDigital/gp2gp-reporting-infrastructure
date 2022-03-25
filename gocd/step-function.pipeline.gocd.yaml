@@ -13,6 +13,9 @@ pipelines:
       spine_exporter_task:
         pipeline: data-pipeline-spine-exporter-task
         stage: apply_dev
+      dashboard_pipeline_gocd_trigger:
+        pipeline: dashboard-pipeline-gocd-trigger
+        stage: apply_dev
       ods_downloader_task:
         pipeline: data-pipeline-ods-downloader-task
         stage: apply_dev
