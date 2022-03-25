@@ -35,3 +35,9 @@ variable "common_account_id_param_name" {
   type        = string
   description = "SSM parameter containing Common Account ID (where GoCD VPC lives)"
 }
+
+variable "retention_period_in_days" {
+  type        = number
+  default     = 120
+  description = "The number of days for cloudwatch logs retention period"
+}

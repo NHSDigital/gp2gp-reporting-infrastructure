@@ -30,12 +30,19 @@ locals {
 }
 
 resource "aws_flow_log" "vpc_flow_log" {
-  log_destination      = aws_s3_bucket.flow_log.arn
-  log_destination_type = "s3"
+  iam_role_arn         = aws_iam_role.vpc_flow_log.arn
+  log_destination_type = aws_cloudwatch_log_group.vpc_flow_log.arn
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.vpc.id
 }
 
-resource "aws_s3_bucket" "flow_log" {
-  bucket = "${var.environment}-data-pipeline-vpc-flow-logs"
+resource "aws_cloudwatch_log_group" "vpc_flow_log" {
+  name              = "/vpc/${var.environment}-data-pipeline-vpc-flow-log"
+  retention_in_days = var.retention_period_in_days
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-data-pipeline"
+    }
+  )
 }
