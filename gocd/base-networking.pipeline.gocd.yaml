@@ -55,6 +55,21 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply base-networking dev
+      - validate_preprod:
+          clean_workspace: true
+          approval:
+            type: manual
+            allow_only_on_success: true
+          jobs:
+            test:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-validate base-networking preprod
       - plan_preprod:
           clean_workspace: true
           jobs:
