@@ -49,8 +49,8 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
         "Comment" : "Dashboard Pipeline Gocd Trigger - triggers gocd from the common account to build the latest dashboard ui",
         "Resource": data.aws_ssm_parameter.gocd_trigger_lambda_arn.value,
         "ResultPath" : null,
-        },
         "End" : true
+        },
       }
   })
 }
