@@ -20,6 +20,11 @@ variable "vpc_cidr" {
   description = "CIDR block to assign VPC"
 }
 
+variable "gocd_cidr" {
+  type        = string
+  description = "CIDR block of GoCD VPC"
+}
+
 variable "private_cidr_offset" {
   type        = number
   description = "CIDR address offset to begin creating private subnets at"

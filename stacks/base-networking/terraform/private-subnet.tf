@@ -17,6 +17,13 @@ resource "aws_route" "private" {
   destination_cidr_block = "0.0.0.0/0"
 }
 
+
+resource "aws_route" "private_to_gocd" {
+  route_table_id            = aws_route_table.private.id
+  destination_cidr_block    = var.gocd_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.private_to_gocd.id
+}
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
   tags = merge(
