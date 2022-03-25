@@ -42,12 +42,23 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
             ]
           }
         },
+        "Next" : "DashboardPipelineGocdTrigger"
+      },
+      "DashboardPipelineGocdTrigger" : {
+        "Type": "Task",
+        "Comment" : "Dashboard Pipeline Gocd Trigger - triggers gocd from the common account to build the latest dashboard ui",
+        "Resource": data.aws_ssm_parameter.gocd_trigger_lambda_arn.value,
+        "ResultPath" : null,
+        },
         "End" : true
       }
-    }
   })
 }
 
 data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
   name = var.metrics_calculator_task_definition_arn_param_name
+}
+
+data "aws_ssm_parameter" "gocd_trigger_lambda_arn" {
+  name = var.gocd_trigger_lambda_arn_param_name
 }

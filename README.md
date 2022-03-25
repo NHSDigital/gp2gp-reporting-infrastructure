@@ -38,3 +38,11 @@ If you are unable to validate/plan, make sure you doing it inside the dojo conta
     ./tasks dojo-validate
 
 ```
+
+Error: `Invalid length for parameter RoleArn, value: 4, valid range: 20-inf`
+You are probably trying to use dev/prod credentials instead of using the common account, which will assume
+the role for the other environments. 
+
+Error: `Error: Failed to validate installed provider`
+The .terraform file is most likely stale/unusable. Try removing the .terraform and trying again:
+`rm -rf .terraform`

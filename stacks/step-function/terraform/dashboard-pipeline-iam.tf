@@ -64,6 +64,16 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
       data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value
     ]
   }
+
+  statement {
+    sid = "InvokeLambdaFunction"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      data.aws_ssm_parameter.gocd_trigger_lambda_arn.value,
+    ]
+  }
 }
 
 data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
