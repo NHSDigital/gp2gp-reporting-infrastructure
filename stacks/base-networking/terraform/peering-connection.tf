@@ -16,7 +16,7 @@ resource "aws_vpc_peering_connection" "private_to_gocd" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Data pipeline VPC to GoCD VPC Peering connection",
+      Name = "${var.environment}-gp2gp-data-pipeline-gocd-peering",
       Side = "Requester"
     }
   )
