@@ -30,9 +30,3 @@ variable "gocd_vpc_id_param_name" {
   type        = string
   description = "SSM parameter containing GoCD VPC ID (from separate account)"
 }
-
-variable "retention_period_in_days" {
-  type        = number
-  default     = 120
-  description = "The number of days for cloudwatch logs retention period"
-}
