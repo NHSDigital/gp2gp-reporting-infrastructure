@@ -1,7 +1,7 @@
 import urllib3
 import boto3
-import json
 import os
+import sys
 
 http = urllib3.PoolManager()
 
@@ -30,9 +30,10 @@ def lambda_handler(event, context):
     try:
         resp = http.request('POST', url=gocd_dashboard_path, headers=headers)
 
-        print({
+        return {
             "status_code": resp.status,
             "response_data": resp.data
-        })
+        }
     except Exception as e:
         print("An error has occurred: ", e)
+        sys.exit(1)
