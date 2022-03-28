@@ -6,6 +6,14 @@ data "aws_ssm_parameter" "outbound_only_security_group_id" {
   name = var.data_pipeline_outbound_only_security_group_id_param_name
 }
 
+data "aws_ssm_parameter" "gocd_subnet_id" {
+  name = var.gocd_subnet_id_param_name
+}
+
+data "aws_ssm_parameter" "gocd_outbound_security_group_id" {
+  name = var.gocd_outbound_security_group_id_param_name
+}
+
 resource "aws_lambda_function" "gocd_trigger" {
   filename      = var.gocd_trigger_lambda_zip
   function_name = "${var.environment}-dashboard-pipeline-gocd-trigger"
@@ -25,8 +33,8 @@ resource "aws_lambda_function" "gocd_trigger" {
   }
 
   vpc_config {
-    subnet_ids         = [data.aws_ssm_parameter.data_pipeline_private_subnet_id.value]
-    security_group_ids = [data.aws_ssm_parameter.outbound_only_security_group_id.value]
+    subnet_ids         = [data.aws_ssm_parameter.gocd_subnet_id.value]
+    security_group_ids = [data.aws_ssm_parameter.gocd_outbound_security_group_id.value]
   }
 }
 

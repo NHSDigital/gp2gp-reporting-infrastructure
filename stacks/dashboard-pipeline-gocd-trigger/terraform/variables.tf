@@ -46,3 +46,13 @@ variable "data_pipeline_outbound_only_security_group_id_param_name" {
   type        = string
   description = "SSM parameter containing Data Pipeline outbound only Security Group ID"
 }
+
+variable "gocd_subnet_id_param_name" {
+  type        = string
+  description = "SSM parameter containing GoCD Subnet ID (from separate account)"
+}
+
+variable "gocd_outbound_security_group_id_param_name" {
+  type        = string
+  description = "SSM parameter containing GoCD Outbound only security group ID"
+}
