@@ -36,7 +36,7 @@ def lambda_handler(event, context):
                 "response_data": resp.data
             }
         else:
-            raise Exception(f"HTTP POST request failed with status code {status_code}", resp)
+            raise Exception(f"HTTP POST request failed with status code {status_code}", resp.data)
 
     except Exception as e:
         print("An error has occurred: ", e)
