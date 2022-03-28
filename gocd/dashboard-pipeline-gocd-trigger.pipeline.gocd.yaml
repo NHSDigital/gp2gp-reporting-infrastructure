@@ -10,6 +10,9 @@ pipelines:
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
           path: stacks/dashboard-pipeline-gocd-trigger
+      base_networking:
+        pipeline: data-pipeline-base-networking
+        stage: apply_dev
     stages:
       - validate:
           clean_workspace: true
