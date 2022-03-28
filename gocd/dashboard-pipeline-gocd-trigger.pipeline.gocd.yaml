@@ -2,20 +2,14 @@ format_version: 4
 pipelines:
   "dashboard-pipeline-gocd-trigger":
     group: gp2gp-data-pipeline-infra
-    label_template: "${dashboard-pipeline-gocd-trigger[:8]}"
+    label_template: "${dashboard_pipeline_gocd_trigger[:8]}"
     materials:
       dashboard_pipeline_gocd_trigger:
         plugin_configuration:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: stacks/dashboard-pipeline-gocd-trigger
-      gocd_lambda:
-        plugin_configuration:
-          id: git-path
-        options:
-          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: lambda/dashboard-pipeline-gocd-trigger
+          path: stacks/dashboard-pipeline-gocd-trigger, lambda/dashboard-pipeline-gocd-trigger
       base_networking:
         pipeline: data-pipeline-base-networking
         stage: apply_dev
