@@ -29,11 +29,15 @@ def lambda_handler(event, context):
 
     try:
         resp = http.request('POST', url=gocd_dashboard_path, headers=headers)
+        status_code = resp.status
+        if 200 <= status_code <= 299:
+            return {
+                "status_code": status_code,
+                "response_data": resp.data
+            }
+        else:
+            raise Exception(f"HTTP POST request failed with status code {status_code}", resp)
 
-        return {
-            "status_code": resp.status,
-            "response_data": resp.data
-        }
     except Exception as e:
         print("An error has occurred: ", e)
         sys.exit(1)
