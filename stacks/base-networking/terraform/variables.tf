@@ -20,11 +20,6 @@ variable "vpc_cidr" {
   description = "CIDR block to assign VPC"
 }
 
-variable "gocd_cidr" {
-  type        = string
-  description = "CIDR block of GoCD VPC"
-}
-
 variable "private_cidr_offset" {
   type        = number
   description = "CIDR address offset to begin creating private subnets at"
@@ -34,11 +29,6 @@ variable "private_cidr_offset" {
 variable "gocd_vpc_id_param_name" {
   type        = string
   description = "SSM parameter containing GoCD VPC ID (from separate account)"
-}
-
-variable "common_account_id_param_name" {
-  type        = string
-  description = "SSM parameter containing Common Account ID (where GoCD VPC lives)"
 }
 
 variable "retention_period_in_days" {

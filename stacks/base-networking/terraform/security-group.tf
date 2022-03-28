@@ -1,3 +1,7 @@
+data "aws_ssm_parameter" "gocd_vpc_id" {
+  name = var.gocd_vpc_id_param_name
+}
+
 resource "aws_security_group" "outbound_only" {
   name   = "${var.environment}-outbound-only"
   vpc_id = aws_vpc.vpc.id
