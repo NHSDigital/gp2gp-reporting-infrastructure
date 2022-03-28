@@ -26,9 +26,13 @@ def lambda_handler(event, context):
         "Authorization": f"Bearer {gocd_api_token}",
         "X-GoCD-Confirm": True,
     }
-    resp = http.request('POST', url=gocd_dashboard_path, headers=headers)
 
-    print({
-        "status_code": resp.status,
-        "response_data": resp.data
-    })
+    try:
+        resp = http.request('POST', url=gocd_dashboard_path, headers=headers)
+
+        print({
+            "status_code": resp.status,
+            "response_data": resp.data
+        })
+    except Exception as e:
+        print("An error has occurred: ", e)
