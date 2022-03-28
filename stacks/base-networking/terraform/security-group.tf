@@ -31,7 +31,7 @@ resource "aws_security_group" "gocd_vpc_outbound_only" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-outbound-only"
+      Name = "${var.environment}-gocd-vpc-outbound-only"
     }
   )
 }
