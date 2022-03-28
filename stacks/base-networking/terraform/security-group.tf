@@ -39,7 +39,7 @@ resource "aws_security_group" "gocd_vpc_outbound_only" {
 resource "aws_security_group_rule" "gocd_vpc_outbound_only" {
   type              = "egress"
   security_group_id = aws_security_group.gocd_vpc_outbound_only.id
-  cidr_blocks       = [var.gocd_cidr]
+  cidr_blocks       = ["0.0.0.0/0"]
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
