@@ -5,5 +5,5 @@ transfers_data_bucket_param_name="/registrations/preprod/data-pipeline/transfer-
 ods_metadata_bucket_param_name="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-name"
 transfer_data_bucket_read_access_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-read-access-arn"
 ods_metadata_bucket_read_access_arn="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-read-access-arn"
-national_metrics_location_param_name="/registrations/prod/data-pipeline/metrics-calculator/national-metrics-location"
-practice_metrics_location_param_name="/registrations/prod/data-pipeline/metrics-calculator/practice-metrics-location"
+national_metrics_s3_path_param_name="/registrations/preprod/data-pipeline/metrics-calculator/national-metrics-s3-path"
+practice_metrics_s3_path_param_name="/registrations/preprod/data-pipeline/metrics-calculator/practice-metrics-s3-path"

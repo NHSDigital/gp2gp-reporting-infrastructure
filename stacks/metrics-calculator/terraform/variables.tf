@@ -50,12 +50,12 @@ variable "ods_metadata_bucket_param_name" {
   description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) bucket name"
 }
 
-variable "national_metrics_s3_uri_param_name" {
+variable "national_metrics_s3_path_param_name" {
   type        = string
   description = "SSM parameter containing the national metrics s3 uri"
 }
 
-variable "practice_metrics_s3_uri_param_name" {
+variable "practice_metrics_s3_path_param_name" {
   type        = string
   description = "SSM parameter containing the national metrics s3 uri"
 }
