@@ -46,3 +46,6 @@ the role for the other environments.
 Error: `Error: Failed to validate installed provider`
 The .terraform file is most likely stale/unusable. Try removing the .terraform and trying again:
 `rm -rf .terraform`
+
+Error refreshing state: BucketRegionError: incorrect region, the bucket is not in
+`make sure the environement is correct when running a task, eg: ./tasks dojo-validate ecs-cluster preprod`

@@ -10,7 +10,8 @@ resource "aws_iam_role" "gocd_trigger" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
   managed_policy_arns = [
     aws_iam_policy.webhook_ssm_access.arn,
-    aws_iam_policy.cloudwatch_log_access.arn
+    aws_iam_policy.cloudwatch_log_access.arn,
+    aws_iam_policy.lambda_vpc_execution_access.arn
   ]
 }
 
@@ -21,6 +22,23 @@ data "aws_iam_policy_document" "lambda_assume_role" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
+  }
+}
+
+resource "aws_iam_policy" "lambda_vpc_execution_access" {
+  name   = "${var.environment}-dashboard-pipeline-gocd-trigger-lambda-vpc-access"
+  policy = data.aws_iam_policy_document.lambda_vpc_execution_access.json
+}
+
+data "aws_iam_policy_document" "lambda_vpc_execution_access" {
+  statement {
+    sid = "AWSLambdaVPCAccessExecutionRole"
+    actions = [
+      "ec2:CreateNetworkInterface"
+    ]
+    resources = [
+      "arn:aws:ec2:${var.region}:${local.account_id}:subnet/${data.aws_ssm_parameter.gocd_subnet_id.arn}/*"
+    ]
   }
 }
 
