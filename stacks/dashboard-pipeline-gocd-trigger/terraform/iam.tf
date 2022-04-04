@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "lambda_vpc_execution_access" {
       "ec2:CreateNetworkInterface"
     ]
     resources = [
-      "arn:aws:ec2:${var.region}:${local.account_id}:subnet/${data.aws_ssm_parameter.gocd_subnet_id.arn}/*"
+      data.aws_ssm_parameter.gocd_subnet_id.arn
     ]
   }
 }
