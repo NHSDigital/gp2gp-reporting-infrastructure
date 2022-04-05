@@ -34,10 +34,11 @@ data "aws_iam_policy_document" "lambda_vpc_execution_access" {
   statement {
     sid = "AWSLambdaVPCAccessExecutionRole"
     actions = [
-      "ec2:CreateNetworkInterface"
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
     ]
     resources = [
-      "arn:aws:ec2:${var.region}:${local.account_id}:subnet/${data.aws_ssm_parameter.gocd_subnet_id.value}"
+      "*"
     ]
   }
 }
