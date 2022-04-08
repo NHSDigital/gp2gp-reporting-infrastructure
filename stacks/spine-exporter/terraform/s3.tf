@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "spine_exporter" {
   bucket = "prm-gp2gp-raw-spine-data-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
@@ -12,6 +11,11 @@ resource "aws_s3_bucket" "spine_exporter" {
       Name = "Raw spine data"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "spine_exporter" {
+  bucket = aws_s3_bucket.spine_exporter.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "spine_exporter" {
