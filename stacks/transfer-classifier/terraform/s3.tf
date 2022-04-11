@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "transfer_classifier" {
   bucket = "prm-gp2gp-transfer-data-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
@@ -14,6 +13,10 @@ resource "aws_s3_bucket" "transfer_classifier" {
   )
 }
 
+resource "aws_s3_bucket_acl" "spine_exporter" {
+  bucket = aws_s3_bucket.transfer_classifier.id
+  acl    = "private"
+}
 resource "aws_s3_bucket_public_access_block" "transfer_classifier" {
   bucket = aws_s3_bucket.transfer_classifier.id
 
