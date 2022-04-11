@@ -94,7 +94,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : var.region,
-          "title" : "Detailed error messages",
+          "title" : "Non-info logs (errors, warnings, system)",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, message, @message | filter strcontains(@logStream, 'spine-exporter') and level != 'INFO'",
           "view" : "table"
         }

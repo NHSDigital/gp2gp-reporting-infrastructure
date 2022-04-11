@@ -15,6 +15,12 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "eu-west-2"
+}
+
 variable "transfer_classifier_repo_param_name" {
   type        = string
   description = "Docker repository of the transfer classifier"
