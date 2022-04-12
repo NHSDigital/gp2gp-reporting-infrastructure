@@ -35,7 +35,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "National metrics stats",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields message, data.metrics[0].transferCount as transferCount, data.metrics[0].integratedOnTime.transferCount as integratedOnTime, data.metrics[0].paperFallback.technicalFailure.transferCount as technicalFailure  | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' and ispresent(data)",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields @timestamp | parse data \"transferCount': *,\" as transferCount | parse data \"{'year': *, 'month': *,\" as year, month | parse data \"'integratedOnTime': {'transferCount': *, 'transferPercentage': *}\" as integratedOnTime, integratedOnTimePercentage | parse data \"'technicalFailure': {'transferCount': *, 'transferPercentage': *}\" as technicalFailure, technicalFailurePercentage | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' and ispresent(data)",
           "view" : "log",
         }
       },
