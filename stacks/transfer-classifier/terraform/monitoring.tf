@@ -11,7 +11,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "TRANSFER_CLASSIFIER_ROW_COUNT",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, row_count, metadata.cutoff-days, metadata.start-datetime, metadata.end-datetime | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, row_count, `metadata.cutoff-days`, `metadata.start-datetime`, `metadata.end-datetime` | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT'",
           "view" : "table"
         }
       },
@@ -23,8 +23,8 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "TRANSFER_CLASSIFIER_ROW_COUNT - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by bin(1h) | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT'",
-          "view" : "timeSeries"
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by `metadata.cutoff-days`, time | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT'",
+          "view" : "bar"
         }
       },
       {
