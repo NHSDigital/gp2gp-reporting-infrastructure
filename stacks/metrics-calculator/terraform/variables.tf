@@ -64,3 +64,9 @@ variable "ods_metadata_bucket_read_access_arn" {
   type        = string
   description = "SSM parameter containing ODS Downloader output bucket (ODS metadata) read access IAM policy ARN"
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "eu-west-2"
+}
