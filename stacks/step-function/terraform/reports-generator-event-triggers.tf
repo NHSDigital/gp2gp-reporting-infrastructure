@@ -42,3 +42,14 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures
     "CONVERSATION_CUTOFF_DAYS" : "2",
   "NUMBER_OF_DAYS" : "7" })
 }
+
+resource "aws_cloudwatch_event_target" "weekly_transfer_details_by_hour_report_event_trigger" {
+  target_id = "${var.environment}-weekly-reports-generator-transfer-hourly-trigger"
+  rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
+  arn       = aws_sfn_state_machine.reports_generator.arn
+  role_arn  = aws_iam_role.reports_generator_trigger.arn
+  input = jsonencode({
+    "REPORT_NAME" : "TRANSFER_DETAILS_BY_HOUR",
+    "CONVERSATION_CUTOFF_DAYS" : "2",
+    "NUMBER_OF_DAYS" : "7" })
+}
