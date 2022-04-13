@@ -35,22 +35,10 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "National metrics stats",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields @timestamp | parse data \"transferCount': *,\" as transferCount | parse data \"{'year': *, 'month': *,\" as year, month | parse data \"'integratedOnTime': {'transferCount': *, 'transferPercentage': *}\" as integratedOnTime, integratedOnTimePercentage | parse data \"'technicalFailure': {'transferCount': *, 'transferPercentage': *}\" as technicalFailure, technicalFailurePercentage | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' and ispresent(data)",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields @timestamp | parse data \"{'year': *, 'month': *,\" as year, month |  parse data \"'integratedOnTime': {'transferCount': *, 'transferPercentage': *}\" as integratedOnTime, integratedOnTimePercentage | parse data \"'technicalFailure': {'transferCount': *, 'transferPercentage': *}\" as technicalFailure, technicalFailurePercentage  | parse data \"transferCount': *,\" as transferCount | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' and ispresent(data)",
           "view" : "log",
         }
       },
-#      {
-#        "type" : "log",
-#        "width" : 12,
-#        "height" : 6,
-#        "properties" : {
-#          "period" : 120
-#          "region" : var.region,
-#          "title" : "FAILED_TO_RUN_MAIN",
-#          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'metrics-calculator') and event='FAILED_TO_RUN_MAIN'",
-#          "view" : "table"
-#        }
-#      },
       {
         "type" : "log",
         "width" : 12,
