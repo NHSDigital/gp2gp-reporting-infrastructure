@@ -59,7 +59,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "Successful upload count",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | sort timestamp | filter strcontains(@logStream, 'spine-exporter') and event='UPLOADED_CSV_TO_S3'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'spine-exporter') and event='UPLOADED_CSV_TO_S3'",
           "view" : "table",
         }
       },
