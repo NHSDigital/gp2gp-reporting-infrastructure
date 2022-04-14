@@ -3,18 +3,18 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
   dashboard_body = jsonencode({
     "start" : "-P3D"
     "widgets" : [
-#      {
-#        "type" : "log",
-#        "width" : 12,
-#        "height" : 6,
-#        "properties" : {
-#          "period" : 120
-#          "region" : data.aws_region.current.name,
-#          "title" : "Produced reports",
-#          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, @message | filter strcontains(@logStream, 'reports-generator') and event='PRODUCED_*'",
-#          "view" : "table",
-#        }
-#      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : data.aws_region.current.name,
+          "title" : "Produced reports",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, `report-name`, `reporting-window-start-datetime`, `reporting-window-end-datetime`, `config-cutoff-days` | filter strcontains(@logStream, 'reports-generator') and strcontains(event,'PRODUCED_') | sort @timestamp",
+          "view" : "table",
+        }
+      },
       {
         "type" : "log",
         "width" : 12,
@@ -23,7 +23,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Successful upload count",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'reports-generator') and event='UPLOADED_JSON_TO_S3'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3'",
           "view" : "table",
         }
       },
@@ -35,7 +35,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Successful upload count - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | sort timestamp | filter strcontains(@logStream, 'reports-generator') and event='UPLOADED_JSON_TO_S3'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d)",
           "view" : "bar",
         }
       },
