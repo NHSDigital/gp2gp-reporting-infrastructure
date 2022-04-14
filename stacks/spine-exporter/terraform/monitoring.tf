@@ -24,7 +24,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "region" : var.region,
           "title" : "SPINE_EXTRACT_SIZE_BYTES - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(size_in_bytes) by bin(1h) | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_SIZE_BYTES'",
-          "view" : "timeSeries"
+          "view" : "bar"
         }
       },
       {
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "region" : var.region,
           "title" : "SPINE_EXTRACT_ROW_COUNT - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by bin(1d) | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_ROW_COUNT'",
-          "view" : "timeSeries"
+          "view" : "bar"
         }
       },
       {
@@ -72,7 +72,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "region" : var.region,
           "title" : "Successful upload count - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'spine-exporter') and event='UPLOADED_CSV_TO_S3'",
-          "view" : "timeSeries",
+          "view" : "bar",
         }
       },
       {
