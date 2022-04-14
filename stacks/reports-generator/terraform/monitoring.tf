@@ -3,18 +3,18 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
   dashboard_body = jsonencode({
     "start" : "-P3D"
     "widgets" : [
-      {
-        "type" : "log",
-        "width" : 12,
-        "height" : 6,
-        "properties" : {
-          "period" : 120
-          "region" : data.aws_region.current.name,
-          "title" : "Produced reports",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, @message | filter strcontains(@logStream, 'reports-generator') and event='PRODUCED_*'",
-          "view" : "table",
-        }
-      },
+#      {
+#        "type" : "log",
+#        "width" : 12,
+#        "height" : 6,
+#        "properties" : {
+#          "period" : 120
+#          "region" : data.aws_region.current.name,
+#          "title" : "Produced reports",
+#          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, @message | filter strcontains(@logStream, 'reports-generator') and event='PRODUCED_*'",
+#          "view" : "table",
+#        }
+#      },
       {
         "type" : "log",
         "width" : 12,
