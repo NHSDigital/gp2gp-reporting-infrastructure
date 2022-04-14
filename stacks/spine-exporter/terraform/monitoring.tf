@@ -23,7 +23,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "SPINE_EXTRACT_SIZE_BYTES - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(size_in_bytes) by bin(1h) | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_SIZE_BYTES'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(size_in_bytes) by time | sort time | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_SIZE_BYTES'",
           "view" : "bar"
         }
       },
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : var.region,
           "title" : "SPINE_EXTRACT_ROW_COUNT - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by bin(1d) | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_ROW_COUNT'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by time | sort time | filter strcontains(@logStream, 'spine-exporter') and event='SPINE_EXTRACT_ROW_COUNT'",
           "view" : "bar"
         }
       },

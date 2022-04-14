@@ -22,9 +22,33 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : var.region,
-          "title" : "TRANSFER_CLASSIFIER_ROW_COUNT - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by `metadata.cutoff-days`, time | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT'",
-          "view" : "bar"
+          "title" : "TRANSFER_CLASSIFIER_ROW_COUNT: 1 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by time | sort time | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT' and `metadata.cutoff-days` == 1",
+          "view" : "bar",
+        }
+      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : var.region,
+          "title" : "TRANSFER_CLASSIFIER_ROW_COUNT: 2 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by time | sort time | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT' and `metadata.cutoff-days` == 2",
+          "view" : "bar",
+        }
+      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : var.region,
+          "title" : "TRANSFER_CLASSIFIER_ROW_COUNT: 1 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | stats sum(row_count) by time | sort time | filter strcontains(@logStream, 'transfer-classifier') and event='TRANSFER_CLASSIFIER_ROW_COUNT' and `metadata.cutoff-days` == 14",
+          "view" : "bar",
         }
       },
       {
@@ -37,42 +61,6 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "title" : "Successful upload count",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3'",
           "view" : "table",
-        }
-      },
-      {
-        "type" : "log",
-        "width" : 12,
-        "height" : 6,
-        "properties" : {
-          "period" : 120
-          "region" : var.region,
-          "title" : "Successful upload count: 1 day cutoff - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 1",
-          "view" : "bar",
-        }
-      },
-      {
-        "type" : "log",
-        "width" : 12,
-        "height" : 6,
-        "properties" : {
-          "period" : 120
-          "region" : var.region,
-          "title" : "Successful upload count: 2 day cutoff - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 2",
-          "view" : "bar",
-        }
-      },
-      {
-        "type" : "log",
-        "width" : 12,
-        "height" : 6,
-        "properties" : {
-          "period" : 120
-          "region" : var.region,
-          "title" : "Successful upload count: 1 day cutoff - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 14",
-          "view" : "bar",
         }
       },
       {
