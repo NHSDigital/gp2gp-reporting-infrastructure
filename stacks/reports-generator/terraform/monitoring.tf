@@ -35,8 +35,8 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Successful upload count - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d)",
-          "view" : "bar",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
+          "view" : "timeSeries",
         }
       },
       {
