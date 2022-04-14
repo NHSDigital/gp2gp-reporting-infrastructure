@@ -9,7 +9,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "Successful upload count",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3'",
           "view" : "table",
@@ -21,7 +21,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "Successful upload count - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | sort timestamp | filter strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3'",
           "view" : "bar",
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "National metrics stats",
           "query" : <<EOT
               SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}'
@@ -53,7 +53,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "Detailed error messages",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, message, @message | filter strcontains(@logStream, 'metrics-calculator') and level == 'ERROR'",
           "view" : "table"
@@ -65,7 +65,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "Non-info logs (errors, warnings, system)",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, message, @message | filter strcontains(@logStream, 'metrics-calculator') and level != 'INFO'",
           "view" : "table"
@@ -77,7 +77,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "height" : 6,
         "properties" : {
           "period" : 120
-          "region" : var.region,
+          "region" : data.aws_region.current.name,
           "title" : "All log messages",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, message, @message | filter strcontains(@logStream, 'metrics-calculator')",
           "view" : "table",

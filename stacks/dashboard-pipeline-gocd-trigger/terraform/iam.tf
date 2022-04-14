@@ -1,5 +1,7 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_region" "current" {}
+
 locals {
   account_id = data.aws_caller_identity.current.account_id
 }
@@ -78,8 +80,8 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_url_ssm_param_name}",
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${var.gocd_trigger_api_token_ssm_param_name}"
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.gocd_trigger_api_url_ssm_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter${var.gocd_trigger_api_token_ssm_param_name}"
     ]
   }
 }
