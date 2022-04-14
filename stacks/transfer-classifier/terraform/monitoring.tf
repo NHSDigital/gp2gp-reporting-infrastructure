@@ -46,8 +46,32 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : var.region,
-          "title" : "Successful upload count - graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3'",
+          "title" : "Successful upload count: 1 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 1",
+          "view" : "bar",
+        }
+      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : var.region,
+          "title" : "Successful upload count: 2 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 2",
+          "view" : "bar",
+        }
+      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : var.region,
+          "title" : "Successful upload count: 1 day cutoff - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' and `metadata.cutoff-days` == 14",
           "view" : "bar",
         }
       },
