@@ -23,7 +23,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Errors and system logs (errors, system)",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, @message, message | filter level != 'INFO' | filter level != 'WARNING'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, @message, message, @logStream | filter level != 'INFO' | filter level != 'WARNING'",
           "view" : "table"
         }
       },
