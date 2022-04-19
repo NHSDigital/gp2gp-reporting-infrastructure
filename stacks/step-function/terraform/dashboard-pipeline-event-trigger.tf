@@ -5,6 +5,5 @@ resource "aws_cloudwatch_event_target" "monthly_dashboard_pipeline_event_trigger
   role_arn  = aws_iam_role.dashboard_pipeline_trigger.arn
   input = jsonencode({
     "SKIP_DASHBOARD_PIPELINE_GOCD_TRIGGER" : var.environment == "dev" ? true : false
-    "time": timestamp()
   })
 }

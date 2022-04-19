@@ -23,7 +23,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Errors and system logs (errors, system)",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, event, message, @message | filter level != 'INFO' or level != 'WARNING'",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' fields @timestamp, event, @message, message | filter level != 'INFO' | filter level != 'WARNING'",
           "view" : "table"
         }
       },
@@ -34,8 +34,8 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
-          "title" : "Successful upload count [spine-exporter]- graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'spine-exporter') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
+          "title" : "Successful upload count [spine-exporter] - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'spine-exporter') and event='UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "timeSeries",
         }
       },      {
@@ -45,8 +45,8 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
-          "title" : "Successful upload count [transfer-classifier]- graph",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
+          "title" : "Successful upload count [transfer-classifier] - graph",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "timeSeries",
         }
       },      {
@@ -56,7 +56,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
-          "title" : "Successful upload count [metrics-calculator]- graph",
+          "title" : "Successful upload count [metrics-calculator] - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "timeSeries",
         }
@@ -67,7 +67,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
-          "title" : "Successful upload count [reports-generator]- graph",
+          "title" : "Successful upload count [reports-generator] - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "timeSeries",
         }
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
-          "title" : "Successful upload count [ods-downloader]- graph",
+          "title" : "Successful upload count [ods-downloader] - graph",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'ods-downloader') and event='UPLOADED_JSON_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "timeSeries",
         }
