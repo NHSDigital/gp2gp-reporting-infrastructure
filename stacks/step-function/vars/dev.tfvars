@@ -14,3 +14,4 @@ spine_exporter_task_definition_arn_param_name="/registrations/dev/data-pipeline/
 spine_exporter_iam_role_arn_param_name="/registrations/dev/data-pipeline/spine-exporter/iam-role-arn"
 transfer_data_bucket_name="prm-gp2gp-transfer-data-dev"
 gocd_trigger_lambda_arn_param_name="/registrations/dev/data-pipeline/dashboard-pipeline-gocd-trigger/lambda-arn"
+log_group_param_name="/registrations/dev/data-pipeline/cloudwatch-log-group-name"

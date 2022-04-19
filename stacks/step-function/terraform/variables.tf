@@ -94,3 +94,8 @@ variable "gocd_trigger_lambda_arn_param_name" {
   type        = string
   description = "SSM parameter containing gocd trigger lambda arn"
 }
+
+variable "log_group_param_name" {
+  type        = string
+  description = "Cloudwatch log group for data pipeline"
+}
