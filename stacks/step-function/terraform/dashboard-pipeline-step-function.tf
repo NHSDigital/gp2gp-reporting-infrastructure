@@ -39,19 +39,6 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
               data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
-          "Overrides" : {
-            "ContainerOverrides" : [
-              {
-                "Name" : "metrics-calculator",
-                "Environment" : [
-                  {
-                    "Name" : "DATE_ANCHOR",
-                    "Value.$" : "$.time"
-                  }
-                ],
-              }
-            ]
-          }
         },
         "Next" : "DashboardPipelineGocdTrigger"
       },
@@ -80,19 +67,6 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
               data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
-          "Overrides" : {
-            "ContainerOverrides" : [
-              {
-                "Name" : "metrics-calculator",
-                "Environment" : [
-                  {
-                    "Name" : "DATE_ANCHOR",
-                    "Value.$" : "$.time"
-                  }
-                ],
-              }
-            ]
-          }
         },
         "End" : true
       },
