@@ -13,10 +13,18 @@ resource "aws_s3_bucket" "transfer_classifier" {
   )
 }
 
-resource "aws_s3_bucket_acl" "spine_exporter" {
+resource "aws_s3_bucket_acl" "transfer_classifier" {
   bucket = aws_s3_bucket.transfer_classifier.id
   acl    = "private"
 }
+
+resource "aws_s3_bucket_versioning" "transfer_classifier" {
+  bucket = aws_s3_bucket.transfer_classifier.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "transfer_classifier" {
   bucket = aws_s3_bucket.transfer_classifier.id
 

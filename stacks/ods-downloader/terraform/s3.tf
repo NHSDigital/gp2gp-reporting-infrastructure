@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "ods_input" {
   bucket = "prm-gp2gp-asid-lookup-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
@@ -14,16 +13,23 @@ resource "aws_s3_bucket" "ods_input" {
   )
 }
 
+resource "aws_s3_bucket_acl" "ods_input" {
+  bucket = aws_s3_bucket.ods_input.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "ods_input" {
+  bucket = aws_s3_bucket.ods_input.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket" "ods_output" {
   bucket = "prm-gp2gp-ods-metadata-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
-  }
-
-  versioning {
-    enabled = true
   }
 
   tags = merge(
@@ -32,6 +38,18 @@ resource "aws_s3_bucket" "ods_output" {
       Name = "Organisational metadata"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "ods_output" {
+  bucket = aws_s3_bucket.ods_output.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "ods_output" {
+  bucket = aws_s3_bucket.ods_output.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "ods_input" {

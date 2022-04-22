@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "reports_generator" {
   bucket = "prm-gp2gp-reports-${var.environment}"
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
@@ -12,6 +11,18 @@ resource "aws_s3_bucket" "reports_generator" {
       Name = "Output reports"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "reports_generator" {
+  bucket = aws_s3_bucket.reports_generator.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "reports_generator" {
+  bucket = aws_s3_bucket.reports_generator.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "reports_generator" {

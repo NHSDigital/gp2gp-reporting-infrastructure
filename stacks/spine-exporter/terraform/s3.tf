@@ -18,6 +18,13 @@ resource "aws_s3_bucket_acl" "spine_exporter" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_versioning" "spine_exporter" {
+  bucket = aws_s3_bucket.spine_exporter.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "spine_exporter" {
   bucket = aws_s3_bucket.spine_exporter.id
 
