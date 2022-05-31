@@ -2,6 +2,10 @@ data "aws_ssm_parameter" "spine_messages_bucket_name" {
   name = var.spine_messages_bucket_param_name
 }
 
+data "aws_ssm_parameter" "mi_events_bucket_name" {
+  name = var.mi_events_bucket_param_name
+}
+
 data "aws_ssm_parameter" "ods_metadata_bucket_read_access_arn" {
   name = var.ods_metadata_bucket_read_access_arn
 }
@@ -64,6 +68,43 @@ data "aws_iam_policy_document" "spine_messages_bucket_read_access" {
     ]
   }
 }
+
+
+resource "aws_iam_policy" "mi_events_bucket_read_access" {
+  name   = "${data.aws_ssm_parameter.mi_events_bucket_name.value}-read"
+  policy = data.aws_iam_policy_document.mi_events_bucket_read_access.json
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+data "aws_iam_policy_document" "mi_events_bucket_read_access" {
+  statement {
+    sid = "ListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${data.aws_ssm_parameter.mi_events_bucket_name.value}",
+    ]
+  }
+
+  statement {
+    sid = "ReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${data.aws_ssm_parameter.mi_events_bucket_name.value}/*"
+    ]
+  }
+}
+
 
 resource "aws_iam_policy" "transfer_classifier_output_buckets_write_access" {
   name   = "transfer-classifier-output-buckets-${var.environment}-write"

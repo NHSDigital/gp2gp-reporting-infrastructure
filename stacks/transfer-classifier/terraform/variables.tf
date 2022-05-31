@@ -25,6 +25,11 @@ variable "spine_messages_bucket_param_name" {
   description = "SSM parameter containing raw spine messages (output from Spine Exporter) bucket name"
 }
 
+variable "mi_events_bucket_param_name" {
+  type        = string
+  description = "SSM parameter containing events (output from gp-registrations-mi) bucket name"
+}
+
 variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
