@@ -8,7 +8,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
     }
   )
   definition = jsonencode({
-    "StartAt" : "TransferClassifier",
+    "StartAt" : "Classify Spine or MiEvents?",
     "States" : {
       "Classify Spine or MiEvents?" : {
         "Type" : "Choice",
