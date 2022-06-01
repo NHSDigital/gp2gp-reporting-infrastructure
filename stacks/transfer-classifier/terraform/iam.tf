@@ -16,6 +16,7 @@ resource "aws_iam_role" "transfer_classifier" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
     aws_iam_policy.spine_messages_bucket_read_access.arn,
+    aws_iam_policy.mi_events_bucket_read_access.arn,
     data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value,
     aws_iam_policy.transfer_classifier_output_buckets_write_access.arn,
   ]
