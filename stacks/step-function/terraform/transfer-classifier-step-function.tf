@@ -14,7 +14,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
         "Type" : "Choice",
         "Choices" : [
           {
-            "Variable" : "$.CLASSIFY_MI_EVENTS",
+            "Variable" : "$.MI",
             "BooleanEquals" : true,
             "Next" : "TransferClassifierMiEvents"
           }
