@@ -62,7 +62,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
                   },
                   {
                     "Name" : "CLASSIFY_MI_EVENTS",
-                    "Value" : "True"
+                    "Value.$" : "True"
                   }
                 ],
               }
