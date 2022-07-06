@@ -5,4 +5,4 @@ log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-
 notebook_data_bucket_name="prm-gp2gp-notebook-data-prod"
 ods_metadata_bucket_param_name="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-name"
 ods_metadata_bucket_read_access_arn="/registrations/preprod/data-pipeline/ods-downloader/output-bucket-read-access-arn"
-mi_events_bucket_param_name="/registrations/preprod/gp-registrations-mi/output-bucket-name"
+mi_events_bucket_param_name="/registrations/prod/gp-registrations-mi/output-bucket-name"
