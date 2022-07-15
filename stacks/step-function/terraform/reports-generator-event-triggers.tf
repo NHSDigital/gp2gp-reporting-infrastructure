@@ -10,13 +10,13 @@ resource "aws_cloudwatch_event_target" "monthly_transfer_outcomes_per_supplier_p
 }
 
 
-resource "aws_cloudwatch_event_target" "monthly_ccg_level_integration_times_report_event_trigger" {
-  target_id = "${var.environment}-monthly-reports-generator-ccg-level-integrations-trigger"
+resource "aws_cloudwatch_event_target" "monthly_sicbl_level_integration_times_report_event_trigger" {
+  target_id = "${var.environment}-monthly-reports-generator-sicbl-level-integrations-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_month_on_15th_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
   role_arn  = aws_iam_role.reports_generator_trigger.arn
   input = jsonencode({
-    "REPORT_NAME" : "CCG_LEVEL_INTEGRATION_TIMES",
+    "REPORT_NAME" : "SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES",
     "CONVERSATION_CUTOFF_DAYS" : "14",
   "NUMBER_OF_MONTHS" : "1" })
 }
