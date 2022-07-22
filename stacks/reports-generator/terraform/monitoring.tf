@@ -22,6 +22,18 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
         "properties" : {
           "period" : 120
           "region" : data.aws_region.current.name,
+          "title" : "Percentage of technical failures",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, `report-name`, `percent_of_technical_failures`, `reporting-window-start-datetime`, `reporting-window-end-datetime`, `config-cutoff-days`, `total_technical_failures`, `total_transfers` | filter strcontains(@logStream, 'reports-generator') and event == 'PERCENT_OF_TECHNICAL_FAILURES' | sort @timestamp",
+          "view" : "table",
+        }
+      },
+      {
+        "type" : "log",
+        "width" : 12,
+        "height" : 6,
+        "properties" : {
+          "period" : 120
+          "region" : data.aws_region.current.name,
           "title" : "Successful upload count",
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  stats count(event) as count by bin(1d) as timestamp | filter strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3'",
           "view" : "table",
