@@ -79,7 +79,7 @@ resource "aws_sfn_state_machine" "reports_generator" {
                   },
                   {
                     "Name" : "ALERT_ENABLED",
-                    "Value.$" : "$$.ALERT_ENABLED"
+                    "Value.$" : "$.ALERT_ENABLED"
                   },
                 ],
               }
@@ -125,7 +125,7 @@ resource "aws_sfn_state_machine" "reports_generator" {
                   },
                   {
                     "Name" : "ALERT_ENABLED",
-                    "Value.$" : "$$.ALERT_ENABLED"
+                    "Value.$" : "$.ALERT_ENABLED"
                   },
                 ],
               }
@@ -171,7 +171,7 @@ resource "aws_sfn_state_machine" "reports_generator" {
                   },
                   {
                     "Name" : "ALERT_ENABLED",
-                    "Value.$" : "$$.ALERT_ENABLED"
+                    "Value.$" : "$.ALERT_ENABLED"
                   },
                 ],
               }
