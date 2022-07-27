@@ -23,7 +23,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "period" : 120
           "region" : data.aws_region.current.name,
           "title" : "Percentage of technical failures",
-          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, `report-name`, `percent_of_technical_failures`, `reporting-window-start-datetime`, `reporting-window-end-datetime`, `config-cutoff-days`, `total_technical_failures`, `total_transfers` | filter strcontains(@logStream, 'reports-generator') and event == 'PERCENT_OF_TECHNICAL_FAILURES' | sort @timestamp",
+          "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' | fields @timestamp, `report-name`, `percent-of-technical-failures`, `reporting-window-start-datetime`, `reporting-window-end-datetime`, `config-cutoff-days`, `total-technical-failures`, `total-transfers`, `alert-enabled` | filter strcontains(@logStream, 'reports-generator') and event == 'PERCENT_OF_TECHNICAL_FAILURES' | sort @timestamp",
           "view" : "table",
         }
       },
