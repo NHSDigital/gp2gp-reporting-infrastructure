@@ -77,6 +77,10 @@ resource "aws_sfn_state_machine" "reports_generator" {
                     "Name" : "END_DATETIME",
                     "Value.$" : "$.END_DATETIME"
                   },
+                  {
+                    "Name" : "ALERT_ENABLED",
+                    "Value.$" : "$.ALERT_ENABLED"
+                  },
                 ],
               }
             ]
@@ -119,6 +123,10 @@ resource "aws_sfn_state_machine" "reports_generator" {
                     "Name" : "NUMBER_OF_DAYS",
                     "Value.$" : "$.NUMBER_OF_DAYS"
                   },
+                  {
+                    "Name" : "ALERT_ENABLED",
+                    "Value.$" : "$.ALERT_ENABLED"
+                  },
                 ],
               }
             ]
@@ -160,6 +168,10 @@ resource "aws_sfn_state_machine" "reports_generator" {
                   {
                     "Name" : "NUMBER_OF_MONTHS",
                     "Value.$" : "$.NUMBER_OF_MONTHS"
+                  },
+                  {
+                    "Name" : "ALERT_ENABLED",
+                    "Value.$" : "$.ALERT_ENABLED"
                   },
                 ],
               }
