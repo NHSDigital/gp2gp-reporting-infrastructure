@@ -72,11 +72,11 @@ resource "aws_iam_role_policy_attachment" "webhook_ssm_access_attachment" {
   policy_arn = aws_iam_policy.webhook_ssm_access.arn
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "log_alert" {
-  name            = "log-alerts-lambda-function-filter"
-  role_arn        = aws_iam_role.alarm_notifications_lambda_role.arn
-  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-  filter_pattern  = "{ $.percent-of-technical-failures > 2 && $.alert-enabled is true }"
-  destination_arn = aws_iam_role.alarm_notifications_lambda_role.arn
-  distribution    = "Random"
-}
+#resource "aws_cloudwatch_log_subscription_filter" "log_alert" {
+#  name            = "log-alerts-lambda-function-filter"
+#  role_arn        = aws_iam_role.alarm_notifications_lambda_role.arn
+#  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
+#  filter_pattern  = "{ $.percent-of-technical-failures > 2 && $.alert-enabled is true }"
+#  destination_arn = aws_iam_role.alarm_notifications_lambda_role.arn
+#  distribution    = "Random"
+#}
