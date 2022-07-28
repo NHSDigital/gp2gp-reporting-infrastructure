@@ -99,3 +99,14 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
+
+variable "log_alerts_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for log alerts"
+  default     = "lambda/build/log-alerts.zip"
+}
+
+variable "log_alerts_webhook_ssm_path" {
+  type        = string
+  description = "Path containing the webhook url to send notifications to"
+}
