@@ -109,6 +109,7 @@ destroy)
   ;;
 build-lambda)
   build_lambda dashboard-pipeline-gocd-trigger
+  build_lambda log-alerts
 ;;
 *)
   echo "Invalid task: '${task}'"
