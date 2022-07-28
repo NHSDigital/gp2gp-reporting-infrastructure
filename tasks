@@ -82,8 +82,8 @@ dojo-validate)
   dojo "./tasks validate ${stack_name} ${stack_env}"
   ;;
 plan)
-  build_lambda dashboard-pipeline-gocd-trigger
   build_lambda log-alerts
+  build_lambda dashboard-pipeline-gocd-trigger
   tf_init
   terraform plan -var environment=$env_name \
     -var-file=stacks/${stack_name}/vars/${stack_env}.tfvars \
