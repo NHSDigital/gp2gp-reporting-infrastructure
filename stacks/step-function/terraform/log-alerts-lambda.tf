@@ -21,7 +21,7 @@ resource "aws_iam_policy" "cloudwatch_log_access" {
 }
 
 resource "aws_cloudwatch_log_group" "log_alerts" {
-  name = "/aws/lambda/${var.environment}-log-alerts"
+  name = "/aws/lambda/${var.environment}-log-alerts-lambda"
   tags = merge(
     local.common_tags,
     {
