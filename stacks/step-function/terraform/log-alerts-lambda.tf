@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "log_alert_lambda" {
   filename      = var.log_alerts_lambda_zip
   function_name = "${var.environment}-log-alert-lambda"
-  role          = aws_iam_role.alarm_notifications_lambda_role.arn
+  role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.log_alerts_lambda_zip)
   runtime = "python3.9"
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
   }
 }
 
-resource "aws_iam_role" "alarm_notifications_lambda_role" {
+resource "aws_iam_role" "log_alerts_lambda_role" {
   name               = "${var.environment}-log-alert-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
@@ -79,15 +79,15 @@ resource "aws_iam_policy" "webhook_ssm_access" {
 }
 
 resource "aws_iam_role_policy_attachment" "webhook_ssm_access_attachment" {
-  role       = aws_iam_role.alarm_notifications_lambda_role.name
+  role       = aws_iam_role.log_alerts_lambda_role.name
   policy_arn = aws_iam_policy.webhook_ssm_access.arn
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "log_alert" {
+resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
   name            = "log-alerts-lambda-function-filter"
-  role_arn        = aws_iam_role.alarm_notifications_lambda_role.arn
+  role_arn        = aws_iam_role.log_alerts_lambda_role.arn
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-  filter_pattern  = '{ $.module is "reports_pipeline" && $.alert-enabled is true }'
+  filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
   destination_arn = aws_iam_policy.cloudwatch_log_access.arn
   distribution    = "Random"
 }
