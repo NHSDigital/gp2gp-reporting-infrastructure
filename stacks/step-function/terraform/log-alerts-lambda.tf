@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "log_alert_lambda" {
   filename      = var.log_alerts_lambda_zip
-  function_name = "${var.environment}-log-alert-lambda"
+  function_name = "${var.environment}-log-alerts-lambda"
   role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.log_alerts_lambda_zip)
@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
 }
 
 resource "aws_iam_role" "log_alerts_lambda_role" {
-  name               = "${var.environment}-log-alert-lambda-role"
+  name               = "${var.environment}-log-alerts-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
