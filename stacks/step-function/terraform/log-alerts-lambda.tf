@@ -28,7 +28,7 @@ resource "aws_cloudwatch_log_group" "log_alerts" {
       Name = "${var.environment}-log-alerts-lambda"
     }
   )
-  retention_in_days = 28
+  retention_in_days = 60
 }
 
 data "aws_iam_policy_document" "cloudwatch_log_access" {
