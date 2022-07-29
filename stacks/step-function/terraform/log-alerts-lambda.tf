@@ -15,6 +15,35 @@ resource "aws_lambda_function" "log_alert_lambda" {
   }
 }
 
+resource "aws_iam_policy" "cloudwatch_log_access" {
+  name   = "${var.environment}-log-alerts-cloudwatch-log-access"
+  policy = data.aws_iam_policy_document.cloudwatch_log_access.json
+}
+
+resource "aws_cloudwatch_log_group" "log_alerts" {
+  name = "/aws/lambda/${var.environment}-log_alerts"
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-log-alerts-lambda"
+    }
+  )
+  retention_in_days = 14
+}
+
+data "aws_iam_policy_document" "cloudwatch_log_access" {
+  statement {
+    sid = "CloudwatchLogs"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.log_alerts.arn}:*"
+    ]
+  }
+}
+
 resource "aws_iam_role" "alarm_notifications_lambda_role" {
   name               = "${var.environment}-log-alert-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -27,29 +56,6 @@ data "aws_iam_policy_document" "lambda_assume_role" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
-  }
-}
-
-resource "aws_iam_role_policy" "lambda_create_log" {
-  role   = aws_iam_role.alarm_notifications_lambda_role.id
-  policy = data.aws_iam_policy_document.lambda_create_log.json
-}
-
-resource "aws_iam_policy" "lambda_create_log" {
-  name   = "${var.environment}-log-alerts-lambda-cloudwatch-log-access"
-  policy = data.aws_iam_policy_document.lambda_create_log.json
-}
-
-data "aws_iam_policy_document" "lambda_create_log" {
-  statement {
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "arn:aws:logs:*:*:*"
-    ]
   }
 }
 
@@ -81,7 +87,7 @@ resource "aws_cloudwatch_log_subscription_filter" "log_alert" {
   name            = "log-alerts-lambda-function-filter"
   role_arn        = aws_iam_role.alarm_notifications_lambda_role.arn
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-  filter_pattern  = "{ $.percent-of-technical-failures > 2 && $.alert-enabled is true }"
-  destination_arn = aws_iam_policy.lambda_create_log.arn
+  filter_pattern  = '{ $.module is "reports_pipeline" && $.alert-enabled is true }'
+  destination_arn = aws_iam_policy.cloudwatch_log_access.arn
   distribution    = "Random"
 }
