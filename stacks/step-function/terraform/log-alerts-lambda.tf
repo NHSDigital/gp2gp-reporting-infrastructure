@@ -82,11 +82,11 @@ resource "aws_iam_policy" "webhook_ssm_access" {
   policy = data.aws_iam_policy_document.webhook_ssm_access.json
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
-  name            = "log-alerts-lambda-function-filter"
-  role_arn        = aws_iam_role.log_alerts_lambda_role.arn
-  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-  filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
-  destination_arn = aws_iam_policy.cloudwatch_log_access.arn
-  distribution    = "Random"
-}
+#resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
+#  name            = "log-alerts-lambda-function-filter"
+#  role_arn        = aws_iam_role.log_alerts_lambda_role.arn
+#  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
+#  filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
+#  destination_arn = aws_iam_policy.cloudwatch_log_access.arn
+#  distribution    = "Random"
+#}
