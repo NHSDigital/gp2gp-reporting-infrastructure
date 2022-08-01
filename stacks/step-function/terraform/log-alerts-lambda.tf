@@ -33,16 +33,6 @@ resource "aws_cloudwatch_log_group" "log_alerts" {
 
 data "aws_iam_policy_document" "cloudwatch_log_access" {
   statement {
-    sid = "CloudwatchLogsCreateLogGroup"
-    actions = [
-      "logs:CreateLogGroup",
-    ]
-    resources = [
-      "${data.aws_ssm_parameter.cloud_watch_log_group.arn}:*"
-    ]
-  }
-
-  statement {
     sid = "CloudwatchLogs"
     actions = [
       "logs:CreateLogStream",
@@ -93,14 +83,15 @@ resource "aws_iam_policy" "webhook_ssm_access" {
 }
 
 resource "aws_lambda_permission" "lambda_allow_cloudwatch" {
+  statement_id = "log-alerts-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alert_lambda.function_name
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
-  source_arn    = "${data.aws_ssm_parameter.cloud_watch_log_group.arn}:*"
+  source_arn    = "${aws_cloudwatch_log_group.log_alerts.arn}:*"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
-  name            = "log-alerts-lambda-function-filter"
+  name            = "${var.environment}-log-alerts-lambda-function-filter"
   depends_on      = [aws_lambda_permission.lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
