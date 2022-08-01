@@ -92,10 +92,17 @@ resource "aws_iam_policy" "webhook_ssm_access" {
   policy = data.aws_iam_policy_document.webhook_ssm_access.json
 }
 
+resource "aws_lambda_permission" "log_alerts" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.log_alert_lambda.function_name
+  principal     = "events.${data.aws_region.current.name}.amazonaws.com"
+  source_arn    = "${data.aws_ssm_parameter.cloud_watch_log_group.arn}:*"
+}
+
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
   name            = "log-alerts-lambda-function-filter"
-  role_arn        = aws_iam_role.log_alerts_lambda_role.arn
+  depends_on      = [aws_lambda_permission.log_alerts]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
-  destination_arn = aws_cloudwatch_log_group.log_alerts.arn
+  destination_arn = aws_lambda_function.log_alert_lambda.arn
 }
