@@ -87,7 +87,7 @@ resource "aws_lambda_permission" "lambda_allow_cloudwatch" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alert_lambda.function_name
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_log_group.log_alerts.arn}:*"
+  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
