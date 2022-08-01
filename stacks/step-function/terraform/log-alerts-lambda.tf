@@ -35,6 +35,16 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
   statement {
     sid = "CloudwatchLogs"
     actions = [
+      "logs:CreateLogGroup",
+    ]
+    resources = [
+      "${data.aws_ssm_parameter.cloud_watch_log_group.arn}:*"
+    ]
+  }
+
+  statement {
+    sid = "CloudwatchLogs"
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
@@ -50,7 +60,6 @@ resource "aws_iam_role" "log_alerts_lambda_role" {
   managed_policy_arns = [
     aws_iam_policy.webhook_ssm_access.arn,
     aws_iam_policy.cloudwatch_log_access.arn,
-    data.aws_ssm_parameter.cloud_watch_log_group.arn
     ]
 }
 
