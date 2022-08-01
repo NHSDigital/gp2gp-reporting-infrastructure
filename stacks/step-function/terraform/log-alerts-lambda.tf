@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_group" "log_alerts" {
 
 data "aws_iam_policy_document" "cloudwatch_log_access" {
   statement {
-    sid = "CloudwatchLogs"
+    sid = "CloudwatchLogsCreateLogGroup"
     actions = [
       "logs:CreateLogGroup",
     ]
