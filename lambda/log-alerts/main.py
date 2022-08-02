@@ -30,7 +30,6 @@ def decode(data):
 def lambda_handler(event, context):
     ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
-    alarm_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_WEBHOOK_URL_PARAM_NAME"])
 
     data = decode(event["awslogs"]["data"])
     message = json.loads(data["logEvents"][0]["message"])
@@ -53,12 +52,29 @@ def lambda_handler(event, context):
         "textFormat": "markdown"
     }
 
-
     encoded_msg = json.dumps(msg).encode('utf-8')
-    resp = http.request('POST', url=alarm_webhook_url, body=encoded_msg)
+
+    general_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_WEBHOOK_URL_PARAM_NAME"])
+    general_alert_resp = http.request('POST', url=general_alert_webhook_url, body=encoded_msg)
 
     print({
         "message": msg["text"],
-        "status_code": resp.status,
-        "response": resp.data
+        "status_code": general_alert_resp.status,
+        "response": general_alert_resp.data,
+        "alert_type": "daily_general_technical_failure_rates",
     })
+
+    technical_failure_threshold = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD"])
+
+    if percent_of_technical_failures > int(technical_failure_threshold):
+        exceeded_threshold_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME"])
+        exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=encoded_msg)
+
+        print({
+            "message": msg["text"],
+            "status_code": exceeded_threshold_alert_resp.status,
+            "response": exceeded_threshold_alert_resp.data,
+            "alert_type": "exceeded_threshold_technical_failure_rates",
+            "technical_failure_threshold": technical_failure_threshold,
+            "technical_failure_rate": percent_of_technical_failures
+        })
