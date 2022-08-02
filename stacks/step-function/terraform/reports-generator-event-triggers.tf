@@ -63,6 +63,6 @@ resource "aws_cloudwatch_event_target" "daily_transfer_outcomes_per_supplier_pat
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "0",
     "NUMBER_OF_DAYS" : "1",
-    "ALERT_ENABLED": var.environment == "dev" ? "true" : "false"
+    "ALERT_ENABLED": var.environment == "dev" ? "false" : "true"
   })
 }
