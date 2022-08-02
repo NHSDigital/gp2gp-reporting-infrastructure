@@ -39,39 +39,45 @@ def lambda_handler(event, context):
     start_date = message["reporting-window-start-datetime"]
     datetime_obj = datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%A %d %B, %Y")
 
-    text = (
-        f"## Technical failures are above the threshold. ##\n\n"
+    base_text = (
         f"* **Percent of technical failures**: {percent_of_technical_failures}%\n\n"
         f"* **Total technical failures**: {total_technical_failures}\n\n"
         f"* **Total transfers**: {total_transfers}\n\n"
         f"* **Date**: {datetime_obj}\n\n"
     )
 
-    msg = {
-        "text": text,
+    daily_alert_heading = f"## Daily technical failure rate: ##\n\n"
+    daily_alert_msg = {
+        "text": daily_alert_heading + base_text,
         "textFormat": "markdown"
     }
-
-    encoded_msg = json.dumps(msg).encode('utf-8')
+    daily_alert_encoded_msg = json.dumps(daily_alert_msg).encode('utf-8')
 
     general_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_WEBHOOK_URL_PARAM_NAME"])
-    general_alert_resp = http.request('POST', url=general_alert_webhook_url, body=encoded_msg)
+    general_alert_resp = http.request('POST', url=general_alert_webhook_url, body=daily_alert_encoded_msg)
 
     print({
-        "message": msg["text"],
+        "message": daily_alert_msg["text"],
         "status_code": general_alert_resp.status,
         "response": general_alert_resp.data,
         "alert_type": "daily_general_technical_failure_rates",
     })
 
-    technical_failure_threshold = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD"])
+    technical_failure_threshold = int(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD"]))
 
-    if percent_of_technical_failures > int(technical_failure_threshold):
+    if percent_of_technical_failures > technical_failure_threshold:
+        threshold_alert_heading = f"## Technical failures are above the threshold: ##\n\n"
+        threshold_alert_msg = {
+            "text": threshold_alert_heading + base_text,
+            "textFormat": "markdown"
+        }
+        threshold_alert_encoded_msg = json.dumps(threshold_alert_msg).encode('utf-8')
+
         exceeded_threshold_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME"])
-        exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=encoded_msg)
+        exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=threshold_alert_encoded_msg)
 
         print({
-            "message": msg["text"],
+            "message": threshold_alert_msg["text"],
             "status_code": exceeded_threshold_alert_resp.status,
             "response": exceeded_threshold_alert_resp.data,
             "alert_type": "exceeded_threshold_technical_failure_rates",
