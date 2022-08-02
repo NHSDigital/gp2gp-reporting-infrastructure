@@ -15,4 +15,6 @@ spine_exporter_iam_role_arn_param_name="/registrations/preprod/data-pipeline/spi
 transfer_data_bucket_name="prm-gp2gp-transfer-data-preprod"
 gocd_trigger_lambda_arn_param_name="/registrations/preprod/data-pipeline/dashboard-pipeline-gocd-trigger/lambda-arn"
 log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-name"
-log_alerts_webhook_ssm_path="/registrations/preprod/user-input/log-alerts-webhook-url"
+log_alerts_webhook_url_ssm_path="/registrations/preprod/user-input/log-alerts-webhook-url"
+log_alerts_exceeded_threshold_webhook_url_ssm_path="/registrations/preprod/user-input/log-alerts-exceeded-threshold-webhook-url"
+log_alerts_technical_failure_rate_threshold_ssm_path="/registrations/preprod/user-input/log-alerts-technical-failure-rate-threshold"
