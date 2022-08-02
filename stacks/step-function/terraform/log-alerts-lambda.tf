@@ -12,6 +12,7 @@ resource "aws_lambda_function" "log_alert_lambda" {
     variables = {
       LOG_ALERTS_WEBHOOK_URL_PARAM_NAME = var.log_alerts_webhook_url_ssm_path,
       LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_ssm_path
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path
       LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD = var.log_alerts_technical_failure_rate_threshold_ssm_path
     }
   }

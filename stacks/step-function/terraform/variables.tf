@@ -116,6 +116,11 @@ variable "log_alerts_exceeded_threshold_webhook_url_ssm_path" {
   description = "Path containing the webhook url to send failure threshold succeeded notifications to"
 }
 
+variable "log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path" {
+  type        = string
+  description = "Path containing the webhook url second channel to send failure threshold succeeded notifications to"
+}
+
 variable "log_alerts_technical_failure_rate_threshold_ssm_path" {
   type        = string
   description = "Path containing the technical failure rate threshold percentage"
