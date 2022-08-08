@@ -124,7 +124,7 @@ resource "aws_lambda_function" "pipeline_error_log_alert_lambda" {
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "pipeline_error_log_alerts" {
-  name            = "${var.environment}-log-alerts-lambda-function-filter"
+  name            = "${var.environment}-pipeline-error-log-alerts-lambda-function-filter"
   depends_on      = [aws_lambda_permission.lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.level = \"ERROR\" }"
