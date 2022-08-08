@@ -1,19 +1,19 @@
-resource "aws_lambda_function" "log_alert_lambda" {
-  filename      = var.log_alerts_lambda_zip
-  function_name = "${var.environment}-log-alerts-lambda"
+resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_lambda" {
+  filename      = var.log_alerts_technical_failures_above_threshold_lambda_zip
+  function_name = "${var.environment}-log-alerts-technical-failures-above-thresholdlambda"
   role          = aws_iam_role.log_alerts_lambda_role.arn
-  handler       = "technical_failures.lambda_handler"
-  source_code_hash = filebase64sha256(var.log_alerts_lambda_zip)
+  handler       = "main.lambda_handler"
+  source_code_hash = filebase64sha256(var.log_alerts_technical_failures_above_threshold_lambda_zip)
   runtime = "python3.9"
   timeout = 15
   tags          = local.common_tags
 
   environment {
     variables = {
-      LOG_ALERTS_WEBHOOK_URL_PARAM_NAME = var.log_alerts_webhook_url_ssm_path,
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_ssm_path
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path
-      LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD = var.log_alerts_technical_failure_rate_threshold_ssm_path
+      LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_ssm_path,
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_ssm_path,
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path,
+      LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD = var.log_alerts_technical_failures_above_threshold_rate_ssm_path
     }
   }
 }
@@ -75,10 +75,10 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_webhook_url_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_exceeded_threshold_webhook_url_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failure_rate_threshold_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path}"
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_ssm_path}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_ssm_path}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_ssm_path}"
     ]
   }
 }
@@ -88,45 +88,53 @@ resource "aws_iam_policy" "webhook_ssm_access" {
   policy = data.aws_iam_policy_document.webhook_ssm_access.json
 }
 
-resource "aws_lambda_permission" "lambda_allow_cloudwatch" {
-  statement_id = "log-alerts-lambda-allow-cloudwatch"
+resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch" {
+  statement_id = "log-alerts-technical-failures-above-threshold-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.log_alert_lambda.function_name
+  function_name = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.function_name
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
   source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
-  name            = "${var.environment}-log-alerts-lambda-function-filter"
-  depends_on      = [aws_lambda_permission.lambda_allow_cloudwatch]
+resource "aws_cloudwatch_log_subscription_filter" "log_alerts_technical_failures_above_threshold" {
+  name            = "${var.environment}-log-alerts-technical-failures-above-threshold-log-filter"
+  depends_on      = [aws_lambda_permission.log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
-  destination_arn = aws_lambda_function.log_alert_lambda.arn
+  destination_arn = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.arn
 }
 
-# Pipeline error log_alerts
-resource "aws_lambda_function" "pipeline_error_log_alert_lambda" {
-  filename      = var.pipeline_error_log_alerts_lambda_zip
-  function_name = "${var.environment}-pipeline-error-log-alerts-lambda"
+# Pipeline error log_alerts_pipeline_error
+resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
+  filename      = var.log_alerts_pipeline_error_lambda_zip
+  function_name = "${var.environment}-log-alerts-pipeline-error-lambda"
   role          = aws_iam_role.log_alerts_lambda_role.arn
-  handler       = "pipeline_error.lambda_handler"
-  source_code_hash = filebase64sha256(var.pipeline_error_log_alerts_lambda_zip)
+  handler       = "main.lambda_handler"
+  source_code_hash = filebase64sha256(var.log_alerts_pipeline_error_lambda_zip)
   runtime = "python3.9"
   timeout = 15
   tags          = local.common_tags
 
   environment {
     variables = {
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path,
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path,
       CLOUDWATCH_DASHBOARD_URL = var.cloudwatch_dashboard_url
     }
   }
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "pipeline_error_log_alerts" {
-  name            = "${var.environment}-pipeline-error-log-alerts-lambda-function-filter"
-  depends_on      = [aws_lambda_permission.lambda_allow_cloudwatch]
+resource "aws_lambda_permission" "log_alerts_pipeline_error_lambda_allow_cloudwatch" {
+  statement_id = "log-alerts-pipeline-error-lambda-allow-cloudwatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.log_alerts_pipeline_error_lambda.function_name
+  principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
+  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error_pipeline_error" {
+  name            = "${var.environment}-log-alerts-pipeline-error-log-filter"
+  depends_on      = [aws_lambda_permission.log_alerts_pipeline_error_lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.level = \"ERROR\" }"
-  destination_arn = aws_lambda_function.pipeline_error_log_alert_lambda.arn
+  destination_arn = aws_lambda_function.log_alerts_pipeline_error_lambda.arn
 }

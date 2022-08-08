@@ -82,7 +82,8 @@ dojo-validate)
   dojo "./tasks validate ${stack_name} ${stack_env}"
   ;;
 plan)
-  build_lambda log-alerts
+  build_lambda log-alerts-technical-failures-above-threshold
+  build_lambda log-alerts-pipeline-error
   build_lambda dashboard-pipeline-gocd-trigger
   tf_init
   terraform plan -var environment=$env_name \
@@ -110,7 +111,8 @@ destroy)
   ;;
 build-lambda)
   build_lambda dashboard-pipeline-gocd-trigger
-  build_lambda log-alerts
+  build_lambda log-alerts-pipeline-error
+  build_lambda log-alerts-technical-failures-above-threshold
 ;;
 *)
   echo "Invalid task: '${task}'"
