@@ -2,7 +2,7 @@ resource "aws_lambda_function" "log_alert_lambda" {
   filename      = var.log_alerts_lambda_zip
   function_name = "${var.environment}-log-alerts-lambda"
   role          = aws_iam_role.log_alerts_lambda_role.arn
-  handler       = "main.lambda_handler"
+  handler       = "technical_failures.lambda_handler"
   source_code_hash = filebase64sha256(var.log_alerts_lambda_zip)
   runtime = "python3.9"
   timeout = 15
