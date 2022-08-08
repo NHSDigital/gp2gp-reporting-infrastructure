@@ -106,6 +106,12 @@ variable "log_alerts_lambda_zip" {
   default     = "lambda/build/log-alerts.zip"
 }
 
+variable "pipeline_error_log_alerts_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for log alerts"
+  default     = "lambda/build/pipeline-error-log-alerts.zip"
+}
+
 variable "log_alerts_webhook_url_ssm_path" {
   type        = string
   description = "Path containing the webhook url to send notifications to"
@@ -124,4 +130,9 @@ variable "log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path" {
 variable "log_alerts_technical_failure_rate_threshold_ssm_path" {
   type        = string
   description = "Path containing the technical failure rate threshold percentage"
+}
+
+variable "cloudwatch_dashboard_url" {
+  type        = string
+  description = "URL of the cloudwatch dashboard pipeline overview"
 }

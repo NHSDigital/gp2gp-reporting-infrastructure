@@ -19,3 +19,4 @@ log_alerts_webhook_url_ssm_path="/registrations/preprod/user-input/log-alerts-we
 log_alerts_exceeded_threshold_webhook_url_ssm_path="/registrations/preprod/user-input/log-alerts-exceeded-threshold-webhook-url"
 log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path="/registrations/preprod/user-input/log-alerts-exceeded-threshold-webhook-url-channel-two"
 log_alerts_technical_failure_rate_threshold_ssm_path="/registrations/preprod/user-input/log-alerts-technical-failure-rate-threshold"
+cloudwatch_dashboard_url="https://console.aws.amazon.com/cloudwatch/home#dashboards:name=preprod-registrations-data-pipeline-overview"

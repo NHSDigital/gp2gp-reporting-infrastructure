@@ -103,3 +103,30 @@ resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
   filter_pattern  = "{ $.module = \"reports_pipeline\" && $.alert-enabled is true }"
   destination_arn = aws_lambda_function.log_alert_lambda.arn
 }
+
+# Pipeline error log_alerts
+resource "aws_lambda_function" "pipeline_error_log_alert_lambda" {
+  filename      = var.pipeline_error_log_alerts_lambda_zip
+  function_name = "${var.environment}-pipeline-error-log-alerts-lambda"
+  role          = aws_iam_role.log_alerts_lambda_role.arn
+  handler       = "pipeline_error.lambda_handler"
+  source_code_hash = filebase64sha256(var.pipeline_error_log_alerts_lambda_zip)
+  runtime = "python3.9"
+  timeout = 15
+  tags          = local.common_tags
+
+  environment {
+    variables = {
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_exceeded_threshold_webhook_url_channel_two_ssm_path,
+      CLOUDWATCH_DASHBOARD_URL = var.cloudwatch_dashboard_url
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "log_alerts" {
+  name            = "${var.environment}-log-alerts-lambda-function-filter"
+  depends_on      = [aws_lambda_permission.lambda_allow_cloudwatch]
+  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
+  filter_pattern  = "{ $.level = \"ERROR\" }"
+  destination_arn = aws_lambda_function.pipeline_error_log_alert_lambda.arn
+}
