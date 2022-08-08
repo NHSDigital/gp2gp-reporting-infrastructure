@@ -130,11 +130,11 @@ resource "aws_lambda_permission" "log_alerts_pipeline_error_lambda_allow_cloudwa
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
   source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
 }
-#
-#resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error" {
-#  name            = "${var.environment}-log-alerts-pipeline-error-log-filter"
-#  depends_on      = [aws_lambda_permission.log_alerts_pipeline_error_lambda_allow_cloudwatch]
-#  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-#  filter_pattern  = "{ $.level = \"ERROR\" }"
-#  destination_arn = aws_lambda_function.log_alerts_pipeline_error_lambda.arn
-#}
+
+resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error" {
+  name            = "${var.environment}-log-alerts-pipeline-error-log-filter"
+  depends_on      = [aws_lambda_permission.log_alerts_pipeline_error_lambda_allow_cloudwatch]
+  log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
+  filter_pattern  = "{ $.level = \"ERROR\" }"
+  destination_arn = aws_lambda_function.log_alerts_pipeline_error_lambda.arn
+}
