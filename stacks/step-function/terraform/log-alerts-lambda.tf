@@ -141,10 +141,11 @@ resource "aws_lambda_permission" "log_alerts_pipeline_error_lambda_allow_cloudwa
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error" {
+#  count           = var.environment == "dev" ? 0 : 1
   name            = "${var.environment}-log-alerts-pipeline-error-log-filter"
   depends_on      = [aws_lambda_permission.log_alerts_pipeline_error_lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
-  filter_pattern  = "{ $.level = \"ERROR\" }"
+  filter_pattern  = "\"Failed to run main, exiting...\""
   destination_arn = aws_lambda_function.log_alerts_pipeline_error_lambda.arn
 }
 
