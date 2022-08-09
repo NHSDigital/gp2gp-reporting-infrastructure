@@ -20,7 +20,7 @@ def decode(data):
     json_payload = zlib.decompress(compressed_payload, 16+zlib.MAX_WBITS)
     return json.loads(json_payload)
 
-def lambda_handler():
+def lambda_handler(event, context):
     ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
 
