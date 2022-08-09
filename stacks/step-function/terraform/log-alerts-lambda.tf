@@ -1,6 +1,10 @@
+variable "log_alerts_technical_failures_above_threshold_lambda_name" {
+  default = "log-alerts-technical-failures-above-threshold-lambda"
+}
+
 resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_lambda" {
   filename      = var.log_alerts_technical_failures_above_threshold_lambda_zip
-  function_name = "${var.environment}-log-alerts-technical-failures-above-threshold-lambda"
+  function_name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
   role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.log_alerts_technical_failures_above_threshold_lambda_zip)
@@ -23,8 +27,8 @@ resource "aws_iam_policy" "cloudwatch_log_access" {
   policy = data.aws_iam_policy_document.cloudwatch_log_access.json
 }
 
-resource "aws_cloudwatch_log_group" "log_alerts" {
-  name = "/aws/lambda/${var.environment}-log-alerts-lambda"
+resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_threshold" {
+  name = "/aws/lambda/${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
   tags = merge(
     local.common_tags,
     {
@@ -42,7 +46,8 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "${aws_cloudwatch_log_group.log_alerts.arn}:*"
+      "${aws_cloudwatch_log_group.log_alerts_technical_failures_above_threshold.arn}:*",
+      "${aws_cloudwatch_log_group.log_alerts_pipeline_error.arn}:*"
     ]
   }
 }
@@ -104,10 +109,14 @@ resource "aws_cloudwatch_log_subscription_filter" "log_alerts_technical_failures
   destination_arn = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.arn
 }
 
-# Pipeline error log_alerts_pipeline_error
+# Pipeline error lambda
+variable "log_alerts_pipeline_error_lambda_name" {
+  default = "log-alerts-pipeline-error-lambda"
+}
+
 resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
   filename      = var.log_alerts_pipeline_error_lambda_zip
-  function_name = "${var.environment}-log-alerts-pipeline-error-lambda"
+  function_name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
   role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.log_alerts_pipeline_error_lambda_zip)
@@ -137,4 +146,15 @@ resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error" {
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
   filter_pattern  = "{ $.level = \"ERROR\" }"
   destination_arn = aws_lambda_function.log_alerts_pipeline_error_lambda.arn
+}
+
+resource "aws_cloudwatch_log_group" "log_alerts_pipeline_error" {
+  name = "/aws/lambda/${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-log-alerts-lambda"
+    }
+  )
+  retention_in_days = 60
 }
