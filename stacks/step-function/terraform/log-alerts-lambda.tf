@@ -32,7 +32,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_thresho
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-log-alerts-lambda"
+      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
     }
   )
   retention_in_days = 60
@@ -153,7 +153,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_pipeline_error" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-log-alerts-lambda"
+      Name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
     }
   )
   retention_in_days = 60
