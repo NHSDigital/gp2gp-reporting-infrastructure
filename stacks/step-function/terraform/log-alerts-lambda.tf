@@ -10,10 +10,10 @@ resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_la
 
   environment {
     variables = {
-      LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_ssm_path,
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_ssm_path,
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path,
-      LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD = var.log_alerts_technical_failures_above_threshold_rate_ssm_path
+      LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_param_name,
+      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_param_name,
+      LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
+      LOG_ALERTS_TECHNICAL_FAILURE_RATE_THRESHOLD = var.log_alerts_technical_failures_above_threshold_rate_param_name
     }
   }
 }
@@ -75,10 +75,10 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_ssm_path}"
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_general_webhook_url_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}"
     ]
   }
 }
@@ -117,7 +117,7 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
 
   environment {
     variables = {
-      LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path,
+      LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
       CLOUDWATCH_DASHBOARD_URL = var.cloudwatch_dashboard_url
     }
   }

@@ -85,5 +85,5 @@ def lambda_handler(event, context):
             "technical_failure_rate": percent_of_technical_failures
         })
 
-        exceeded_threshold_alert_webhook_url_channel_two = secret_manager.get_secret(os.environ["LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME"])
-        http.request('POST', url=exceeded_threshold_alert_webhook_url, body=exceeded_threshold_alert_webhook_url_channel_two)
+        log_alerts_general_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
+        http.request('POST', url=exceeded_threshold_alert_webhook_url, body=log_alerts_general_webhook_url)

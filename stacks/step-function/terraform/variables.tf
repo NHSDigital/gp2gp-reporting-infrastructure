@@ -112,24 +112,24 @@ variable "log_alerts_pipeline_error_lambda_zip" {
   default     = "lambda/build/log-alerts-pipeline-error.zip"
 }
 
-variable "log_alerts_technical_failures_webhook_url_ssm_path" {
+variable "log_alerts_technical_failures_webhook_url_param_name" {
   type        = string
-  description = "Path containing the webhook url to send notifications to"
+  description = "SSM parameter containing the webhook url to send notifications to"
 }
 
-variable "log_alerts_technical_failures_above_threshold_webhook_url_ssm_path" {
+variable "log_alerts_technical_failures_above_threshold_webhook_url_param_name" {
   type        = string
-  description = "Path containing the webhook url to send failure threshold succeeded notifications to"
+  description = "SSM parameter containing the webhook url to send failure threshold succeeded notifications to"
 }
 
-variable "log_alerts_technical_failures_above_threshold_webhook_url_channel_two_ssm_path" {
+variable "log_alerts_technical_failures_above_threshold_rate_param_name" {
   type        = string
-  description = "Path containing the webhook url second channel to send failure threshold succeeded notifications to"
+  description = "SSM parameter containing the technical failure rate threshold percentage"
 }
 
-variable "log_alerts_technical_failures_above_threshold_rate_ssm_path" {
+variable "log_alerts_general_webhook_url_param_name" {
   type        = string
-  description = "Path containing the technical failure rate threshold percentage"
+  description = "SSM parameter containing the general webhook url channel to send failure threshold succeeded notifications to"
 }
 
 variable "cloudwatch_dashboard_url" {

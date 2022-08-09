@@ -37,7 +37,7 @@ def lambda_handler():
     }
     pipeline_error_encoded_msg = json.dumps(msg).encode('utf-8')
 
-    pipeline_error_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_EXCEEDED_THRESHOLD_WEBHOOK_URL_CHANNEL_TWO_PARAM_NAME"])
+    pipeline_error_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
     pipeline_error_alert_resp = http.request('POST', url=pipeline_error_alert_webhook_url, body=pipeline_error_encoded_msg)
 
     print({
