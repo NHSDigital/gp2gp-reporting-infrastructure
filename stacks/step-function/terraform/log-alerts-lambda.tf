@@ -102,6 +102,7 @@ resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts_technical_failures_above_threshold" {
+  count           = var.environment == "dev" ? 0 : 1
   name            = "${var.environment}-log-alerts-technical-failures-above-threshold-log-filter"
   depends_on      = [aws_lambda_permission.log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch]
   log_group_name  = data.aws_ssm_parameter.cloud_watch_log_group.value
