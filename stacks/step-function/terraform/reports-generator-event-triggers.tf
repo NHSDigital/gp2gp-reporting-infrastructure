@@ -7,7 +7,7 @@ resource "aws_cloudwatch_event_target" "monthly_transfer_outcomes_per_supplier_p
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "14",
     "NUMBER_OF_MONTHS" : "1",
-    "ALERT_ENABLED": "true"
+    "ALERT_ENABLED": "false"
   })
 }
 
@@ -20,7 +20,7 @@ resource "aws_cloudwatch_event_target" "monthly_sicbl_level_integration_times_re
     "REPORT_NAME" : "SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES",
     "CONVERSATION_CUTOFF_DAYS" : "14",
     "NUMBER_OF_MONTHS" : "1",
-    "ALERT_ENABLED": "true"
+    "ALERT_ENABLED": "false"
   })
 }
 
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_outcomes_per_supplier_pa
     "REPORT_NAME" : "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY",
     "CONVERSATION_CUTOFF_DAYS" : "2",
     "NUMBER_OF_DAYS" : "7",
-    "ALERT_ENABLED": "true"
+    "ALERT_ENABLED": "false"
   })
 }
 
@@ -46,7 +46,7 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures
     "REPORT_NAME" : "TRANSFER_LEVEL_TECHNICAL_FAILURES",
     "CONVERSATION_CUTOFF_DAYS" : "2",
     "NUMBER_OF_DAYS" : "7",
-    "ALERT_ENABLED": "true"
+    "ALERT_ENABLED": "false"
   })
 }
 
@@ -59,7 +59,7 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_details_by_hour_report_e
     "REPORT_NAME" : "TRANSFER_DETAILS_BY_HOUR",
     "CONVERSATION_CUTOFF_DAYS" : "2",
     "NUMBER_OF_DAYS" : "7",
-    "ALERT_ENABLED": "true"
+    "ALERT_ENABLED": "false"
   })
 }
 
