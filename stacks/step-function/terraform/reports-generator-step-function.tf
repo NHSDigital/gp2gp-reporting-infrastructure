@@ -92,8 +92,6 @@ resource "aws_sfn_state_machine" "reports_generator" {
         "Type" : "Task",
         "Comment" : "Reports Generator - creates a specific report needed for analysing GP2GP transfers",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
-        "ResultPath" : "$.result",
-        "OutputPath": "$.output",
         "Parameters" : {
           "LaunchType" : "FARGATE",
           "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
