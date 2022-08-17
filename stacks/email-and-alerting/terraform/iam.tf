@@ -86,6 +86,6 @@ data "aws_iam_policy_document" "reports_generator_bucket_read_access" {
 }
 
 resource "aws_iam_policy" "reports_generator_bucket_read_access" {
-  name   = "${data.aws_ssm_parameter.reports_generator_bucket_name.value}}-read"
+  name   = "${data.aws_ssm_parameter.reports_generator_bucket_name.value}-read"
   policy = data.aws_iam_policy_document.reports_generator_bucket_read_access.json
 }
