@@ -2,8 +2,6 @@ import urllib3
 import boto3
 import json
 import os
-import zlib
-from base64 import b64decode
 
 http = urllib3.PoolManager()
 
@@ -15,10 +13,6 @@ class SsmSecretManager:
         response = self._ssm.get_parameter(Name=name, WithDecryption=True)
         return response["Parameter"]["Value"]
 
-def decode(data):
-    compressed_payload = b64decode(data)
-    json_payload = zlib.decompress(compressed_payload, 16+zlib.MAX_WBITS)
-    return json.loads(json_payload)
 
 def lambda_handler(event, context):
     ssm = boto3.client("ssm")
