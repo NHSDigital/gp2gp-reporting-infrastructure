@@ -35,3 +35,8 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
+
+variable "reports_generator_bucket_param_name" {
+  type        = string
+  description = "Reports generator output bucket name"
+}

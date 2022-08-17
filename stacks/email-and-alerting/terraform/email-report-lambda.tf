@@ -19,11 +19,6 @@ resource "aws_lambda_function" "email_report_lambda" {
   }
 }
 
-resource "aws_iam_policy" "cloudwatch_log_access" {
-  name   = "${var.environment}-email-report-cloudwatch-log-access"
-  policy = data.aws_iam_policy_document.cloudwatch_log_access.json
-}
-
 resource "aws_cloudwatch_log_group" "email_report" {
   name = "/aws/lambda/${var.environment}-${var.email_report_lambda_name}"
   tags = merge(
@@ -35,54 +30,7 @@ resource "aws_cloudwatch_log_group" "email_report" {
   retention_in_days = 60
 }
 
-data "aws_iam_policy_document" "cloudwatch_log_access" {
-  statement {
-    sid = "CloudwatchLogs"
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "${aws_cloudwatch_log_group.email_report.arn}:*",
-    ]
-  }
-}
 
-resource "aws_iam_role" "email_report_lambda_role" {
-  name               = "${var.environment}-email-report-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.email_report_lambda_ssm_access.arn,
-    aws_iam_policy.cloudwatch_log_access.arn,
-    ]
-}
 
-data "aws_iam_policy_document" "lambda_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
 
-data "aws_iam_policy_document" "email_report_lambda_ssm_access" {
-  statement {
-    sid = "GetSSMParameter"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-
-    resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}",
-    ]
-  }
-}
-
-resource "aws_iam_policy" "email_report_lambda_ssm_access" {
-  name   = "${var.environment}-email-report-lambda-ssm-access"
-  policy = data.aws_iam_policy_document.email_report_lambda_ssm_access.json
-}
 
