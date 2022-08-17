@@ -56,7 +56,7 @@ resource "aws_iam_role" "log_alerts_lambda_role" {
   name               = "${var.environment}-log-alerts-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
   managed_policy_arns = [
-    aws_iam_policy.webhook_ssm_access.arn,
+    aws_iam_policy.log_alerts_ssm_access.arn,
     aws_iam_policy.cloudwatch_log_access.arn,
     ]
 }
@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "webhook_ssm_access" {
+data "aws_iam_policy_document" "log_alerts_ssm_access" {
   statement {
     sid = "GetSSMParameter"
 
@@ -88,9 +88,9 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
   }
 }
 
-resource "aws_iam_policy" "webhook_ssm_access" {
-  name   = "${var.environment}-webhook-ssm-access"
-  policy = data.aws_iam_policy_document.webhook_ssm_access.json
+resource "aws_iam_policy" "log_alerts_ssm_access" {
+  name   = "${var.environment}-log-alerts-ssm-access"
+  policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
 }
 
 resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch" {
