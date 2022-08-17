@@ -5,7 +5,7 @@ variable "email_report_lambda_name" {
 resource "aws_lambda_function" "email_report_lambda" {
   filename      = var.email_report_lambda_zip
   function_name = "${var.environment}-${var.email_report_lambda_name}"
-  role          = aws_iam_role.log_alerts_lambda_role.arn
+  role          = aws_iam_role.email_report_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.email_report_lambda_zip)
   runtime = "python3.9"
@@ -48,11 +48,11 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
   }
 }
 
-resource "aws_iam_role" "log_alerts_lambda_role" {
+resource "aws_iam_role" "email_report_lambda_role" {
   name               = "${var.environment}-email-report-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
   managed_policy_arns = [
-    aws_iam_policy.webhook_ssm_access.arn,
+    aws_iam_policy.email_report_lambda_ssm_access.arn,
     aws_iam_policy.cloudwatch_log_access.arn,
     ]
 }
@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "webhook_ssm_access" {
+data "aws_iam_policy_document" "email_report_lambda_ssm_access" {
   statement {
     sid = "GetSSMParameter"
 
@@ -80,3 +80,9 @@ data "aws_iam_policy_document" "webhook_ssm_access" {
     ]
   }
 }
+
+resource "aws_iam_policy" "email_report_lambda_ssm_access" {
+  name   = "${var.environment}-email-report-lambda-ssm-access"
+  policy = data.aws_iam_policy_document.email_report_lambda_ssm_access.json
+}
+
