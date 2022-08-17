@@ -86,16 +86,3 @@ resource "aws_iam_policy" "webhook_ssm_access" {
   policy = data.aws_iam_policy_document.webhook_ssm_access.json
 }
 
-data "aws_region" "current" {}
-
-data "aws_caller_identity" "current" {}
-
-data "aws_region" "current" {}
-
-locals {
-  account_id = data.aws_caller_identity.current.account_id
-}
-
-data "aws_ssm_parameter" "cloud_watch_log_group" {
-  name = var.log_group_param_name
-}
