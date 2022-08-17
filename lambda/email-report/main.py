@@ -20,34 +20,12 @@ def lambda_handler(event, context):
     s3 = boto3.client("s3")
     s3.download_file(BUCKET_NAME, KEY, TMP_FILE_NAME)
 
-    s3_report_object = s3.get_object(Bucket=BUCKET_NAME, Key=KEY)
-
-    transfer_report_meta_data = s3_report_object['Metadata']
+    transfer_report_meta_data = s3.get_object(Bucket=BUCKET_NAME, Key=KEY)['Metadata']
     print("Report metadata:", transfer_report_meta_data)
 
-    start_datetime = datetime.strptime(transfer_report_meta_data['reporting-window-start-datetime'], '%Y-%m-%dT%H:%M:%S%z').strftime("%A %d %B, %Y")
-    end_datetime = (datetime.strptime(transfer_report_meta_data['reporting-window-end-datetime'], '%Y-%m-%dT%H:%M:%S%z') - timedelta(days=1)).strftime("%A %d %B, %Y")
-
     BODY_TEXT = "Please see the report attached."
-    BODY_HTML = """\
-    <html>
-    <head></head>
-    <body>
-    <h1>GP2GP Report</h1>
-    <h3>""" + BODY_TEXT + """</h3>
-    <ul>
-    <li style="padding: 2px;">Technical failures percentage: <strong>""" + str(transfer_report_meta_data['technical-failures-percentage']) + """%</strong></li>
-    <li style="padding: 2px;">Start Date: """ + start_datetime + """</li>
-    <li style="padding: 2px;">End date: """ + end_datetime + """</li>
-    <li style="padding: 2px;">Report Name: """ + str(transfer_report_meta_data['report-name']) + """</li>
-    <li style="padding: 2px;">Cutoff: """ + str(transfer_report_meta_data['config-cutoff-days']) + """</li>
-    <li style="padding: 2px;">Total technical failures: """ + str(transfer_report_meta_data['total-technical-failures']) + """</li>
-    <li style="padding: 2px;">Total transfers: """ + str(transfer_report_meta_data['total-transfers']) + """</li>
-    </ul>
-    </body>
-    </html>
-    """
-    SUBJECT = "GP2GP Report: " + start_datetime + " - " + end_datetime + " (Technical failures: " + str(transfer_report_meta_data['technical-failures-percentage']) + "%)"
+    BODY_HTML = _construct_email_body(BODY_TEXT, transfer_report_meta_data)
+    SUBJECT = _construct_email_subject(transfer_report_meta_data)
     SENDER = "Firstname Lastname <email@email.com>"
     RECIPIENT = "email@email.com"
     AWS_REGION = "eu-west-2"
@@ -71,15 +49,19 @@ def lambda_handler(event, context):
     msg.attach(msg_body)
     msg.attach(att)
 
+    _send_email(AWS_REGION, RECIPIENT, SENDER, msg)
+
+
+def _send_email(aws_region, recipient, sender, msg):
     try:
-        client = boto3.client('ses', region_name=AWS_REGION)
+        client = boto3.client('ses', region_name=aws_region)
         response = client.send_raw_email(
-            Source=SENDER,
+            Source=sender,
             Destinations=[
-                RECIPIENT
+                recipient
             ],
             RawMessage={
-                'Data':msg.as_string(),
+                'Data': msg.as_string(),
             },
             # ConfigurationSetName=CONFIGURATION_SET
         )
@@ -87,3 +69,46 @@ def lambda_handler(event, context):
         print(e.response['Error']['Message'])
     else:
         print("Email successfully sent! Message ID:", response['MessageId'])
+
+
+def _construct_email_subject(transfer_report_meta_data):
+    return "GP2GP Report: " + \
+       _format_start_date(transfer_report_meta_data) + \
+       " - " + \
+       _format_end_date(transfer_report_meta_data) + \
+       " (Technical failures: " + \
+       str(transfer_report_meta_data['technical-failures-percentage']) + \
+       "%)"
+
+
+def _format_end_date(transfer_report_meta_data):
+    return (datetime.strptime(transfer_report_meta_data['reporting-window-end-datetime'], '%Y-%m-%dT%H:%M:%S%z') -
+            timedelta(days=1)).strftime("%A %d %B, %Y")
+
+
+def _format_start_date(transfer_report_meta_data):
+    return datetime.strptime(transfer_report_meta_data['reporting-window-start-datetime'], '%Y-%m-%dT%H:%M:%S%z')\
+            .strftime("%A %d %B, %Y")
+
+
+def _construct_email_body(body_heading, transfer_report_meta_data):
+    return """\
+    <html>
+    <head></head>
+    <body>
+    <h1>GP2GP Report</h1>
+    <h3>""" + body_heading + """</h3>
+    <ul>
+    <li style="padding: 2px;">Technical failures percentage: <strong>""" + str(
+        transfer_report_meta_data['technical-failures-percentage']) + """%</strong></li>
+    <li style="padding: 2px;">Start Date: """ + _format_start_date(transfer_report_meta_data) + """</li>
+    <li style="padding: 2px;">End date: """ + _format_end_date(transfer_report_meta_data) + """</li>
+    <li style="padding: 2px;">Report Name: """ + str(transfer_report_meta_data['report-name']) + """</li>
+    <li style="padding: 2px;">Cutoff: """ + str(transfer_report_meta_data['config-cutoff-days']) + """</li>
+    <li style="padding: 2px;">Total technical failures: """ + str(
+        transfer_report_meta_data['total-technical-failures']) + """</li>
+    <li style="padding: 2px;">Total transfers: """ + str(transfer_report_meta_data['total-transfers']) + """</li>
+    </ul>
+    </body>
+    </html>
+    """
