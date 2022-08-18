@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "${aws_cloudwatch_log_group.email_report.arn}:*",
+      "${aws_cloudwatch_log_group.email_report_lambda.arn}:*",
     ]
   }
 }
@@ -110,3 +110,4 @@ data "aws_iam_policy_document" "email_report_send_raw_email" {
     ]
   }
 }
+
