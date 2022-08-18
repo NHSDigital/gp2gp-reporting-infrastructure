@@ -90,3 +90,22 @@ resource "aws_iam_policy" "reports_generator_bucket_read_access" {
   name   = "${data.aws_ssm_parameter.reports_generator_bucket_name.value}-read"
   policy = data.aws_iam_policy_document.reports_generator_bucket_read_access.json
 }
+
+resource "aws_iam_policy" "email_lambda_send_raw_email" {
+  name   = "${var.environment}-email-report-send-raw-email"
+  policy = data.aws_iam_policy_document.email_report_send_raw_email.json
+}
+
+data "aws_iam_policy_document" "email_report_send_raw_email" {
+  statement {
+    sid = "SendRawEmail"
+
+    actions = [
+      "ses:SendRawEmail"
+    ]
+
+    resources = [
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/email@email.com",
+    ]
+  }
+}
