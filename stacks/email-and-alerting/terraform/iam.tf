@@ -106,8 +106,11 @@ data "aws_iam_policy_document" "email_report_send_raw_email" {
     ]
 
     resources = [
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/email@email.com",
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${data.aws_ssm_parameter.email_report_sender_email}",
     ]
   }
 }
 
+data "aws_ssm_parameter" "email_report_sender_email" {
+  name = var.email_report_sender_email_param_name
+}

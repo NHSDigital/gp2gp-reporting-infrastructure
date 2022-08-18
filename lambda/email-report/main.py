@@ -6,10 +6,21 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from datetime import datetime, timedelta
 
-s3 = boto3.client("s3")
+
+class SsmSecretManager:
+    def __init__(self, ssm):
+        self._ssm = ssm
+
+    def get_secret(self, name):
+        response = self._ssm.get_parameter(Name=name, WithDecryption=True)
+        return response["Parameter"]["Value"]
 
 
 def lambda_handler(event, context):
+    ssm = boto3.client("ssm")
+    secret_manager = SsmSecretManager(ssm)
+    s3 = boto3.client("s3")
+
     print("Event: ", event)
 
     FILEOBJ = event["Records"][0]
@@ -31,8 +42,9 @@ def lambda_handler(event, context):
     BODY_TEXT = "Please see the report attached."
     BODY_HTML = _construct_email_body(BODY_TEXT, transfer_report_meta_data)
     SUBJECT = _construct_email_subject(transfer_report_meta_data)
-    SENDER = "Firstname Lastname <email@email.com>"
-    RECIPIENT = "email@email.com"
+
+    SENDER = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME"])
+    RECIPIENT = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME"])
     AWS_REGION = "eu-west-2"
 
     msg = MIMEMultipart('mixed')

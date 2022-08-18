@@ -26,6 +26,16 @@ variable "log_alerts_technical_failures_above_threshold_rate_param_name" {
   description = "SSM parameter containing the technical failure rate threshold percentage"
 }
 
+variable "email_report_sender_email_param_name" {
+  type        = string
+  description = "SSM parameter containing the sender email address for emailing reports"
+}
+
+variable "email_report_recipient_email_param_name" {
+  type        = string
+  description = "SSM parameter containing the recipient email address for emailing reports"
+}
+
 variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
