@@ -97,6 +97,10 @@ resource "aws_iam_policy" "email_report_lambda_send_raw_email" {
   policy = data.aws_iam_policy_document.email_report_send_raw_email.json
 }
 
+data "aws_ssm_parameter" "email_report_sender_email" {
+  name = var.email_report_sender_email_param_name
+}
+
 data "aws_iam_policy_document" "email_report_send_raw_email" {
   statement {
     sid = "SendRawEmail"
@@ -111,6 +115,4 @@ data "aws_iam_policy_document" "email_report_send_raw_email" {
   }
 }
 
-data "aws_ssm_parameter" "email_report_sender_email" {
-  name = var.email_report_sender_email_param_name
-}
+
