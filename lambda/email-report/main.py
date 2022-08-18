@@ -6,6 +6,8 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from datetime import datetime, timedelta
 
+s3 = boto3.client("s3")
+
 
 def lambda_handler(event, context):
     print("Event: ", event)
@@ -16,12 +18,15 @@ def lambda_handler(event, context):
     FILE_NAME = os.path.basename(KEY)
     TMP_FILE_NAME = '/tmp/' + FILE_NAME
 
-    # Download the file/s from the event (extracted above) to the tmp location
-    s3 = boto3.client("s3")
-    s3.download_file(BUCKET_NAME, KEY, TMP_FILE_NAME)
-
     transfer_report_meta_data = s3.get_object(Bucket=BUCKET_NAME, Key=KEY)['Metadata']
     print("Report metadata:", transfer_report_meta_data)
+
+    if _should_skip_email(transfer_report_meta_data):
+        print("Skipping email with the following metadata: ", transfer_report_meta_data)
+        pass
+
+    # Download the file/s from the event (extracted above) to the tmp location
+    s3.download_file(BUCKET_NAME, KEY, TMP_FILE_NAME)
 
     BODY_TEXT = "Please see the report attached."
     BODY_HTML = _construct_email_body(BODY_TEXT, transfer_report_meta_data)
@@ -112,3 +117,13 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
     </body>
     </html>
     """
+
+
+def _should_skip_email(transfer_report_meta_data):
+    manually_generated_report = transfer_report_meta_data['config-start-datetime']
+    daily_report_below_threshold = transfer_report_meta_data['config-cutoff-days'] == 0
+
+    if daily_report_below_threshold or manually_generated_report:
+        return True
+
+    return False
