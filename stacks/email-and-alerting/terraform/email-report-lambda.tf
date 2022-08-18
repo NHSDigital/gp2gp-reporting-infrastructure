@@ -31,7 +31,7 @@ resource "aws_cloudwatch_log_group" "email_report_lambda" {
 }
 
 resource "aws_s3_bucket_notification" "reports_generator_s3_object_created" {
-  bucket = "arn:aws:s3:::${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
+  bucket = "arn:aws:s3:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.email_report_lambda.arn
@@ -48,7 +48,7 @@ resource "aws_lambda_permission" "allow_trigger_from_s3_object_created" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.email_report_lambda.arn
   principal     = "s3.amazonaws.com"
-  source_arn    = "arn:aws:s3:::${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
+  source_arn    = "arn:aws:s3:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
 }
 
 
