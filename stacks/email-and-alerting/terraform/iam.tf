@@ -24,7 +24,7 @@ resource "aws_iam_role" "email_report_lambda_role" {
     aws_iam_policy.email_report_lambda_ssm_access.arn,
     aws_iam_policy.cloudwatch_log_access.arn,
     aws_iam_policy.reports_generator_bucket_read_access.arn,
-    aws_iam_policy.email_lambda_send_raw_email.arn
+    aws_iam_policy.email_report_lambda_send_raw_email.arn
   ]
 }
 
@@ -92,7 +92,7 @@ resource "aws_iam_policy" "reports_generator_bucket_read_access" {
   policy = data.aws_iam_policy_document.reports_generator_bucket_read_access.json
 }
 
-resource "aws_iam_policy" "email_lambda_send_raw_email" {
+resource "aws_iam_policy" "email_report_lambda_send_raw_email" {
   name   = "${var.environment}-email-report-send-raw-email"
   policy = data.aws_iam_policy_document.email_report_send_raw_email.json
 }
