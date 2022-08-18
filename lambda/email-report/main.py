@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 
     if _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
         print("Skipping email with the following metadata: ", transfer_report_meta_data)
-        pass
+        return
 
     # Download the file/s from the event (extracted above) to the tmp location
     s3.download_file(BUCKET_NAME, KEY, TMP_FILE_NAME)
