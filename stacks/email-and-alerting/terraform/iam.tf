@@ -105,7 +105,7 @@ data "aws_ssm_parameter" "email_report_sender_email" {
 
 data "aws_iam_policy_document" "email_report_send_raw_email" {
   statement {
-    sid = "SendRawEmail"
+    sid = "SendEmailWithAttachment"
 
     actions = [
       "ses:SendRawEmail"

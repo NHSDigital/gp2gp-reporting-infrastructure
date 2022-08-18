@@ -134,7 +134,7 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
 
 
 def _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
-    manually_generated_report = transfer_report_meta_data['config-start-datetime']
+    manually_generated_report = transfer_report_meta_data['config-start-datetime'] == 'None'
     daily_report_below_threshold = transfer_report_meta_data['config-cutoff-days'] == 0 and \
         transfer_report_meta_data['technical-failures-percentage'] < technical_failure_threshold_rate
 
