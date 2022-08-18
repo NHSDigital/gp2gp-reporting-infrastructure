@@ -15,11 +15,6 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
-variable "cloudwatch_dashboard_url" {
-  type        = string
-  description = "URL of the cloudwatch dashboard pipeline overview"
-}
-
 variable "email_report_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for emails"
