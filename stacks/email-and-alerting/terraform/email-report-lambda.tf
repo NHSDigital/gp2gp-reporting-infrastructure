@@ -31,7 +31,7 @@ resource "aws_cloudwatch_log_group" "email_report_lambda" {
 }
 
 resource "aws_s3_bucket_notification" "reports_generator_s3_object_created" {
-  bucket = var.reports_generator_bucket_param_name
+  bucket = "arn:aws:s3:::${var.reports_generator_bucket_param_name}"
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.email_report_lambda.arn
