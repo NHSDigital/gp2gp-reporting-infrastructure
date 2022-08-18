@@ -17,7 +17,7 @@ variable "repo_name" {
 
 variable "email_report_lambda_zip" {
   type        = string
-  description = "Path to zipfile containing lambda code for emails"
+  description = "Path to zipfile containing lambda code for emailing reports"
   default     = "lambda/build/email-report.zip"
 }
 
