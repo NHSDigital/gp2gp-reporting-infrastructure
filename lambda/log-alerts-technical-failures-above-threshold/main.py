@@ -31,7 +31,7 @@ def lambda_handler(event, context):
 
     data = decode(event["awslogs"]["data"])
     message = json.loads(data["logEvents"][0]["message"])
-    percent_of_technical_failures = message["percent-of-technical-failures"]
+    percent_of_technical_failures = int(message["percent-of-technical-failures"])
     total_technical_failures = message["total-technical-failures"]
     total_transfers = message["total-transfers"]
     start_date = message["reporting-window-start-datetime"]
