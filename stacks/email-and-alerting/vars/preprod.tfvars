@@ -5,6 +5,5 @@ email_report_sender_email_param_name="/registrations/preprod/user-input/email-re
 email_report_recipient_email_param_name="/registrations/preprod/user-input/email-report-recipient-email"
 log_alerts_technical_failures_webhook_url_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-webhook-url"
 log_alerts_technical_failures_above_threshold_webhook_url_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-webhook-url"
-log_alerts_technical_failures_above_threshold_rate_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-rate"
 log_alerts_general_webhook_url_param_name="/registrations/preprod/user-input/log-alerts-general-webhook-url"
 cloudwatch_dashboard_url="https://console.aws.amazon.com/cloudwatch/home?#dashboards:"
