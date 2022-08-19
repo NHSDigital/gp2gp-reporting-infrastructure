@@ -9,7 +9,7 @@ pipelines:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: stacks/email-and-alerting
+          path: stacks/email-and-alerting, lambda/log-alerts-technical-failures-above-threshold, lambda/log-alerts-pipeline_error, lambda/log-alerts-technical-failures-above-threshold, lambda/email-report
       reports_generator_task:
         pipeline: data-pipeline-reports-generator-task
         stage: apply_dev
@@ -36,6 +36,12 @@ pipelines:
                 - build:
                     source: dev.tfplan
                 - build:
+                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
+                    destination: lambda/build/
+                - build:
+                    source: lambda/build/log-alerts-pipeline-error.zip
+                    destination: lambda/build/
+                - build:
                     source: lambda/build/email-report.zip
                     destination: lambda/build/
               tasks:
@@ -55,6 +61,18 @@ pipelines:
                     stage: plan_dev
                     job: plan
                     source: dev.tfplan
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
+                    destination: lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: lambda/build/log-alerts-pipeline-error.zip
+                    destination: lambda/build/
                     is_file: yes
                 - fetch:
                     stage: plan_dev
@@ -92,6 +110,12 @@ pipelines:
                 - build:
                     source: preprod.tfplan
                 - build:
+                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
+                    destination: lambda/build/
+                - build:
+                    source: lambda/build/log-alerts-pipeline-error.zip
+                    destination: lambda/build/
+                - build:
                     source: lambda/build/email-report.zip
                     destination: lambda/build/
               tasks:
@@ -114,6 +138,18 @@ pipelines:
                     stage: plan_preprod
                     job: plan
                     source: preprod.tfplan
+                    is_file: yes
+                - fetch:
+                    stage: plan_preprod
+                    job: plan
+                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
+                    destination: lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_preprod
+                    job: plan
+                    source: lambda/build/log-alerts-pipeline-error.zip
+                    destination: lambda/build/
                     is_file: yes
                 - fetch:
                     stage: plan_preprod

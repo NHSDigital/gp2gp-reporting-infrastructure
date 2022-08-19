@@ -9,7 +9,7 @@ pipelines:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: stacks/step-function, lambda/log-alerts-technical-failures-above-threshold, lambda/log-alerts-pipeline_error
+          path: stacks/step-function
       spine_exporter_task:
         pipeline: data-pipeline-spine-exporter-task
         stage: apply_dev
@@ -50,12 +50,6 @@ pipelines:
               artifacts:
                 - build:
                     source: dev.tfplan
-                - build:
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -73,18 +67,6 @@ pipelines:
                     stage: plan_dev
                     job: plan
                     source: dev.tfplan
-                    is_file: yes
-                - fetch:
-                    stage: plan_dev
-                    job: plan
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_dev
-                    job: plan
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -115,12 +97,6 @@ pipelines:
               artifacts:
                 - build:
                     source: preprod.tfplan
-                - build:
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -141,18 +117,6 @@ pipelines:
                     stage: plan_preprod
                     job: plan
                     source: preprod.tfplan
-                    is_file: yes
-                - fetch:
-                    stage: plan_preprod
-                    job: plan
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_preprod
-                    job: plan
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash

@@ -45,3 +45,35 @@ variable "reports_generator_bucket_param_name" {
   type        = string
   description = "Reports generator output bucket name"
 }
+
+variable "cloudwatch_dashboard_url" {
+  type        = string
+  description = "URL of the cloudwatch dashboard pipeline overview"
+}
+
+variable "log_alerts_technical_failures_above_threshold_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for log alerts"
+  default     = "lambda/build/log-alerts-technical-failures-above-threshold.zip"
+}
+
+variable "log_alerts_pipeline_error_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for log alerts"
+  default     = "lambda/build/log-alerts-pipeline-error.zip"
+}
+
+variable "log_alerts_technical_failures_webhook_url_param_name" {
+  type        = string
+  description = "SSM parameter containing the webhook url to send notifications to"
+}
+
+variable "log_alerts_technical_failures_above_threshold_webhook_url_param_name" {
+  type        = string
+  description = "SSM parameter containing the webhook url to send failure threshold succeeded notifications to"
+}
+
+variable "log_alerts_general_webhook_url_param_name" {
+  type        = string
+  description = "SSM parameter containing the general webhook url channel to send failure threshold succeeded notifications to"
+}
