@@ -3,7 +3,6 @@ log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-
 log_alerts_technical_failures_above_threshold_rate_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-rate"
 email_report_sender_email_param_name="/registrations/preprod/user-input/email-report-sender-email"
 email_report_recipient_email_param_name="/registrations/preprod/user-input/email-report-recipient-email"
-log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-name"
 log_alerts_technical_failures_webhook_url_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-webhook-url"
 log_alerts_technical_failures_above_threshold_webhook_url_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-webhook-url"
 log_alerts_technical_failures_above_threshold_rate_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-rate"
