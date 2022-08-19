@@ -1,3 +1,4 @@
+# Technical failures above threshold
 variable "log_alerts_technical_failures_above_threshold_lambda_name" {
   default = "log-alerts-technical-failures-above-threshold-lambda"
 }
@@ -22,77 +23,6 @@ resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_la
   }
 }
 
-resource "aws_iam_policy" "log_alerts_cloudwatch_log_access" {
-  name   = "${var.environment}-log-alerts-cloudwatch-log-access"
-  policy = data.aws_iam_policy_document.log_alerts_cloudwatch_log_access.json
-}
-
-resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_threshold" {
-  name = "/aws/lambda/${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
-  tags = merge(
-    local.common_tags,
-    {
-      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
-    }
-  )
-  retention_in_days = 60
-}
-
-data "aws_iam_policy_document" "log_alerts_cloudwatch_log_access" {
-  statement {
-    sid = "CloudwatchLogs"
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "${aws_cloudwatch_log_group.log_alerts_technical_failures_above_threshold.arn}:*",
-      "${aws_cloudwatch_log_group.log_alerts_pipeline_error.arn}:*"
-    ]
-  }
-}
-
-resource "aws_iam_role" "log_alerts_lambda_role" {
-  name               = "${var.environment}-log-alerts-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.log_alerts_lambda_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.log_alerts_ssm_access.arn,
-    aws_iam_policy.log_alerts_cloudwatch_log_access.arn,
-    ]
-}
-
-data "aws_iam_policy_document" "log_alerts_lambda_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "log_alerts_ssm_access" {
-  statement {
-    sid = "GetSSMParameter"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-
-    resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_general_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}"
-    ]
-  }
-}
-
-resource "aws_iam_policy" "log_alerts_ssm_access" {
-  name   = "${var.environment}-log-alerts-ssm-access"
-  policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
-}
-
 resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch" {
   statement_id = "log-alerts-technical-failures-above-threshold-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
@@ -110,7 +40,7 @@ resource "aws_cloudwatch_log_subscription_filter" "log_alerts_technical_failures
   destination_arn = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.arn
 }
 
-# Pipeline error lambda
+# Pipeline error
 variable "log_alerts_pipeline_error_lambda_name" {
   default = "log-alerts-pipeline-error-lambda"
 }
