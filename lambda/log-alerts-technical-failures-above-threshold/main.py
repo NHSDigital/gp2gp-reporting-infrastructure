@@ -5,6 +5,7 @@ import os
 import zlib
 from datetime import datetime
 from base64 import b64decode
+from botocore.exceptions import ClientError
 
 http = urllib3.PoolManager()
 
@@ -51,36 +52,45 @@ def lambda_handler(event, context):
     daily_alert_encoded_msg = json.dumps(daily_alert_msg).encode('utf-8')
 
     daily_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_WEBHOOK_URL_PARAM_NAME"])
-    daily_alert_resp = http.request('POST', url=daily_alert_webhook_url, body=daily_alert_encoded_msg)
 
-    print({
-        "message": daily_alert_msg["text"],
-        "status_code": daily_alert_resp.status,
-        "response": daily_alert_resp.data,
-        "alert_type": "daily_technical_failure_rates",
-    })
-
-    technical_failure_threshold_rate = int(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
-
-    if percent_of_technical_failures > technical_failure_threshold_rate:
-        threshold_alert_heading = f"## Technical failures are above the threshold: ##\n\n"
-        threshold_alert_msg = {
-            "text": threshold_alert_heading + base_text,
-            "textFormat": "markdown"
-        }
-        threshold_alert_encoded_msg = json.dumps(threshold_alert_msg).encode('utf-8')
-
-        exceeded_threshold_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME"])
-        exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=threshold_alert_encoded_msg)
+    try:
+        daily_alert_resp = http.request('POST', url=daily_alert_webhook_url, body=daily_alert_encoded_msg)
 
         print({
-            "message": threshold_alert_msg["text"],
-            "status_code": exceeded_threshold_alert_resp.status,
-            "response": exceeded_threshold_alert_resp.data,
-            "alert_type": "exceeded_threshold_technical_failure_rates",
-            "technical_failure_threshold": technical_failure_threshold_rate,
-            "technical_failure_rate": percent_of_technical_failures
+            "message": daily_alert_msg["text"],
+            "status_code": daily_alert_resp.status,
+            "response": daily_alert_resp.data,
+            "alert_type": "daily_technical_failure_rates",
         })
 
-        log_alerts_general_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
-        http.request('POST', url=exceeded_threshold_alert_webhook_url, body=log_alerts_general_webhook_url)
+        technical_failure_threshold_rate = int(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
+
+        if percent_of_technical_failures > technical_failure_threshold_rate:
+            threshold_alert_heading = f"## Technical failures are above the threshold: ##\n\n"
+            threshold_alert_msg = {
+                "text": threshold_alert_heading + base_text,
+                "textFormat": "markdown"
+            }
+            threshold_alert_encoded_msg = json.dumps(threshold_alert_msg).encode('utf-8')
+
+            exceeded_threshold_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME"])
+            exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=threshold_alert_encoded_msg)
+
+            print({
+                "message": threshold_alert_msg["text"],
+                "status_code": exceeded_threshold_alert_resp.status,
+                "response": exceeded_threshold_alert_resp.data,
+                "alert_type": "exceeded_threshold_technical_failure_rates",
+                "technical_failure_threshold": technical_failure_threshold_rate,
+                "technical_failure_rate": percent_of_technical_failures
+            })
+
+            log_alerts_general_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
+            http.request('POST', url=exceeded_threshold_alert_webhook_url, body=log_alerts_general_webhook_url)
+
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    except Exception as e:
+        print("An error has occurred: ", e)
+    else:
+        print("Successfully sent alerts")

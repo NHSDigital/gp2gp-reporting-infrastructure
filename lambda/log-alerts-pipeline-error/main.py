@@ -3,6 +3,8 @@ import boto3
 import json
 import os
 
+from botocore.exceptions import ClientError
+
 http = urllib3.PoolManager()
 
 class SsmSecretManager:
@@ -32,11 +34,20 @@ def lambda_handler(event, context):
     pipeline_error_encoded_msg = json.dumps(msg).encode('utf-8')
 
     pipeline_error_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
-    pipeline_error_alert_resp = http.request('POST', url=pipeline_error_alert_webhook_url, body=pipeline_error_encoded_msg)
 
-    print({
-        "message": msg["text"],
-        "status_code": pipeline_error_alert_resp.status,
-        "response": pipeline_error_alert_resp.data,
-        "alert_type": "pipeline_error_technical_failure_rates",
-    })
+    try:
+        pipeline_error_alert_resp = http.request('POST', url=pipeline_error_alert_webhook_url, body=pipeline_error_encoded_msg)
+
+        print({
+            "message": msg["text"],
+            "status_code": pipeline_error_alert_resp.status,
+            "response": pipeline_error_alert_resp.data,
+            "alert_type": "pipeline_error_technical_failure_rates",
+        })
+
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    except Exception as e:
+        print("An error has occurred: ", e)
+    else:
+        print("Successfully sent alerts")
