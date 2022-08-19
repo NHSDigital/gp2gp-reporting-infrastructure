@@ -76,6 +76,8 @@ def lambda_handler(event, context):
             exceeded_threshold_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME"])
             exceeded_threshold_alert_resp = http.request('POST', url=exceeded_threshold_alert_webhook_url, body=threshold_alert_encoded_msg)
 
+            print("Alert to main threshold channel sent.", exceeded_threshold_alert_resp)
+
             print({
                 "message": threshold_alert_msg["text"],
                 "status_code": exceeded_threshold_alert_resp.status,
@@ -86,7 +88,9 @@ def lambda_handler(event, context):
             })
 
             log_alerts_general_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
-            http.request('POST', url=exceeded_threshold_alert_webhook_url, body=log_alerts_general_webhook_url)
+            exceeded_threshold_alert_two_resp = http.request('POST', url=log_alerts_general_webhook_url, body=threshold_alert_encoded_msg)
+
+            print("Alert to general channel sent.", exceeded_threshold_alert_two_resp)
 
     except ClientError as e:
         print(e.response['Error']['Message'])
