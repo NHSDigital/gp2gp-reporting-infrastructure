@@ -1,10 +1,10 @@
-resource "aws_iam_policy" "cloudwatch_log_access" {
+resource "aws_iam_policy" "email_reports_cloudwatch_log_access" {
   name   = "${var.environment}-email-report-cloudwatch-log-access"
-  policy = data.aws_iam_policy_document.cloudwatch_log_access.json
+  policy = data.aws_iam_policy_document.email_report_cloudwatch_log_access.json
 }
 
 
-data "aws_iam_policy_document" "cloudwatch_log_access" {
+data "aws_iam_policy_document" "email_report_cloudwatch_log_access" {
   statement {
     sid = "CloudwatchLogs"
     actions = [
@@ -19,16 +19,16 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
 
 resource "aws_iam_role" "email_report_lambda_role" {
   name               = "${var.environment}-email-report-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.email_report_lambda_assume_role.json
   managed_policy_arns = [
     aws_iam_policy.email_report_lambda_ssm_access.arn,
-    aws_iam_policy.cloudwatch_log_access.arn,
+    aws_iam_policy.email_reports_cloudwatch_log_access.arn,
     aws_iam_policy.reports_generator_bucket_read_access.arn,
     aws_iam_policy.email_report_lambda_send_raw_email.arn
   ]
 }
 
-data "aws_iam_policy_document" "lambda_assume_role" {
+data "aws_iam_policy_document" "email_report_lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {

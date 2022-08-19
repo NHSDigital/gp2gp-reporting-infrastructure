@@ -22,9 +22,9 @@ resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_la
   }
 }
 
-resource "aws_iam_policy" "cloudwatch_log_access" {
+resource "aws_iam_policy" "log_alerts_cloudwatch_log_access" {
   name   = "${var.environment}-log-alerts-cloudwatch-log-access"
-  policy = data.aws_iam_policy_document.cloudwatch_log_access.json
+  policy = data.aws_iam_policy_document.log_alerts_cloudwatch_log_access.json
 }
 
 resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_threshold" {
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_thresho
   retention_in_days = 60
 }
 
-data "aws_iam_policy_document" "cloudwatch_log_access" {
+data "aws_iam_policy_document" "log_alerts_cloudwatch_log_access" {
   statement {
     sid = "CloudwatchLogs"
     actions = [
@@ -54,14 +54,14 @@ data "aws_iam_policy_document" "cloudwatch_log_access" {
 
 resource "aws_iam_role" "log_alerts_lambda_role" {
   name               = "${var.environment}-log-alerts-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.log_alerts_lambda_assume_role.json
   managed_policy_arns = [
     aws_iam_policy.log_alerts_ssm_access.arn,
-    aws_iam_policy.cloudwatch_log_access.arn,
+    aws_iam_policy.log_alerts_cloudwatch_log_access.arn,
     ]
 }
 
-data "aws_iam_policy_document" "lambda_assume_role" {
+data "aws_iam_policy_document" "log_alerts_lambda_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
