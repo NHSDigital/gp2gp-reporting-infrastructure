@@ -33,8 +33,8 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
         "Retry" : [
           {
             "ErrorEquals" : ["States.TaskFailed"],
-            "IntervalSeconds" : 10,
-            "MaxAttempts" : 2,
+            "IntervalSeconds" : 60,
+            "MaxAttempts" : 8,
             "BackoffRate" : 2.0
           }
         ],
