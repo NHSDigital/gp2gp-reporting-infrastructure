@@ -45,7 +45,7 @@ def lambda_handler(event, context):
     SUBJECT = _construct_email_subject(transfer_report_meta_data)
 
     SENDER = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME"])
-    SENDER_KEY = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_KEY"])
+    SENDER_KEY = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME"])
     RECIPIENT = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME"])
 
     msg = MIMEMultipart('mixed')
