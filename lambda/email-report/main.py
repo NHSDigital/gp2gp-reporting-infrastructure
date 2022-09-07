@@ -1,11 +1,10 @@
 import os.path
 import boto3
-from botocore.exceptions import ClientError
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
 from datetime import datetime, timedelta
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 class SsmSecretManager:
     def __init__(self, ssm):
@@ -46,8 +45,8 @@ def lambda_handler(event, context):
     SUBJECT = _construct_email_subject(transfer_report_meta_data)
 
     SENDER = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME"])
+    SENDER_KEY = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_KEY"])
     RECIPIENT = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME"])
-    AWS_REGION = "eu-west-2"
 
     msg = MIMEMultipart('mixed')
     msg['Subject'] = SUBJECT
@@ -68,36 +67,26 @@ def lambda_handler(event, context):
     msg.attach(msg_body)
     msg.attach(att)
 
-    _send_email(AWS_REGION, RECIPIENT, SENDER, msg)
-
-
-def _send_email(aws_region, recipient, sender, msg):
     try:
-        client = boto3.client('ses', region_name=aws_region)
-        response = client.send_raw_email(
-            Source=sender,
-            Destinations=[
-                recipient
-            ],
-            RawMessage={
-                'Data': msg.as_string(),
-            },
-            # ConfigurationSetName=CONFIGURATION_SET
-        )
-    except ClientError as e:
-        print(e.response['Error']['Message'])
-    else:
-        print("Email successfully sent! Message ID:", response['MessageId'])
+        server = smtplib.SMTP("smtp.office365.com", 587)
+        server.starttls()
+        server.login(SENDER, SENDER_KEY)
+        server.sendmail(SENDER, RECIPIENT, msg.as_string())
+        print('Email Successfully Sent')
+    except Exception as e:
+        print("Failed to send email")
+        print("Exception: ", e)
+        return
 
 
 def _construct_email_subject(transfer_report_meta_data):
     return "GP2GP Report: " + \
-       _format_start_date(transfer_report_meta_data) + \
-       " - " + \
-       _format_end_date(transfer_report_meta_data) + \
-       " (Technical failures: " + \
-       str(transfer_report_meta_data['technical-failures-percentage']) + \
-       "%)"
+           _format_start_date(transfer_report_meta_data) + \
+           " - " + \
+           _format_end_date(transfer_report_meta_data) + \
+           " (Technical failures: " + \
+           str(transfer_report_meta_data['technical-failures-percentage']) + \
+           "%)"
 
 
 def _format_end_date(transfer_report_meta_data):
@@ -106,8 +95,8 @@ def _format_end_date(transfer_report_meta_data):
 
 
 def _format_start_date(transfer_report_meta_data):
-    return datetime.strptime(transfer_report_meta_data['reporting-window-start-datetime'], '%Y-%m-%dT%H:%M:%S%z')\
-            .strftime("%A %d %B, %Y")
+    return datetime.strptime(transfer_report_meta_data['reporting-window-start-datetime'], '%Y-%m-%dT%H:%M:%S%z') \
+        .strftime("%A %d %B, %Y")
 
 
 def _construct_email_body(body_heading, transfer_report_meta_data):
@@ -136,7 +125,7 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
 def _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
     manually_generated_report = transfer_report_meta_data['config-start-datetime'] != 'None'
     daily_report_below_threshold = transfer_report_meta_data['config-cutoff-days'] == 0 and \
-        transfer_report_meta_data['technical-failures-percentage'] < technical_failure_threshold_rate
+                                   transfer_report_meta_data['technical-failures-percentage'] < technical_failure_threshold_rate
 
     if manually_generated_report or daily_report_below_threshold:
         return True

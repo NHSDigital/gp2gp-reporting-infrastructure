@@ -31,6 +31,12 @@ variable "email_report_sender_email_param_name" {
   description = "SSM parameter containing the sender email address for emailing reports"
 }
 
+variable "email_report_sender_email_key_param_name" {
+  type        = string
+  description = "SSM parameter containing the sender email key for SMTP auth"
+}
+
+
 variable "email_report_recipient_email_param_name" {
   type        = string
   description = "SSM parameter containing the recipient email address for emailing reports"
