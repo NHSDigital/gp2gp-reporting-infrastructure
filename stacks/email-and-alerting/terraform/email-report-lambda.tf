@@ -17,7 +17,7 @@ resource "aws_lambda_function" "email_report_lambda" {
       LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_rate_param_name,
       EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME = var.email_report_sender_email_param_name,
       EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME = var.email_report_recipient_email_param_name
-      EMAIL_REPORT_SENDER_EMAIL_KEY = var.email_report_sender_email_key_param_name
+      EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME = var.email_report_sender_email_key_param_name
     }
   }
 }
