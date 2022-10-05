@@ -33,10 +33,6 @@ def lambda_handler(event, context):
 
     technical_failure_threshold_rate = float(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
 
-    if _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
-        print("Skipping email with the following metadata: ", transfer_report_meta_data)
-        return
-
     # Download the file/s from the event (extracted above) to the tmp location
     s3.download_file(BUCKET_NAME, KEY, TMP_FILE_NAME)
 
@@ -47,6 +43,7 @@ def lambda_handler(event, context):
     SENDER = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME"])
     SENDER_KEY = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME"])
     RECIPIENT = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME"])
+    RECIPIENT_INTERNAL = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_INTERNAL_EMAIL_PARAM_NAME"])
 
     msg = MIMEMultipart('mixed')
     msg['Subject'] = SUBJECT
@@ -71,8 +68,16 @@ def lambda_handler(event, context):
         server = smtplib.SMTP("smtp.office365.com", 587)
         server.starttls()
         server.login(SENDER, SENDER_KEY)
+
+        server.sendmail(SENDER, RECIPIENT_INTERNAL, msg.as_string())
+        print('Email successfully sent to: ', RECIPIENT_INTERNAL)
+
+        if _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
+            print("Skipping sending email to: " + RECIPIENT + " with the following metadata: ", transfer_report_meta_data)
+            return
+
         server.sendmail(SENDER, RECIPIENT, msg.as_string())
-        print('Email Successfully Sent')
+        print('Email successfully sent to: ', RECIPIENT)
     except Exception as e:
         print("Failed to send email")
         print("Exception: ", e)

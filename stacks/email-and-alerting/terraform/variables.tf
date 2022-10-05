@@ -41,6 +41,11 @@ variable "email_report_recipient_email_param_name" {
   description = "SSM parameter containing the recipient email address for emailing reports"
 }
 
+variable "email_report_recipient_internal_email_param_name" {
+  type        = string
+  description = "SSM parameter containing the recipient internal email address for emailing reports"
+}
+
 variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
