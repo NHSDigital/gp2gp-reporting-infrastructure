@@ -31,7 +31,7 @@ def lambda_handler(event, context):
     transfer_report_meta_data = s3.get_object(Bucket=BUCKET_NAME, Key=KEY)['Metadata']
     print("Report metadata:", transfer_report_meta_data)
 
-    technical_failure_threshold_rate = int(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
+    technical_failure_threshold_rate = float(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
 
     if _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
         print("Skipping email with the following metadata: ", transfer_report_meta_data)
@@ -124,8 +124,8 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
 
 def _should_skip_email(transfer_report_meta_data, technical_failure_threshold_rate):
     manually_generated_report = transfer_report_meta_data['config-start-datetime'] != 'None'
-    daily_report_below_threshold = transfer_report_meta_data['config-cutoff-days'] == 0 and \
-                                   transfer_report_meta_data['technical-failures-percentage'] < technical_failure_threshold_rate
+    daily_report_below_threshold = int(transfer_report_meta_data['config-cutoff-days']) == 0 and \
+        float(transfer_report_meta_data['technical-failures-percentage']) < technical_failure_threshold_rate
 
     if manually_generated_report or daily_report_below_threshold:
         return True
