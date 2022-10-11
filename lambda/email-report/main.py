@@ -90,7 +90,8 @@ def _construct_email_subject(transfer_report_meta_data):
            _format_end_date(transfer_report_meta_data) + \
            " (Technical failures: " + \
            str(transfer_report_meta_data['technical-failures-percentage']) + \
-           "%)"
+           "%) - " + \
+           str(transfer_report_meta_data['report-name'])
 
 
 def _format_end_date(transfer_report_meta_data):
