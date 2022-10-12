@@ -85,23 +85,14 @@ def lambda_handler(event, context):
 
 def _construct_email_subject(transfer_report_meta_data):
     return "GP2GP Report: " + \
-           _format_start_date(transfer_report_meta_data) + \
+           _format_datetime_short(transfer_report_meta_data['reporting-window-start-datetime']) + \
            " - " + \
-           _format_end_date(transfer_report_meta_data) + \
-           " (Technical failures: " + \
-           str(transfer_report_meta_data['technical-failures-percentage']) + \
-           "%) - " + \
-           str(transfer_report_meta_data['report-name'])
-
-
-def _format_end_date(transfer_report_meta_data):
-    return (datetime.strptime(transfer_report_meta_data['reporting-window-end-datetime'], '%Y-%m-%dT%H:%M:%S%z') -
-            timedelta(days=1)).strftime("%A %d %B, %Y")
-
-
-def _format_start_date(transfer_report_meta_data):
-    return datetime.strptime(transfer_report_meta_data['reporting-window-start-datetime'], '%Y-%m-%dT%H:%M:%S%z') \
-        .strftime("%A %d %B, %Y")
+           _format_datetime_short(transfer_report_meta_data['reporting-window-end-datetime']) + \
+           " (" + \
+           str(transfer_report_meta_data['report-name']) + \
+           " - Cutoff days: " + \
+           str(transfer_report_meta_data['config-cutoff-days']) + \
+           ")"
 
 
 def _construct_email_body(body_heading, transfer_report_meta_data):
@@ -114,10 +105,10 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
     <ul>
     <li style="padding: 2px;">Technical failures percentage: <strong>""" + str(
         transfer_report_meta_data['technical-failures-percentage']) + """%</strong></li>
-    <li style="padding: 2px;">Start Date: """ + _format_start_date(transfer_report_meta_data) + """</li>
-    <li style="padding: 2px;">End date: """ + _format_end_date(transfer_report_meta_data) + """</li>
-    <li style="padding: 2px;">Report Name: """ + str(transfer_report_meta_data['report-name']) + """</li>
-    <li style="padding: 2px;">Cutoff: """ + str(transfer_report_meta_data['config-cutoff-days']) + """</li>
+    <li style="padding: 2px;">Start Date: """ + _format_datetime(transfer_report_meta_data['reporting-window-start-datetime']) + """</li>
+    <li style="padding: 2px;">End date: """ + _format_datetime(transfer_report_meta_data['reporting-window-end-datetime']) + """</li>
+    <li style="padding: 2px;">Report name: """ + str(transfer_report_meta_data['report-name']) + """</li>
+    <li style="padding: 2px;">Cutoff days: """ + str(transfer_report_meta_data['config-cutoff-days']) + """</li>
     <li style="padding: 2px;">Total technical failures: """ + str(
         transfer_report_meta_data['total-technical-failures']) + """</li>
     <li style="padding: 2px;">Total transfers: """ + str(transfer_report_meta_data['total-transfers']) + """</li>
@@ -132,3 +123,13 @@ def _is_manually_generated_report(transfer_report_meta_data):
         return True
 
     return False
+
+
+def _format_datetime(iso_datetime):
+    return (datetime.strptime(iso_datetime, '%Y-%m-%dT%H:%M:%S%z') -
+            timedelta(days=1)).strftime("%A %d %B, %Y")
+
+
+def _format_datetime_short(iso_datetime):
+    return datetime.strptime(iso_datetime, '%Y-%m-%dT%H:%M:%S%z') \
+        .strftime("%a %d %B, %y")
