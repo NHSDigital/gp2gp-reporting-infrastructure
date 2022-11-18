@@ -1,7 +1,7 @@
 {
   "dev": {
     "name": "dev",
-    "bucket_name": "prm-gp2gp-terraform-state-dev",
+    "bucket_name": "prm-gp2gp-terraform-state-dev-temp",
     "dynamo_table": "prm-gp2gp-terraform-table",
     "role_arn_param" : "/registrations/dev/user-input/cross-account-admin-role",
     "state_key_prefix": "data-pipeline/"
