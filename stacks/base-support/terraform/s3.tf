@@ -2,9 +2,8 @@ resource "aws_s3_bucket" "terraform_state" {
   bucket = var.s3_terraform_state_bucket_name
   acl    = "private"
 
-  # To allow rolling back states
-  versioning {
-    enabled = true
+  lifecycle {
+    prevent_destroy = true
   }
 
   # To cleanup old states eventually
@@ -16,8 +15,23 @@ resource "aws_s3_bucket" "terraform_state" {
     }
   }
 
-  tags = {
-    Name = "Terraform states of GP2GP infrastructure"
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "Terraform states of GP2GP infrastructure"
+    }
+  )
+}
+
+resource "aws_s3_bucket_acl" "metrics_calculator" {
+  bucket = aws_s3_bucket.terraform_state.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "reports_generator" {
+  bucket = aws_s3_bucket.terraform_state.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
