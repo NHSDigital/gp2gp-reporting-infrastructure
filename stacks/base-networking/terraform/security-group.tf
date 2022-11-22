@@ -59,7 +59,7 @@ resource "aws_security_group" "gocd_vpc_outbound_only_preprod_temp" {
   )
 }
 
-resource "aws_security_group_rule" "gocd_vpc_outbound_only" {
+resource "aws_security_group_rule" "gocd_vpc_outbound_only_preprood_temp" {
   type              = "egress"
   security_group_id = aws_security_group.gocd_vpc_outbound_only_preprod_temp.id
   cidr_blocks       = ["0.0.0.0/0"]
