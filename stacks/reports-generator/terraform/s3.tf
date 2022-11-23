@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "reports_generator" {
   bucket = "prm-gp2gp-reports-${var.environment}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#  lifecycle {
+#    prevent_destroy = true
+#  }
 
   tags = merge(
     local.common_tags,

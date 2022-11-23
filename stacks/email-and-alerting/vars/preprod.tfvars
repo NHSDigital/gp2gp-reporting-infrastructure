@@ -1,4 +1,4 @@
-reports_generator_bucket_param_name="/registrations/preprod/data-pipeline/reports-generator/output-bucket-name"
+reports_generator_bucket_param_name="/registrations/prod/data-pipeline/reports-generator/output-bucket-name"
 log_group_param_name="/registrations/prod/data-pipeline/cloudwatch-log-group-name"
 log_alerts_technical_failures_above_threshold_rate_param_name="/registrations/preprod/user-input/log-alerts-technical-failures-above-threshold-rate"
 email_report_sender_email_param_name="/registrations/preprod/user-input/email-report-sender-email"
