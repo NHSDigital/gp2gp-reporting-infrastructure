@@ -1,6 +1,6 @@
 data_pipeline_ecs_cluster_arn_param_name="/registrations/preprod/data-pipeline/ecs-cluster/ecs-cluster-arn"
-data_pipeline_private_subnet_id_param_name="/registrations/preprod/data-pipeline/base-networking/private-subnet-id"
-data_pipeline_outbound_only_security_group_id_param_name="/registrations/preprod/data-pipeline/base-networking/outbound-only-security-group-id"
+data_pipeline_private_subnet_id_param_name="/registrations/prod/data-pipeline/base-networking/private-subnet-id"
+data_pipeline_outbound_only_security_group_id_param_name="/registrations/prod/data-pipeline/base-networking/outbound-only-security-group-id"
 data_pipeline_execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-execution-role-arn"
 ods_downloader_task_definition_arn_param_name="/registrations/preprod/data-pipeline/ods-downloader/task-definition-arn"
 ods_downloader_iam_role_arn_param_name="/registrations/preprod/data-pipeline/ods-downloader/iam-role-arn"
