@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "transfer_classifier" {
   bucket = "prm-gp2gp-transfer-data-${var.environment}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#  lifecycle {
+#    prevent_destroy = true
+#  }
 
   tags = merge(
     local.common_tags,
