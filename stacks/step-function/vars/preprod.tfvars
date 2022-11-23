@@ -13,5 +13,5 @@ reports_generator_task_definition_arn_param_name="/registrations/preprod/data-pi
 spine_exporter_task_definition_arn_param_name="/registrations/preprod/data-pipeline/spine-exporter/task-definition-arn"
 spine_exporter_iam_role_arn_param_name="/registrations/preprod/data-pipeline/spine-exporter/iam-role-arn"
 transfer_data_bucket_name="prm-gp2gp-transfer-data-preprod"
-gocd_trigger_lambda_arn_param_name="/registrations/preprod/data-pipeline/dashboard-pipeline-gocd-trigger/lambda-arn"
+gocd_trigger_lambda_arn_param_name="/registrations/prod/data-pipeline/dashboard-pipeline-gocd-trigger/lambda-arn"
 log_group_param_name="/registrations/prod/data-pipeline/cloudwatch-log-group-name"

@@ -67,7 +67,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply dashboard-pipeline-gocd-trigger dev
-      - validate_preprod:
+      - validate_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -81,8 +81,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate dashboard-pipeline-gocd-trigger preprod
-      - plan_preprod:
+                      - ./tasks dojo-validate dashboard-pipeline-gocd-trigger prod
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -90,7 +90,7 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
                 - build:
                     source: lambda/build/dashboard-pipeline-gocd-trigger.zip
                     destination: lambda/build/
@@ -99,8 +99,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan dashboard-pipeline-gocd-trigger preprod
-      - apply_preprod:
+                      - ./tasks dojo-plan dashboard-pipeline-gocd-trigger prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -111,12 +111,12 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
                     source: lambda/build/dashboard-pipeline-gocd-trigger.zip
                     destination: lambda/build/
@@ -125,4 +125,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply dashboard-pipeline-gocd-trigger preprod
+                      - ./tasks dojo-apply dashboard-pipeline-gocd-trigger prod
