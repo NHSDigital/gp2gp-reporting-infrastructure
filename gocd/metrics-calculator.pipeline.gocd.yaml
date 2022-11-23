@@ -58,7 +58,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply metrics-calculator dev
-      - promote_to_preprod:
+      - promote_to_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -72,8 +72,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./scripts/promote-image dev preprod metrics-calculator $GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE
-      - plan_preprod:
+                      - ./scripts/promote-image dev prod metrics-calculator $GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -81,14 +81,14 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - TF_VAR_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan metrics-calculator preprod
-      - apply_preprod:
+                      - TF_VAR_metrics_calculator_image_tag=$GO_DEPENDENCY_LABEL_METRICS_CALCULATOR_IMAGE ./tasks dojo-plan metrics-calculator prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -99,12 +99,12 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply metrics-calculator preprod
+                      - ./tasks dojo-apply metrics-calculator prod
