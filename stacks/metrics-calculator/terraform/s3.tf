@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "metrics_calculator" {
   bucket = "prm-gp2gp-metrics-${var.environment}"
 
-#  lifecycle {
-#    prevent_destroy = true
-#  }
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = merge(
     local.common_tags,
