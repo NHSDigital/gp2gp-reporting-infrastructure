@@ -55,7 +55,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply base-support dev
-      - validate_preprod:
+      - validate_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -69,8 +69,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate base-support preprod
-      - plan_preprod:
+                      - ./tasks dojo-validate base-support prod
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -78,14 +78,14 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan base-support preprod
-      - apply_preprod:
+                      - ./tasks dojo-plan base-support prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -96,12 +96,12 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply base-support preprod
+                      - ./tasks dojo-apply base-support prod
