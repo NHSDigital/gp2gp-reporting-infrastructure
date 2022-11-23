@@ -1,9 +1,9 @@
 resource "aws_s3_bucket" "ods_input" {
   bucket = "prm-gp2gp-asid-lookup-${var.environment}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#  lifecycle {
+#    prevent_destroy = true
+#  }
 
   tags = merge(
     local.common_tags,
@@ -28,9 +28,9 @@ resource "aws_s3_bucket_versioning" "ods_input" {
 resource "aws_s3_bucket" "ods_output" {
   bucket = "prm-gp2gp-ods-metadata-${var.environment}"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+#  lifecycle {
+#    prevent_destroy = true
+#  }
 
   tags = merge(
     local.common_tags,
