@@ -1,4 +1,4 @@
-metrics_calculator_repo_param_name="/registrations/preprod/data-pipeline/ecr/url/metrics-calculator"
+metrics_calculator_repo_param_name="/registrations/prod/data-pipeline/ecr/url/metrics-calculator"
 log_group_param_name="/registrations/preprod/data-pipeline/cloudwatch-log-group-name"
 execution_role_arn_param_name="/registrations/preprod/data-pipeline/ecs-execution-role-arn"
 transfers_data_bucket_param_name="/registrations/preprod/data-pipeline/transfer-classifier/output-bucket-name"
