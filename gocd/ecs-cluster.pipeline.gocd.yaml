@@ -55,7 +55,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply ecs-cluster dev
-      - plan_preprod:
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -63,14 +63,14 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan ecs-cluster preprod
-      - apply_preprod:
+                      - ./tasks dojo-plan ecs-cluster prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -81,12 +81,12 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply ecs-cluster preprod
+                      - ./tasks dojo-apply ecs-cluster prod
