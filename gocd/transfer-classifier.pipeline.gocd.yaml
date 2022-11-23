@@ -58,7 +58,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply transfer-classifier dev
-      - promote_to_preprod:
+      - promote_to_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -72,8 +72,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./scripts/promote-image dev preprod transfer-classifier $GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE
-      - plan_preprod:
+                      - ./scripts/promote-image dev prod transfer-classifier $GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -81,14 +81,14 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - TF_VAR_transfer_classifier_image_tag=$GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE ./tasks dojo-plan transfer-classifier preprod
-      - apply_preprod:
+                      - TF_VAR_transfer_classifier_image_tag=$GO_DEPENDENCY_LABEL_TRANSFER_CLASSIFIER_IMAGE ./tasks dojo-plan transfer-classifier prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -99,12 +99,12 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply transfer-classifier preprod
+                      - ./tasks dojo-apply transfer-classifier prod
