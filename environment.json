@@ -6,13 +6,6 @@
     "role_arn_param" : "/registrations/dev/user-input/cross-account-admin-role",
     "state_key_prefix": "data-pipeline/"
   },
-  "preprod": {
-    "name": "preprod",
-    "bucket_name": "prm-gp2gp-terraform-state-preprod",
-    "dynamo_table": "prm-gp2gp-terraform-table",
-    "role_arn_param" : "/registrations/pre-prod/user-input/cross-account-admin-role",
-    "state_key_prefix": "data-pipeline/"
-  },
   "prod": {
     "name": "prod",
     "bucket_name": "prm-gp2gp-terraform-state-prod",

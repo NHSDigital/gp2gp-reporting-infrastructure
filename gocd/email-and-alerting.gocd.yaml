@@ -85,7 +85,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply email-and-alerting dev
-      - validate_preprod:
+      - validate_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -99,8 +99,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate email-and-alerting preprod
-      - plan_preprod:
+                      - ./tasks dojo-validate email-and-alerting prod
+      - plan_prod:
           clean_workspace: true
           jobs:
             plan:
@@ -108,7 +108,7 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: preprod.tfplan
+                    source: prod.tfplan
                 - build:
                     source: lambda/build/log-alerts-technical-failures-above-threshold.zip
                     destination: lambda/build/
@@ -123,8 +123,8 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan email-and-alerting preprod
-      - apply_preprod:
+                      - ./tasks dojo-plan email-and-alerting prod
+      - apply_prod:
           clean_workspace: true
           approval:
             type: manual
@@ -135,24 +135,24 @@ pipelines:
                 - docker
               tasks:
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
-                    source: preprod.tfplan
+                    source: prod.tfplan
                     is_file: yes
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
                     source: lambda/build/log-alerts-technical-failures-above-threshold.zip
                     destination: lambda/build/
                     is_file: yes
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
                     source: lambda/build/log-alerts-pipeline-error.zip
                     destination: lambda/build/
                     is_file: yes
                 - fetch:
-                    stage: plan_preprod
+                    stage: plan_prod
                     job: plan
                     source: lambda/build/email-report.zip
                     destination: lambda/build/
@@ -161,4 +161,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply email-and-alerting preprod
+                      - ./tasks dojo-apply email-and-alerting prod

@@ -24,7 +24,7 @@ Rolling out terraform against each environment is managed by the GoCD pipeline. 
 ```
 
 The stack name denotes the specific stack you would like to validate.
-The environment can be `dev` or `preprod`.
+The environment can be `dev` or `prod`.
 
 To run the formatting, run `./tasks format <stack-name> <environment>`
 
@@ -48,4 +48,4 @@ The .terraform file is most likely stale/unusable. Try removing the .terraform a
 `rm -rf .terraform`
 
 Error refreshing state: BucketRegionError: incorrect region, the bucket is not in
-`make sure the environement is correct when running a task, eg: ./tasks dojo-validate ecs-cluster preprod`
+`make sure the environement is correct when running a task, eg: ./tasks dojo-validate ecs-cluster prod`
