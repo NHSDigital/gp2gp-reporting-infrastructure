@@ -37,14 +37,16 @@ def lambda_handler(event, context):
     start_date = message["reporting-window-start-datetime"]
     datetime_obj = datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%A %d %B, %Y")
 
+    daily_alert_heading = f"# **Daily technical failure rate**"
     base_text = (
-        f"* **Percent of technical failures**: {percent_of_technical_failures}%\n\n"
-        f"* **Total technical failures**: {total_technical_failures}\n\n"
-        f"* **Total transfers**: {total_transfers}\n\n"
-        f"* **Date**: {datetime_obj}\n\n"
+        f"<ul>"
+        f"<li>***Percent of technical failures***: {percent_of_technical_failures}%</li>"
+        f"<li>***Total technical failures***: {total_technical_failures}</li>"
+        f"<li>***Total transfers***: {total_transfers}</li>"
+        f"<li>***Date***: {datetime_obj}</li>"
+        f"</ul>"
     )
 
-    daily_alert_heading = f"## Daily technical failure rate: ##\n\n"
     daily_alert_msg = {
         "text": daily_alert_heading + base_text,
         "textFormat": "markdown"
@@ -54,6 +56,7 @@ def lambda_handler(event, context):
     daily_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_WEBHOOK_URL_PARAM_NAME"])
 
     try:
+        print("Sending alert to webhook with message: ", daily_alert_encoded_msg)
         daily_alert_resp = http.request('POST', url=daily_alert_webhook_url, body=daily_alert_encoded_msg)
 
         print({
