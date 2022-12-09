@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     start_date = message["reporting-window-start-datetime"]
     datetime_obj = datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%A %d %B, %Y")
 
-    daily_alert_heading = f"# **Daily technical failure rate**"
+    daily_alert_heading = f"## **Daily technical failure rate**"
     base_text = (
         f"<ul>"
         f"<li>***Percent of technical failures***: {percent_of_technical_failures}%</li>"
@@ -69,7 +69,7 @@ def lambda_handler(event, context):
         technical_failure_threshold_rate = int(secret_manager.get_secret(os.environ["LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME"]))
 
         if percent_of_technical_failures > technical_failure_threshold_rate:
-            threshold_alert_heading = f"## Technical failures are above the threshold: ##\n\n"
+            threshold_alert_heading = f"## **Technical failures are above the threshold:**"
             threshold_alert_msg = {
                 "text": threshold_alert_heading + base_text,
                 "textFormat": "markdown"

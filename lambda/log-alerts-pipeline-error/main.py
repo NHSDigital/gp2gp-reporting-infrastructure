@@ -23,8 +23,8 @@ def lambda_handler(event, context):
     cloudwatch_dashboard_url = os.environ["CLOUDWATCH_DASHBOARD_URL"]
 
     text = (
-        f"## There was an error in the data pipeline: ##\n\n"
-        f"See all the details in cloudwatch: {cloudwatch_dashboard_url}%\n\n"
+        f"## **There was an error in the data pipeline:** <br>"
+        f"See all the details in cloudwatch: {cloudwatch_dashboard_url}%<br>"
     )
 
     msg = {
