@@ -47,6 +47,7 @@ resource "aws_ecs_task_definition" transfer_classifier {
     local.common_tags,
     {
       Name = "${var.environment}-transfer-classifier"
+      ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value

@@ -19,7 +19,13 @@ resource "aws_lambda_function" "gocd_trigger" {
   function_name = "${var.environment}-dashboard-pipeline-gocd-trigger"
   role          = aws_iam_role.gocd_trigger.arn
   handler       = "main.lambda_handler"
-  tags          = local.common_tags
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-gocd-trigger"
+      ApplicationRole = "AwsLambdaFunction"
+    }
+  )
 
   source_code_hash = filebase64sha256(var.gocd_trigger_lambda_zip)
 
@@ -44,6 +50,7 @@ resource "aws_cloudwatch_log_group" "gocd_trigger" {
     local.common_tags,
     {
       Name = "${var.environment}-dashboard-pipeline-gocd-trigger"
+      ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
   retention_in_days = 14

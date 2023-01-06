@@ -46,6 +46,7 @@ resource "aws_ecs_task_definition" "spine_exporter" {
     local.common_tags,
     {
       Name = "${var.environment}-spine-exporter"
+      ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value

@@ -4,7 +4,8 @@ resource "aws_ecr_repository" "ods_downloader" {
   tags = merge(
     local.common_tags,
     {
-      Name = "ODS data downloader"
+      Name = "${var.environment}-ods-data-downloader"
+      ApplicationRole = "AwsEcrRepository"
     }
   )
 }
@@ -15,7 +16,8 @@ resource "aws_ecr_repository" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Metrics calculator"
+      Name = "${var.environment}-metrics-calculator"
+      ApplicationRole = "AwsEcrRepository"
     }
   )
 }
@@ -26,7 +28,8 @@ resource "aws_ecr_repository" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Transfer classifier"
+      Name = "${var.environment}-transfer-classifier"
+      ApplicationRole = "AwsEcrRepository"
     }
   )
 }
@@ -37,7 +40,8 @@ resource "aws_ecr_repository" "spine_exporter" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Spine exporter"
+      Name = "${var.environment}-spine-exporter"
+      ApplicationRole = "AwsEcrRepository"
     }
   )
 }
@@ -48,7 +52,8 @@ resource "aws_ecr_repository" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Reports generator"
+      Name = "${var.environment}-reports-generator"
+      ApplicationRole = "AwsEcrRepository"
     }
   )
 }

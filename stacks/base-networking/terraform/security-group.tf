@@ -10,6 +10,7 @@ resource "aws_security_group" "outbound_only" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline-outbound-only"
+      ApplicationRole = "AwsSecurityGroup"
     }
   )
 }
@@ -32,6 +33,7 @@ resource "aws_security_group" "gocd_vpc_outbound_only" {
     local.common_tags,
     {
       Name = "${var.environment}-gocd-vpc-outbound-only"
+      ApplicationRole = "AwsSecurityGroup"
     }
   )
 }

@@ -1,6 +1,13 @@
 resource "aws_ecs_cluster" "data_pipeline_cluster" {
   name = "${var.environment}-gp2gp-data-pipeline"
-  tags = local.common_tags
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-dashboard-pipeline-gocd-data-pipeline-cluster"
+      ApplicationRole = "AwsEcsCluster"
+    }
+  )
+
   setting {
     name  = "containerInsights"
     value = "enabled"
@@ -14,6 +21,7 @@ resource "aws_cloudwatch_log_group" "data_pipeline" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline"
+      ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
 }

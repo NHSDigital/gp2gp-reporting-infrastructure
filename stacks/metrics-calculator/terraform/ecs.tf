@@ -50,6 +50,7 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
     local.common_tags,
     {
       Name = "${var.environment}-metrics-calculator"
+      ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value

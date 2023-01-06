@@ -47,6 +47,7 @@ resource "aws_ecs_task_definition" "reports_generator" {
     local.common_tags,
     {
       Name = "${var.environment}-reports-generator"
+      ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value

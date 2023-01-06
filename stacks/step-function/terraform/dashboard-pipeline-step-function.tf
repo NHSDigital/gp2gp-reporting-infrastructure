@@ -4,7 +4,8 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Dashboard Pipeline Step Function"
+      Name = "${var.environment}-dashboard-pipeline-step-function"
+      ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({

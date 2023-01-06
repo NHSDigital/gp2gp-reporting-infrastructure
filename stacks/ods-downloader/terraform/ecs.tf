@@ -41,6 +41,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
     local.common_tags,
     {
       Name = "${var.environment}-ods-downloader"
+      ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
   execution_role_arn = data.aws_ssm_parameter.execution_role_arn.value

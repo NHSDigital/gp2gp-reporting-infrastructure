@@ -4,7 +4,8 @@ resource "aws_sfn_state_machine" "ods_downloader" {
   tags = merge(
     local.common_tags,
     {
-      Name = "ODS Downloader Pipeline Step Function"
+      Name = "${var.environment}-ods-downloader-pipeline-step-function"
+      ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({

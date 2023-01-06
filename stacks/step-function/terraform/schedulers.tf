@@ -2,11 +2,11 @@ resource "aws_cloudwatch_event_rule" "run_daily_5am_cron_expression" {
   name                = "${var.environment}-run-data-pipeline-step-functions-daily-5am"
   description         = "Eventbridge Event Rule that triggers the Daily Spine Export and Transfer Classifier Step function 5am every morning"
   schedule_expression = "cron(0 5 * * ? *)"
-
   tags = merge(
     local.common_tags,
     {
-      Name = "Eventbridge Event Rule"
+      Name = "${var.environment}-eventbridge-event-rule"
+      ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
 }
@@ -15,11 +15,11 @@ resource "aws_cloudwatch_event_rule" "run_daily_7am_cron_expression" {
   name                = "${var.environment}-run-data-pipeline-step-functions-daily-7am"
   description         = "Eventbridge Event Rule that triggers the Reports Generator Step function 7am every morning"
   schedule_expression = "cron(0 7 * * ? *)"
-
   tags = merge(
     local.common_tags,
     {
-      Name = "Eventbridge Event Rule"
+      Name = "${var.environment}-eventbridge-event-rule"
+      ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
 }
@@ -32,7 +32,8 @@ resource "aws_cloudwatch_event_rule" "run_once_a_month_on_15th_cron_expression" 
   tags = merge(
     local.common_tags,
     {
-      Name = "Eventbridge Event Rule"
+      Name = "${var.environment}-eventbridge-event-rule"
+      ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
 }
@@ -45,7 +46,8 @@ resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression"
   tags = merge(
     local.common_tags,
     {
-      Name = "Eventbridge Event Rule"
+      Name = "${var.environment}-eventbridge-event-rule"
+      ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
 }

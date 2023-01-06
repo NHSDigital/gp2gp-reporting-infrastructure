@@ -5,6 +5,7 @@ resource "aws_vpc" "vpc" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline-vpc"
+      ApplicationRole = "AwsVpc"
     }
   )
 }
@@ -15,7 +16,8 @@ resource "aws_internet_gateway" "internet_gateway" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline"
+      Name = "${var.environment}-data-pipeline-internet-gateway"
+      ApplicationRole = "AwsInternetGateway"
     }
   )
 }

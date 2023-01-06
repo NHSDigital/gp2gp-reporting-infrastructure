@@ -7,6 +7,7 @@ resource "aws_subnet" "private" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline-private"
+      ApplicationRole = "AwsSubnet"
     }
   )
 }
@@ -23,6 +24,7 @@ resource "aws_route_table" "private" {
     local.common_tags,
     {
       Name = "${var.environment}-data-pipeline-private"
+      ApplicationRole = "AwsRouteTable"
     }
   )
 }

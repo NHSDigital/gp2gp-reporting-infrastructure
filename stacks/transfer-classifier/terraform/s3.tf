@@ -8,7 +8,8 @@ resource "aws_s3_bucket" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Output transfer data for metrics calculator and data analysis"
+      Name = "${var.environment}-output-transfer-data-for-metrics-calculator-and-data-analysis"
+      ApplicationRole = "AwsS3Bucket"
     }
   )
 }

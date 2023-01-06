@@ -11,7 +11,13 @@ resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_la
   source_code_hash = filebase64sha256(var.log_alerts_technical_failures_above_threshold_lambda_zip)
   runtime = "python3.9"
   timeout = 15
-  tags          = local.common_tags
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+      ApplicationRole = "AwsLambdaFunction"
+    }
+  )
 
   environment {
     variables = {
@@ -53,7 +59,13 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
   source_code_hash = filebase64sha256(var.log_alerts_pipeline_error_lambda_zip)
   runtime = "python3.9"
   timeout = 15
-  tags          = local.common_tags
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+      ApplicationRole = "AwsLambdaFunction"
+    }
+  )
 
   environment {
     variables = {
@@ -86,6 +98,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_pipeline_error" {
     local.common_tags,
     {
       Name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+      ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
   retention_in_days = 60

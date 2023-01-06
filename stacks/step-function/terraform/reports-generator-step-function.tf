@@ -4,7 +4,8 @@ resource "aws_sfn_state_machine" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Reports Generator Step Function"
+      Name = "${var.environment}-reports-generator-step-function"
+      ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({

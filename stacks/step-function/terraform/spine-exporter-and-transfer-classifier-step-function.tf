@@ -1,10 +1,11 @@
 resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
   name     = "daily-spine-exporter-and-transfer-classifier"
   role_arn = aws_iam_role.spine_exporter_and_transfer_classifier_step_function.arn
-  tags     = merge(
+  tags = merge(
     local.common_tags,
     {
-      Name = "Spine Exporter and Transfer Classifier Step Function"
+      Name = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
+      ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({

@@ -4,7 +4,8 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Transfer Classifier Step Function Manual Run"
+      Name = "${var.environment}-transfer-classifier-step-function-manual-run"
+      ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({

@@ -8,7 +8,8 @@ resource "aws_s3_bucket" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "Output metrics data for metrics calculator"
+      Name = "${var.environment}-output-metrics-data-for-metrics-calculator"
+      ApplicationRole = "AwsS3Bucket"
     }
   )
 }

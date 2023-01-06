@@ -131,6 +131,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_thresho
     local.common_tags,
     {
       Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+      ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
   retention_in_days = 60
