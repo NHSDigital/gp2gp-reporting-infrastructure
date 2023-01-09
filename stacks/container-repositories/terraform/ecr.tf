@@ -57,3 +57,15 @@ resource "aws_ecr_repository" "reports_generator" {
     }
   )
 }
+
+resource "aws_ecr_repository" "gp2gp_dashboard" {
+  name = "registrations/${var.environment}/data-pipeline/gp2gp-dashboard"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-gp2gp-dashboard"
+      ApplicationRole = "AwsEcrRepository"
+    }
+  )
+}

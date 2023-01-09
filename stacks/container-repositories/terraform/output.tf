@@ -62,3 +62,16 @@ resource "aws_ssm_parameter" "reports_generator" {
     }
   )
 }
+
+resource "aws_ssm_parameter" "gp2gp_dashboard" {
+  name  = "/registrations/${var.environment}/data-pipeline/ecr/url/gp2gp-dashboard"
+  type  = "String"
+  value = aws_ecr_repository.gp2gp_dashboard.repository_url
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.environment}-gp2gp-dashboard"
+      ApplicationRole = "AwsSsmParameter"
+    }
+  )
+}
