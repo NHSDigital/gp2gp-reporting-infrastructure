@@ -31,8 +31,8 @@ variable "reports_generator_image_tag" {
 }
 
 variable "log_group_param_name" {
-  type        = string
-  description = "Cloudwatch log group for data pipeline"
+type        = string
+description = "Cloudwatch log group for data pipeline"
 }
 
 variable "transfers_input_bucket_param_name" {
@@ -63,9 +63,4 @@ variable "data_pipeline_private_subnet_id_param_name" {
 variable "data_pipeline_outbound_only_security_group_id_param_name" {
   type        = string
   description = "SSM parameter containing Data Pipeline outbound only Security Group ID"
-}
-
-variable "reports_generator_task_definition_arn_param_name" {
-  type        = string
-  description = "SSM parameter containing reports generator Task Definition ARN"
 }
