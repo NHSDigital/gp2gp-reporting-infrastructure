@@ -1,4 +1,4 @@
-data "aws_ssm_parameter" "transfers_input_bucket_read_access_arn" {
+data "aws_ssm_parameter" "transfers_input_bucket_read_access_policy_arn" {
   name = var.transfer_input_bucket_read_access_param_name
 }
 
@@ -7,7 +7,7 @@ resource "aws_iam_role" "reports_generator" {
   description        = "Role for reports generator ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
   managed_policy_arns = [
-    data.aws_ssm_parameter.transfers_input_bucket_read_access_arn.value,
+    data.aws_ssm_parameter.transfers_input_bucket_read_access_policy_arn.value,
     aws_iam_policy.reports_generator_output_buckets_write_access.arn,
     aws_iam_policy.notebook_data_bucket_read_access.arn
   ]
