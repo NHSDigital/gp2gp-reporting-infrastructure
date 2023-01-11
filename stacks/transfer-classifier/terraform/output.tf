@@ -37,7 +37,7 @@ resource "aws_ssm_parameter" "transfer_classifier_output_bucket_name" {
   )
 }
 
-resource "aws_ssm_parameter" "transfer_classifier_output_bucket_read_access_policy_arn" {
+resource "aws_ssm_parameter" "transfer_classifier_output_bucket_read_access_arn" {
   name  = "/registrations/${var.environment}/data-pipeline/transfer-classifier/output-bucket-read-access-arn"
   type  = "String"
   value = aws_iam_policy.transfer_classifier_output_bucket_read_access.arn
