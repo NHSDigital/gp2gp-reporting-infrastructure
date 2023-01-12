@@ -65,6 +65,27 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
                 data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
               ],
               "SecurityGroups" : [
+                data.aws_ssm_parameter.outbound_only_security_group_id.value],
+            }
+          },
+        },
+        "Next" : "GP2GP Dashboard Build And Deploy"
+      },
+      "GP2GP Dashboard Build And Deploy" : {
+        "Type" : "Task",
+        "Comment" : "GP2GP Dashboard Build And Deploy",
+        "Resource" : "arn:aws:states:::ecs:runTask.sync",
+        "ResultPath" : null,
+        "Parameters" : {
+          "LaunchType" : "FARGATE",
+          "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
+          "TaskDefinition" : data.aws_ssm_parameter.gp2gp_dashboard_task_definition_arn.value
+          "NetworkConfiguration" : {
+            "AwsvpcConfiguration" : {
+              "Subnets" : [
+                data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
+              ],
+              "SecurityGroups" : [
               data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
@@ -77,6 +98,10 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
 
 data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
   name = var.metrics_calculator_task_definition_arn_param_name
+}
+
+data "aws_ssm_parameter" "gp2gp_dashboard_task_definition_arn" {
+  name = var.gp2gp_dashboard_task_definition_arn_param_name
 }
 
 data "aws_ssm_parameter" "gocd_trigger_lambda_arn" {

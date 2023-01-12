@@ -99,3 +99,8 @@ variable "log_group_param_name" {
   type        = string
   description = "Cloudwatch log group for data pipeline"
 }
+
+variable "gp2gp_dashboard_task_definition_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing GP2GP Dashboard Task Definition ARN"
+}
