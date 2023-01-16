@@ -2,17 +2,26 @@ resource "aws_iam_role" "dashboard_pipeline_step_function" {
   name                = "${var.environment}-dashboard-pipeline-step-function"
   description         = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
   assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [aws_iam_policy.dashboard_pipeline_step_function.arn]
+  managed_policy_arns = [
+    aws_iam_policy.dashboard_pipeline_step_function.arn, aws_iam_policy.metrics_calculator_step_function.arn
+  ]
 }
 
 resource "aws_iam_policy" "dashboard_pipeline_step_function" {
   name   = "${var.environment}-dashboard-pipeline-step-function"
   policy = data.aws_iam_policy_document.dashboard_pipeline_step_function.json
+
+}
+
+resource "aws_iam_policy" "metrics_calculator_step_function" {
+  name   = "${var.environment}-metrics-calculator-step-function"
+  policy = data.aws_iam_policy_document.metrics_calculator_step_function.json
+
 }
 
 data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   statement {
-    sid = "GetEcrAuthToken"
+    sid     = "GetEcrAuthToken"
     actions = [
       "ecr:GetAuthorizationToken"
     ]
@@ -22,7 +31,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid = "RunEcsTask"
+    sid     = "RunEcsTask"
     actions = [
       "ecs:RunTask"
     ]
@@ -32,7 +41,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid = "StopEcsTask"
+    sid     = "StopEcsTask"
     actions = [
       "ecs:StopTask",
       "ecs:DescribeTasks"
@@ -43,7 +52,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid = "StepFunctionRule"
+    sid     = "StepFunctionRule"
     actions = [
       "events:PutTargets",
       "events:PutRule",
@@ -55,7 +64,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid = "PassIamRole"
+    sid     = "PassIamRole"
     actions = [
       "iam:PassRole"
     ]
@@ -67,7 +76,74 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid = "InvokeLambdaFunction"
+    sid     = "InvokeLambdaFunction"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      data.aws_ssm_parameter.gocd_trigger_lambda_arn.value,
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "metrics_calculator_step_function" {
+  statement {
+    sid     = "GetEcrAuthToken"
+    actions = [
+      "ecr:GetAuthorizationToken"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid     = "RunEcsTask"
+    actions = [
+      "ecs:RunTask"
+    ]
+    resources = [
+      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
+    ]
+  }
+
+  statement {
+    sid     = "StopEcsTask"
+    actions = [
+      "ecs:StopTask",
+      "ecs:DescribeTasks"
+    ]
+    resources = [
+      data.aws_ssm_parameter.metrics_calculator_task_definition_arn.value
+    ]
+  }
+
+  statement {
+    sid     = "StepFunctionRule"
+    actions = [
+      "events:PutTargets",
+      "events:PutRule",
+      "events:DescribeRule"
+    ]
+    resources = [
+      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+    ]
+  }
+
+  statement {
+    sid     = "PassIamRole"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      data.aws_ssm_parameter.execution_role_arn.value,
+      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value,
+      data.aws_ssm_parameter.gp2gp_dashboard_task_definition_arn.value
+    ]
+  }
+
+  statement {
+    sid     = "InvokeLambdaFunction"
     actions = [
       "lambda:InvokeFunction"
     ]
@@ -97,7 +173,7 @@ resource "aws_iam_policy" "dashboard_pipeline_trigger" {
 
 data "aws_iam_policy_document" "dashboard_pipeline_trigger" {
   statement {
-    sid = "TriggerStepFunction"
+    sid     = "TriggerStepFunction"
     actions = [
       "states:StartExecution"
     ]
