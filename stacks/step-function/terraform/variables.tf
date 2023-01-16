@@ -50,6 +50,11 @@ variable "metrics_calculator_iam_role_arn_param_name" {
   description = "SSM parameter containing metrics calculator iam role arn"
 }
 
+variable "gp2gp_dashboard_iam_role_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing gp2gp dashboard iam role arn"
+}
+
 variable "metrics_calculator_task_definition_arn_param_name" {
   type        = string
   description = "SSM parameter containing metrics calculator Task Definition ARN"

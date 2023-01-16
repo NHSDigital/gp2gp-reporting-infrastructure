@@ -3,7 +3,8 @@ resource "aws_iam_role" "dashboard_pipeline_step_function" {
   description         = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
   assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
   managed_policy_arns = [
-    aws_iam_policy.dashboard_pipeline_step_function.arn, aws_iam_policy.metrics_calculator_step_function.arn
+    aws_iam_policy.dashboard_pipeline_step_function.arn,
+    aws_iam_policy.metrics_calculator_step_function.arn
   ]
 }
 
@@ -70,8 +71,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
     ]
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
-      data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value,
-      data.aws_ssm_parameter.gp2gp_dashboard_task_definition_arn.value
+      data.aws_ssm_parameter.gp2gp_dashboard_iam_role_arn.value
     ]
   }
 
@@ -138,7 +138,6 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
     resources = [
       data.aws_ssm_parameter.execution_role_arn.value,
       data.aws_ssm_parameter.metrics_calculator_iam_role_arn.value,
-      data.aws_ssm_parameter.gp2gp_dashboard_task_definition_arn.value
     ]
   }
 
@@ -156,6 +155,12 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
 data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
   name = var.metrics_calculator_iam_role_arn_param_name
 }
+
+data "aws_ssm_parameter" "gp2gp_dashboard_iam_role_arn" {
+  name = var.gp2gp_dashboard_iam_role_arn_param_name
+}
+
+
 
 
 # Event trigger
