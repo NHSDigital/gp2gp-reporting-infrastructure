@@ -126,3 +126,4 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks dojo-apply dashboard-pipeline-gocd-trigger prod
+

@@ -82,6 +82,7 @@ dojo-validate)
   dojo "./tasks validate ${stack_name} ${stack_env}"
   ;;
 plan)
+  build_lambda dashboard-pipeline-gocd-trigger
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda log-alerts-pipeline-error
   build_lambda email-report
