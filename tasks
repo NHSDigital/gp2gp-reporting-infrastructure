@@ -84,7 +84,6 @@ dojo-validate)
 plan)
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda log-alerts-pipeline-error
-  build_lambda dashboard-pipeline-gocd-trigger
   build_lambda email-report
   tf_init
   terraform plan -var environment=$env_name \
@@ -111,7 +110,6 @@ destroy)
     ${tf_dir}
   ;;
 build-lambda)
-  build_lambda dashboard-pipeline-gocd-trigger
   build_lambda log-alerts-pipeline-error
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda email-report
