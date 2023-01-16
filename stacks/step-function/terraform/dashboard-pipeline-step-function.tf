@@ -9,7 +9,7 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
     }
   )
   definition = jsonencode({
-    "StartAt" : "Trigger Dashboard Pipeline GoCD Trigger?",
+    "StartAt" : "MetricsCalculator",
     "States" : {
       "MetricsCalculator" : {
         "Type" : "Task",
