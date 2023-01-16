@@ -84,7 +84,6 @@ dojo-validate)
 plan)
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda log-alerts-pipeline-error
-  build_lambda dashboard-pipeline-gocd-trigger
   build_lambda email-report
   tf_init
   terraform plan -var environment=$env_name \
