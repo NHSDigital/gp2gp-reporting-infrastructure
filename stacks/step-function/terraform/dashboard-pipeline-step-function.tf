@@ -34,7 +34,7 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
       },
       "GP2GP Dashboard Build And Deploy" : {
         "Type" : "Task",
-        "Comment" : "GP2GP Dashboard Build And Deploy",
+        "Comment" : "GP2GP Dashboard Build And Deploy Fronted",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
         "ResultPath" : null,
         "Parameters" : {
