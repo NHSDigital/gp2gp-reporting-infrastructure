@@ -132,6 +132,31 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
   }
 }
 
+# Event trigger
+resource "aws_iam_role" "dashboard_pipeline_trigger" {
+  name                = "${var.environment}-dashboard-pipeline-trigger"
+  description         = "Role used by EventBridge to trigger step function"
+  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  managed_policy_arns = [aws_iam_policy.dashboard_pipeline_trigger.arn]
+}
+
+resource "aws_iam_policy" "dashboard_pipeline_trigger" {
+  name   = "${var.environment}-dashboard-pipeline-trigger"
+  policy = data.aws_iam_policy_document.dashboard_pipeline_trigger.json
+}
+
+data "aws_iam_policy_document" "dashboard_pipeline_trigger" {
+  statement {
+    sid     = "TriggerStepFunction"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      aws_sfn_state_machine.dashboard_pipeline.arn
+    ]
+  }
+}
+
 data "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
   name = var.metrics_calculator_iam_role_arn_param_name
 }
