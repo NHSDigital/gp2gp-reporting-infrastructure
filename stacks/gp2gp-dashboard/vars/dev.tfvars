@@ -1,5 +1,5 @@
 s3_dashboard_bucket_name = "prm-service-dashboard-dev"
-alternative_domain_name    = "dev.gp-registrations-data.nhs.uk"
+alternate_domain_name    = "dev.gp-registrations-data.nhs.uk"
 gp2gp_dashboard_repo_param_name="/registrations/dev/data-pipeline/ecr/url/gp2gp-dashboard"
 log_group_param_name="/registrations/dev/data-pipeline/cloudwatch-log-group-name"
 execution_role_arn_param_name="/registrations/dev/data-pipeline/ecs-execution-role-arn"

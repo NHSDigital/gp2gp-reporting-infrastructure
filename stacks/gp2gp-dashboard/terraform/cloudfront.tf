@@ -4,13 +4,13 @@ locals {
 
 data "aws_acm_certificate" "dashboard_certificate" {
   provider    = aws.cf_certificate_only_region
-  domain      = var.alternative_domain_name
+  domain      = var.alternate_domain_name
   types       = ["AMAZON_ISSUED"]
   most_recent = true
 }
 
 resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
-  aliases = [var.alternative_domain_name]
+  aliases = [var.alternate_domain_name]
   origin {
     domain_name = aws_s3_bucket.dashboard_website.website_endpoint
     origin_id   = local.s3_origin_id

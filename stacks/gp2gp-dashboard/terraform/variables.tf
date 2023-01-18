@@ -25,9 +25,9 @@ variable "s3_dashboard_bucket_name" {
   type = string
 }
 
-variable "alternative_domain_name" {
+variable "alternate_domain_name" {
   type        = string
-  description = "alternative Domain Names (CNAME) for CloudFront distribution"
+  description = "Alternate Domain Names (CNAME) for CloudFront distribution"
 }
 
 variable "gp2gp_dashboard_repo_param_name" {
