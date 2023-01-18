@@ -1,18 +1,15 @@
 format_version: 4
 pipelines:
-  "data-pipeline-email-and-alerting":
+  "data-pipeline-validate-metrics":
     group: gp2gp-data-pipeline-infra
-    label_template: "${email_and_alerting[:8]}"
+    label_template: "${validate_metrics[:8]}"
     materials:
-      email_and_alerting:
+      validate_metrics:
         plugin_configuration:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: stacks/email-and-alerting, lambda/log-alerts-technical-failures-above-threshold, lambda/log-alerts-pipeline_error, lambda/email-report
-      reports_generator_task:
-        pipeline: data-pipeline-reports-generator-task
-        stage: apply_dev
+          path: stacks/validate-metrics, lambda/validate-metrics
     stages:
       - validate:
           clean_workspace: true
@@ -25,7 +22,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate email-and-alerting dev
+                      - ./tasks dojo-validate validate-metrics dev
       - plan_dev:
           clean_workspace: true
           jobs:
@@ -36,20 +33,14 @@ pipelines:
                 - build:
                     source: dev.tfplan
                 - build:
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/email-report.zip
+                    source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan email-and-alerting dev
+                      - ./tasks dojo-plan validate-metrics dev
       - apply_dev:
           clean_workspace: true
           jobs:
@@ -65,26 +56,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_dev
-                    job: plan
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_dev
-                    job: plan
-                    source: lambda/build/email-report.zip
+                    source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply email-and-alerting dev
+                      - ./tasks dojo-apply validate-metrics dev
       - validate_prod:
           clean_workspace: true
           approval:
@@ -99,7 +78,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-validate email-and-alerting prod
+                      - ./tasks dojo-validate validate-metrics prod
       - plan_prod:
           clean_workspace: true
           jobs:
@@ -110,20 +89,14 @@ pipelines:
                 - build:
                     source: prod.tfplan
                 - build:
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
-                - build:
-                    source: lambda/build/email-report.zip
+                    source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-plan email-and-alerting prod
+                      - ./tasks dojo-plan validate-metrics prod
       - apply_prod:
           clean_workspace: true
           approval:
@@ -142,23 +115,11 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: lambda/build/log-alerts-technical-failures-above-threshold.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_prod
-                    job: plan
-                    source: lambda/build/log-alerts-pipeline-error.zip
-                    destination: lambda/build/
-                    is_file: yes
-                - fetch:
-                    stage: plan_prod
-                    job: plan
-                    source: lambda/build/email-report.zip
+                    source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks dojo-apply email-and-alerting prod
+                      - ./tasks dojo-apply validate-metrics prod

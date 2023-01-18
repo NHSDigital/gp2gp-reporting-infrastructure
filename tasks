@@ -85,6 +85,7 @@ plan)
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda log-alerts-pipeline-error
   build_lambda email-report
+  build_lambda validate-metrics
   tf_init
   terraform plan -var environment=$env_name \
     -var-file=stacks/${stack_name}/vars/${stack_env}.tfvars \
@@ -113,6 +114,7 @@ build-lambda)
   build_lambda log-alerts-pipeline-error
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda email-report
+  build_lambda validate-metrics
 ;;
 *)
   echo "Invalid task: '${task}'"
