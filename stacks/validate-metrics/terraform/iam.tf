@@ -13,7 +13,7 @@ data aws_ssm_parameter "metrics_input_bucket_name"{
 }
 
 resource "aws_iam_policy" "metrics_input_bucket_read_access" {
-  name   = "${var.environment}-${data.aws_ssm_parameter.metrics_input_bucket_name}-read"
+  name   = "${var.environment}-${data.aws_ssm_parameter.metrics_input_bucket_name.value}-read"
   policy = data.aws_iam_policy_document.metrics_input_bucket_read_access.json
 }
 
