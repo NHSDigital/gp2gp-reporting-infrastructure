@@ -30,6 +30,12 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
             }
           },
         },
+        "Next" : "ValidateMetrics"
+      },
+      "ValidateMetrics" : {
+        "Comment" : "Validate Metrics - responsible for reading practice and national metrics and validating them",
+        "Type": "Task",
+        "Resource" : data.aws_ssm_parameter.validate_metrics_lambda_arn.value,
         "Next" : "GP2GP Dashboard Build And Deploy"
       },
       "GP2GP Dashboard Build And Deploy" : {
@@ -63,4 +69,8 @@ data "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
 
 data "aws_ssm_parameter" "gp2gp_dashboard_task_definition_arn" {
   name = var.gp2gp_dashboard_task_definition_arn_param_name
+}
+
+data "aws_ssm_parameter" "validate_metrics_lambda_arn" {
+  name = var.validate_metrics_lambda_arn_param_name
 }

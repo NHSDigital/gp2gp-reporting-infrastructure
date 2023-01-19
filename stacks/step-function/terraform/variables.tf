@@ -104,3 +104,8 @@ variable "gp2gp_dashboard_task_definition_arn_param_name" {
   type        = string
   description = "SSM parameter containing GP2GP Dashboard Task Definition ARN"
 }
+
+variable "validate_metrics_lambda_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing Validate Metrics Lambda ARN"
+}
