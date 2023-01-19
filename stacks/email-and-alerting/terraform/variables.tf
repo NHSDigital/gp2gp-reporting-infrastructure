@@ -15,6 +15,10 @@ variable "repo_name" {
   description = "Name of this repository"
 }
 
+variable "email_report_lambda_name" {
+  default = "email-report-lambda"
+}
+
 variable "email_report_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for emailing reports"

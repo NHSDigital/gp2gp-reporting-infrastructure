@@ -1,7 +1,3 @@
-variable "email_report_lambda_name" {
-  default = "email-report-lambda"
-}
-
 resource "aws_lambda_function" "email_report_lambda" {
   filename      = var.email_report_lambda_zip
   function_name = "${var.environment}-${var.email_report_lambda_name}"

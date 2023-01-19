@@ -14,3 +14,23 @@ variable "repo_name" {
   default     = "prm-gp2gp-data-pipeline-infra"
   description = "Name of this repository"
 }
+
+variable "validate_metrics_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for metrics validation"
+  default     = "lambda/build/validate-metrics.zip"
+}
+
+variable "validate_metrics_lambda_name" {
+  default = "validate-metrics-lambda"
+}
+
+variable "s3_practice_metrics_filepath_param_name" {
+  type        = string
+  description = "SSM parameter containing the s3 practice metrics filepath"
+}
+
+variable "s3_national_metrics_filepath_param_name" {
+  type        = string
+  description = "SSM parameter containing the s3 national metrics filepath"
+}
