@@ -60,6 +60,7 @@ data "aws_iam_policy_document" "validate_metrics_lambda_ssm_access" {
     resources = [
       "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.s3_national_metrics_filepath_param_name}",
       "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.s3_practice_metrics_filepath_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.metrics_calculator_bucket_param_name}",
     ]
   }
 }

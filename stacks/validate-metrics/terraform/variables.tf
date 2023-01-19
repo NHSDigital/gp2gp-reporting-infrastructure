@@ -42,5 +42,7 @@ variable "metrics_calculator_bucket_param_name" {
 }
 
 variable "s3_metrics_version" {
-  default = "12"
+  type        = string
+  description = "Latest version of s3 metrics"
+  default = "v12"
 }
