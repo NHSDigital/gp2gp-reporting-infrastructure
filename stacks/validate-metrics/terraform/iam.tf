@@ -4,11 +4,48 @@ resource "aws_iam_role" "validate_metrics_lambda_role" {
   managed_policy_arns = [
     aws_iam_policy.validate_metrics_lambda_ssm_access.arn,
     aws_iam_policy.validate_metrics_cloudwatch_log_access.arn,
+    aws_iam_policy.metrics_input_bucket_read_access.arn
   ]
 }
 
+data aws_ssm_parameter "metrics_input_bucket_name"{
+  name = var.metrics_calculator_bucket_param_name
+}
+
+resource "aws_iam_policy" "metrics_input_bucket_read_access" {
+  name   = "${var.environment}-${data.aws_ssm_parameter.metrics_input_bucket_name}-read"
+  policy = data.aws_iam_policy_document.metrics_input_bucket_read_access.json
+}
+
+data "aws_iam_policy_document" "metrics_input_bucket_read_access" {
+  statement {
+    sid = "ListBucket"
+
+    actions = [
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${data.aws_ssm_parameter.metrics_input_bucket_name.value}"
+    ]
+  }
+
+  statement {
+    sid = "ReadObjects"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${data.aws_ssm_parameter.metrics_input_bucket_name.value}/*"
+    ]
+  }
+}
+
+
 resource "aws_iam_policy" "validate_metrics_lambda_ssm_access" {
-  name   = "${var.environment}-validate-metrics-ssm--access"
+  name   = "${var.environment}-validate-metrics-ssm-access"
   policy = data.aws_iam_policy_document.validate_metrics_lambda_ssm_access.json
 }
 
