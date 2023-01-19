@@ -40,3 +40,7 @@ variable "metrics_calculator_bucket_param_name" {
   type        = string
   description = "SSM parameter containing the metrics calculator s3 bucket name"
 }
+
+variable "s3_metrics_version" {
+  default = "12"
+}
