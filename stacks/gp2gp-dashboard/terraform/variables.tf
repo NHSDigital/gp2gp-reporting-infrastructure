@@ -55,5 +55,9 @@ variable "gp2gp_dashboard_image_tag" {
   description = "Docker image tag of the reports generator"
 }
 
+variable "zone_name" {
+  type = string
+  description = "Route 53 zone name for GP2GP Dashboard"
+}
 
 
