@@ -10,6 +10,7 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
   )
   definition = jsonencode({
     "StartAt" : "Skip MetricsCalculator?",
+    "Comment": "Add option to skip generating the metrics - useful for code only changes that don't require the data to be updated"
     "States" : {
       "Skip MetricsCalculator?" : {
         "Type" : "Choice",
