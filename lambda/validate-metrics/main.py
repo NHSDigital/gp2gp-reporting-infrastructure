@@ -78,8 +78,12 @@ def _validate_national_metrics(national_metrics):
     month = national_metrics_json["metrics"][0]["month"]
     date_when_generated = national_metrics_json["generatedOn"][:10]
     datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d')
+    if datetime_when_generated.month == 1:
+        data_generation_month = 12
+    else:
+        data_generation_month = datetime_when_generated.month -1
 
-    if transfer_count < 150_000 or month is not (datetime_when_generated.month - 1):
+    if transfer_count < 150_000 or month is not data_generation_month:
         raise InvalidMetrics
     return True
 
