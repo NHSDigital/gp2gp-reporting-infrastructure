@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     try:
         _validate_metrics(practice_metrics, national_metrics)
     except InvalidMetrics as exception:
-        logging.error("Invalid metrics" + str(exception))
+        logging.error("Invalid metrics: " + str(exception))
         raise exception
     logging.info("Metrics validation successful.")
 
@@ -57,7 +57,7 @@ def _validate_practice_metrics(practice_metrics):
     # Check one instance of SICBLs in practiceMetrics.json contains > 0 practice ODS codes - larger than 0?
     if len(list_of_sicbls[0]['practices']) < 1 or list_of_sicbls[0]['practices'][0] == "":
         raise InvalidMetrics(
-            "Invalid practice metrics: sicbl " + json.dumps(list_of_sicbls[0]) + " instance doesn't contain a "
+            "Invalid practice metrics: sicbl " + json.dumps(list_of_sicbls[0]) + " instance does not contain a "
                                                                                  "practice")
 
     # Check at least once practice exists with an ODS code and 6 months worth of metrics, including the latest month.
@@ -78,7 +78,9 @@ def _validate_national_metrics(national_metrics):
     last_month = datetime_when_generated.replace(day=1) - timedelta(days=1)
 
     if transfer_count < 150_000 or month != last_month.month:
-        raise InvalidMetrics
+        raise InvalidMetrics(
+            "Invalid national metrics: the transfer count is smaller than 150 000 or the month is "
+            "incorrect.")
     return True
 
 

@@ -26,7 +26,6 @@ class TestMain(unittest.TestCase):
         mock_boto_client("s3").get_object = put_s3_spy
         mock_boto_client("ssm").get_parameter = get_ssm_spy
 
-        # should have get two files
         result = _fetch_objects_from_s3()
 
         assert len(result) == 2
