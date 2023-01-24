@@ -90,23 +90,30 @@ def _fetch_objects_from_s3():
     s3 = boto3.client("s3")
     try:
         print("Fetching ssm parameters:")
+        print("Fetching s3_file_name_national_metrics ssm parameters:")
         s3_file_name_national_metrics = secret_manager.get_secret(os.environ["S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME"])
+        print("Fetching s3_file_name_practice_metrics ssm parameters:")
         s3_file_name_practice_metrics = secret_manager.get_secret(os.environ["S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME"])
-        bucket = secret_manager.get_secret(os.environ["S3_METRICS_BUCKET_PARAM_NAME"])
-        print("Fetching env var:")
-        version = os.environ["S3_METRICS_VERSION"]
-        key_national = version + "/" + s3_file_name_national_metrics
-        key_practice = version + "/" + s3_file_name_practice_metrics
     except Exception as e:
         print("Unable to fetch SSM Parameter", e)
         raise UnableToFetchSSMParameter
+
+    print("Fetching bucket env var")
+    bucket = secret_manager.get_secret(os.environ["S3_METRICS_BUCKET_PARAM_NAME"])
+    print("Fetching env var:")
+    version = os.environ["S3_METRICS_VERSION"]
+    key_national = version + "/" + s3_file_name_national_metrics
+    key_practice = version + "/" + s3_file_name_practice_metrics
+
     try:
         print("Fetching files from s3")
+        print("Fetching practice metrics file from s3")
         practice_response = s3.get_object(
             Bucket=bucket,
             Key=key_practice)
         practice_metrics_body = practice_response['Body'].read().decode()
 
+        print("Fetching national metrics file from s3")
         national_response = s3.get_object(
             Bucket=bucket,
             Key=key_national)
