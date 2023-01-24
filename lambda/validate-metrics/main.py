@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import boto3
 import urllib3
@@ -40,9 +40,9 @@ def lambda_handler(event, context):
     try:
         _validate_metrics(practice_metrics, national_metrics)
     except InvalidMetrics as exception:
-        logging.error("Invalid metrics, failed to deploy" + str(exception))
+        logging.error("Invalid metrics" + str(exception))
         raise exception
-    logging.log("The practice and national metrics files are valid. Continue to deploy.")
+    logging.info("Metrics validation successful.")
 
 
 def _validate_metrics(practice_metrics, national_metrics):
@@ -53,22 +53,18 @@ def _validate_practice_metrics(practice_metrics):
     practice_metrics_json = json.loads(practice_metrics)
     list_of_sicbls = practice_metrics_json["sicbls"]
     list_of_practices = practice_metrics_json["practices"]
-    first_condition = False
-    second_condition = False
 
     # Check one instance of SICBLs in practiceMetrics.json contains > 0 practice ODS codes - larger than 0?
-    for sicbl in list_of_sicbls:
-        print(sicbl)
-        if len(sicbl['practices']) > 0 and sicbl['practices'][0] != "":
-            first_condition = True
+    if len(list_of_sicbls[0]['practices']) < 1 or list_of_sicbls[0]['practices'][0] == "":
+        raise InvalidMetrics(
+            "Invalid practice metrics: sicbl " + json.dumps(list_of_sicbls[0]) + " instance doesn't contain a "
+                                                                                 "practice")
 
     # Check at least once practice exists with an ODS code and 6 months worth of metrics, including the latest month.
-    for practice in list_of_practices:
-        if practice["odsCode"] != "" and len(practice["metrics"]) >= 6:
-            second_condition = True  # what does it mean an ods Code is not in?
+    if list_of_practices[0]["odsCode"] == "" or len(list_of_practices[0]["metrics"]) < 6:
+        raise InvalidMetrics("Invalid national metrics: a practice " + list_of_practices[
+            0] + " does not contain 6 months worth of metrics OR it does not contain an ODS Code")
 
-    if not first_condition or not second_condition:
-        raise InvalidMetrics
     return True
 
 
@@ -76,14 +72,12 @@ def _validate_national_metrics(national_metrics):
     national_metrics_json = json.loads(national_metrics)
     transfer_count = national_metrics_json["metrics"][0]["transferCount"]
     month = national_metrics_json["metrics"][0]["month"]
+    # take the month when data was generated and subtract one to obtain the previous month
     date_when_generated = national_metrics_json["generatedOn"][:10]
     datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d')
-    if datetime_when_generated.month == 1:
-        data_generation_month = 12
-    else:
-        data_generation_month = datetime_when_generated.month -1
+    last_month = datetime_when_generated.replace(day=1) - timedelta(days=1)
 
-    if transfer_count < 150_000 or month is not data_generation_month:
+    if transfer_count < 150_000 or month != last_month.month:
         raise InvalidMetrics
     return True
 

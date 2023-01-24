@@ -479,11 +479,11 @@ INVALID_PRACTICE_METRICS_JSON = json.dumps({
 )
 
 INVALID_NATIONAL_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-02-24 16:51:21.353977",
+    "generatedOn": "2020-02-24T16:51:21.353977",
     "metrics": [
         {
             "integratedOnTime": {
-                "transferCount": 5,
+                "transferCount": 12,
                 "transferPercentage": 41.67
             },
             "month": 12,
