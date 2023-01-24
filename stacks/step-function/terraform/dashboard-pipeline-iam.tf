@@ -42,6 +42,17 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
+    sid     = "InvokeLambdaFunction"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      data.aws_ssm_parameter.gp2gp_dashboard_task_definition_arn.value,
+      data.aws_ssm_parameter.validate_metrics_lambda_arn.arn
+    ]
+  }
+
+  statement {
     sid     = "StopEcsTask"
     actions = [
       "ecs:StopTask",
