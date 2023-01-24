@@ -51,8 +51,8 @@ def _validate_metrics(practice_metrics, national_metrics):
 
 def _validate_practice_metrics(practice_metrics):
     practice_metrics_json = json.loads(practice_metrics)
-    list_of_sicbls = practice_metrics_json["Body"]["sicbls"]
-    list_of_practices = practice_metrics_json["Body"]["practices"]
+    list_of_sicbls = practice_metrics_json["sicbls"]
+    list_of_practices = practice_metrics_json["practices"]
     first_condition = False
     second_condition = False
 
@@ -74,10 +74,10 @@ def _validate_practice_metrics(practice_metrics):
 
 def _validate_national_metrics(national_metrics):
     national_metrics_json = json.loads(national_metrics)
-    transfer_count = national_metrics_json["Body"]["metrics"][0]["transferCount"]
-    month = national_metrics_json["Body"]["metrics"][0]["month"]
-    date_when_generated = national_metrics_json["Body"]["generatedOn"]
-    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d %H:%M:%S.%f')
+    transfer_count = national_metrics_json["metrics"][0]["transferCount"]
+    month = national_metrics_json["metrics"][0]["month"]
+    date_when_generated = national_metrics_json["generatedOn"][:10]
+    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d')
 
     if transfer_count < 150_000 or month is not (datetime_when_generated.month - 1):
         raise InvalidMetrics
@@ -99,7 +99,7 @@ def _fetch_objects_from_s3():
         raise UnableToFetchSSMParameter
 
     print("Fetching bucket env var")
-    bucket = secret_manager.get_secret(os.environ["S3_METRICS_BUCKET_PARAM_NAME"])
+    bucket = os.environ["S3_METRICS_BUCKET_NAME"]
     print("Fetching env var:")
     version = os.environ["S3_METRICS_VERSION"]
     key_national = version + "/" + s3_file_name_national_metrics
@@ -111,13 +111,13 @@ def _fetch_objects_from_s3():
         practice_response = s3.get_object(
             Bucket=bucket,
             Key=key_practice)
-        practice_metrics_body = practice_response['Body'].read().decode()
+        practice_metrics_body = practice_response["Body"].read().decode()
 
         print("Fetching national metrics file from s3")
         national_response = s3.get_object(
             Bucket=bucket,
             Key=key_national)
-        national_metrics_body = national_response['Body'].read().decode()
+        national_metrics_body = national_response["Body"].read().decode()
     except Exception as e:
         print("Unable to fetch objects from S3: ", e)
         raise UnableToFetchObjectFromS3()

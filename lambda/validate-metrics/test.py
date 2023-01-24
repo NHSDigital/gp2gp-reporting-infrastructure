@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, call, patch
 from main import _fetch_objects_from_s3, _validate_metrics, _validate_national_metrics, \
     InvalidMetrics, _validate_practice_metrics
 
-S3_METRICS_BUCKET_PARAM_NAME = "path-to-metrics-calculator-param-name"
+S3_METRICS_BUCKET_NAME = "path-to-metrics-calculator-param-name"
 S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME = "path-to-national-metrics-param-name"
 S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME = "path-to-practice-metrics-param-name"
 BUCKET_NAME = "metrics-bucket"
@@ -15,7 +15,7 @@ BUCKET_NAME = "metrics-bucket"
 class TestMain(unittest.TestCase):
 
     @patch('boto3.client')
-    @patch.dict(os.environ, {"S3_METRICS_BUCKET_PARAM_NAME": S3_METRICS_BUCKET_PARAM_NAME,
+    @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
                              "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
                              "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
                              "BUCKET_NAME": BUCKET_NAME,
@@ -31,14 +31,11 @@ class TestMain(unittest.TestCase):
 
         assert len(result) == 2
 
-        get_ssm_spy.call_count = 3
+        get_ssm_spy.call_count = 2
         get_ssm_spy.assert_has_calls([call(Name="path-to-national-metrics-param-name", WithDecryption=True),
                                       call().__getitem__('Parameter'),
                                       call().__getitem__().__getitem__('Value'),
                                       call(Name="path-to-practice-metrics-param-name", WithDecryption=True),
-                                      call().__getitem__('Parameter'),
-                                      call().__getitem__().__getitem__('Value'),
-                                      call(Name="path-to-metrics-calculator-param-name", WithDecryption=True),
                                       call().__getitem__('Parameter'),
                                       call().__getitem__().__getitem__('Value')])
         put_s3_spy.call_count = 2
@@ -61,7 +58,7 @@ class TestMain(unittest.TestCase):
                 "practices": []
             }
         ])
-        practice_metrics_json["Body"]["sicbls"] = json.loads(wrong_sicbl)
+        practice_metrics_json["sicbls"] = json.loads(wrong_sicbl)
         self.assertRaises(InvalidMetrics, _validate_practice_metrics, json.dumps(practice_metrics_json))
 
     def test_throws_error_and_interrupts_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
@@ -73,11 +70,11 @@ class TestMain(unittest.TestCase):
 
     def test_throws_error_and_interrupts_when_month_is_incorrect_for_national_metrics(self):
         national_metrics_json = json.loads(VALID_NATIONAL_METRICS_JSON)
-        national_metrics_json["Body"]["generatedOn"] = "2020-10-24 16:51:21.353977"  # change generation date month
+        national_metrics_json["generatedOn"] = "2020-10-24 16:51:21.353977"  # change generation date month
         self.assertRaises(InvalidMetrics, _validate_national_metrics, json.dumps(national_metrics_json))
 
 
-VALID_PRACTICE_METRICS_JSON = json.dumps({"Body": {
+VALID_PRACTICE_METRICS_JSON = json.dumps({
     "generatedOn": "2020-02-24 16:51:21.353977",
     "practices": [
         {
@@ -293,9 +290,9 @@ VALID_PRACTICE_METRICS_JSON = json.dumps({"Body": {
         }
     ]
 }
-})
+)
 
-VALID_NATIONAL_METRICS_JSON = json.dumps({"Body": {
+VALID_NATIONAL_METRICS_JSON = json.dumps({
     "generatedOn": "2020-09-24 16:51:21.353977",
     "metrics": [
         {
@@ -331,10 +328,10 @@ VALID_NATIONAL_METRICS_JSON = json.dumps({"Body": {
         }
     ]
 }
-})
+)
 
 # INVALID METRICS
-INVALID_PRACTICE_METRICS_JSON = json.dumps({"Body": {
+INVALID_PRACTICE_METRICS_JSON = json.dumps({
     "generatedOn": "2020-02-24 16:51:21.353977",
     "practices": [
         {
@@ -479,9 +476,9 @@ INVALID_PRACTICE_METRICS_JSON = json.dumps({"Body": {
         }
     ]
 }
-})
+)
 
-INVALID_NATIONAL_METRICS_JSON = json.dumps({"Body": {
+INVALID_NATIONAL_METRICS_JSON = json.dumps({
     "generatedOn": "2020-02-24 16:51:21.353977",
     "metrics": [
         {
@@ -517,4 +514,4 @@ INVALID_NATIONAL_METRICS_JSON = json.dumps({"Body": {
         }
     ]
 }
-})
+)
