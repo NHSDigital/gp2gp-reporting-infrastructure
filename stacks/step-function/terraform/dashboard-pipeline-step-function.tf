@@ -9,8 +9,19 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
     }
   )
   definition = jsonencode({
-    "StartAt" : "MetricsCalculator",
+    "StartAt" : "Skip MetricsCalculator?",
     "States" : {
+      "Skip MetricsCalculator?" : {
+        "Type" : "Choice",
+        "Choices" : [
+          {
+            "Variable" : "$.SKIP_METRICS",
+            "BooleanEquals" : true,
+            "Next" : "GP2GP Dashboard Build And Deploy"
+          }
+        ],
+        "Default" : "MetricsCalculator"
+      },
       "MetricsCalculator" : {
         "Type" : "Task",
         "Comment" : "Metrics calculator - responsible for taking transfer data and organisation meta data and calculating metrics for the platform",
