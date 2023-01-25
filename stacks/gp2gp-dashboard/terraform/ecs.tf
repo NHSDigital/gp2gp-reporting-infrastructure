@@ -33,8 +33,8 @@ resource "aws_ecs_task_definition" "gp2gp_dashboard" {
       }
     },
   ])
-  cpu                      = 1024
-  memory                   = 2048
+  cpu                      = 2048
+  memory                   = 4096
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   tags = merge(
