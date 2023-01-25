@@ -1,0 +1,6 @@
+fileignoreconfig:
+- filename: lambda/validate-metrics/main.py
+  checksum: 6d564145fc6c4f0cb9936b54707918f57c963557d93696170c7d06cfd4cadff1
+- filename: lambda/validate-metrics/test.py
+  checksum: 1721bea5bee93a0b309fb3c22be5843afa1a888ca74a586e29ca678d515d3c32
+version: ""

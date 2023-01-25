@@ -3,8 +3,8 @@ import os
 import unittest
 from unittest.mock import MagicMock, call, patch
 
-from main import _fetch_objects_from_s3, _validate_metrics, _validate_national_metrics, \
-    InvalidMetrics, _validate_practice_metrics
+from main import fetch_metrics_from_s3, validate_metrics, _is_valid_national_metrics, \
+    InvalidMetrics, _is_valid_practice_metrics
 
 S3_METRICS_BUCKET_NAME = "metrics-bucket"
 S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME = "path-to-national-metrics"
@@ -24,17 +24,18 @@ class TestMain(unittest.TestCase):
         mock_boto_client("s3").get_object = get_s3_spy
         mock_boto_client("ssm").get_parameter = get_ssm_spy
 
-        result = _fetch_objects_from_s3()
+        result = fetch_metrics_from_s3()
 
         assert len(result) == 2
 
         get_ssm_spy.call_count = 2
-        get_ssm_spy.assert_has_calls([call(Name="path-to-national-metrics", WithDecryption=True),
+        get_ssm_spy.assert_has_calls([call(Name="path-to-practice-metrics", WithDecryption=True),
                                       call().__getitem__('Parameter'),
                                       call().__getitem__().__getitem__('Value'),
-                                      call(Name="path-to-practice-metrics", WithDecryption=True),
+                                      call(Name="path-to-national-metrics", WithDecryption=True),
                                       call().__getitem__('Parameter'),
-                                      call().__getitem__().__getitem__('Value')])
+                                      call().__getitem__().__getitem__('Value'),
+                                      ])
         get_s3_spy.call_count = 2
 
     @patch('boto3.client')
@@ -58,25 +59,27 @@ class TestMain(unittest.TestCase):
         mock_boto_client("ssm").get_parameter.side_effect = [ssm_get_parameter_response_practice,
                                                              ssm_get_parameter_response_national]
 
-        result = _fetch_objects_from_s3()
+        result = fetch_metrics_from_s3()
 
         assert len(result) == 2
 
-        get_s3_spy.assert_has_calls([call(Bucket="metrics-bucket", Key="v12/path-to-national-metrics"),
-                                     call().__getitem__('Body'),
-                                     call().__getitem__().read(),
-                                     call().__getitem__().read().decode(),
-                                     call(Bucket="metrics-bucket", Key="v12/path-to-practice-metrics"),
-                                     call().__getitem__('Body'),
-                                     call().__getitem__().read(),
-                                     call().__getitem__().read().decode()])
+        get_s3_spy.assert_has_calls([
+            call(Bucket="metrics-bucket", Key="v12/path-to-practice-metrics"),
+            call().__getitem__('Body'),
+            call().__getitem__().read(),
+            call().__getitem__().read().decode(),
+            call(Bucket="metrics-bucket", Key="v12/path-to-national-metrics"),
+            call().__getitem__('Body'),
+            call().__getitem__().read(),
+            call().__getitem__().read().decode()])
+
         get_s3_spy.call_count = 2
 
-    def test_validation_successful(self):
-        result = _validate_metrics(VALID_PRACTICE_METRICS_JSON, VALID_NATIONAL_METRICS_JSON)
+    def test_metrics_are_valid(self):
+        result = validate_metrics(VALID_PRACTICE_METRICS_JSON, VALID_NATIONAL_METRICS_JSON)
         assert result is True
 
-    def test_throws_error_and_interrupts_when_no_ods_codes_for_practice(self):
+    def test_throws_invalid_metrics_exception_when_no_ods_codes_for_practice(self):
         practice_metrics_json = json.loads(VALID_PRACTICE_METRICS_JSON)
         wrong_sicbl = json.dumps([
             {
@@ -91,19 +94,19 @@ class TestMain(unittest.TestCase):
             }
         ])
         practice_metrics_json["sicbls"] = json.loads(wrong_sicbl)
-        self.assertRaises(InvalidMetrics, _validate_practice_metrics, json.dumps(practice_metrics_json))
+        self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
 
-    def test_throws_error_and_interrupts_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
-        self.assertRaises(InvalidMetrics, _validate_practice_metrics, INVALID_PRACTICE_METRICS_JSON)
+    def test_throws_error_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
+        self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, INVALID_PRACTICE_METRICS_JSON)
 
-    def test_throws_error_and_interrupts_when_total_number_of_transfers_less_than_150_000_and_wrong_month_for_national_metrics(
+    def test_throws_error_when_total_number_of_transfers_less_than_150_000_and_wrong_month_for_national_metrics(
             self):
-        self.assertRaises(InvalidMetrics, _validate_national_metrics, INVALID_NATIONAL_METRICS_JSON)
+        self.assertRaises(InvalidMetrics, _is_valid_national_metrics, INVALID_NATIONAL_METRICS_JSON)
 
     def test_throws_error_and_interrupts_when_month_is_incorrect_for_national_metrics(self):
         national_metrics_json = json.loads(VALID_NATIONAL_METRICS_JSON)
         national_metrics_json["generatedOn"] = "2020-10-24 16:51:21.353977"  # change generation date month
-        self.assertRaises(InvalidMetrics, _validate_national_metrics, json.dumps(national_metrics_json))
+        self.assertRaises(InvalidMetrics, _is_valid_national_metrics, json.dumps(national_metrics_json))
 
 
 VALID_PRACTICE_METRICS_JSON = json.dumps({
