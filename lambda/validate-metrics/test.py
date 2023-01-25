@@ -6,10 +6,9 @@ from unittest.mock import MagicMock, call, patch
 from main import _fetch_objects_from_s3, _validate_metrics, _validate_national_metrics, \
     InvalidMetrics, _validate_practice_metrics
 
-S3_METRICS_BUCKET_NAME = "path-to-metrics-calculator-param-name"
-S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME = "path-to-national-metrics-param-name"
-S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME = "path-to-practice-metrics-param-name"
-BUCKET_NAME = "metrics-bucket"
+S3_METRICS_BUCKET_NAME = "metrics-bucket"
+S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME = "path-to-national-metrics"
+S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME = "path-to-practice-metrics"
 
 
 class TestMain(unittest.TestCase):
@@ -18,12 +17,11 @@ class TestMain(unittest.TestCase):
     @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
                              "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
                              "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
-                             "BUCKET_NAME": BUCKET_NAME,
-                             "S3_METRICS_VERSION": "12"})
-    def test_fetching_metrics_data_successfully(self, mock_boto_client):
-        put_s3_spy = MagicMock()
+                             "S3_METRICS_VERSION": "v12"})
+    def test_fetching_ssm_and_metrics_data_successfully(self, mock_boto_client):
+        get_s3_spy = MagicMock()
         get_ssm_spy = MagicMock()
-        mock_boto_client("s3").get_object = put_s3_spy
+        mock_boto_client("s3").get_object = get_s3_spy
         mock_boto_client("ssm").get_parameter = get_ssm_spy
 
         result = _fetch_objects_from_s3()
@@ -31,13 +29,48 @@ class TestMain(unittest.TestCase):
         assert len(result) == 2
 
         get_ssm_spy.call_count = 2
-        get_ssm_spy.assert_has_calls([call(Name="path-to-national-metrics-param-name", WithDecryption=True),
+        get_ssm_spy.assert_has_calls([call(Name="path-to-national-metrics", WithDecryption=True),
                                       call().__getitem__('Parameter'),
                                       call().__getitem__().__getitem__('Value'),
-                                      call(Name="path-to-practice-metrics-param-name", WithDecryption=True),
+                                      call(Name="path-to-practice-metrics", WithDecryption=True),
                                       call().__getitem__('Parameter'),
                                       call().__getitem__().__getitem__('Value')])
-        put_s3_spy.call_count = 2
+        get_s3_spy.call_count = 2
+
+    @patch('boto3.client')
+    @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
+                             "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_METRICS_VERSION": "v12"})
+    def test_fetching_metrics_data_successfully_from_s3(self, mock_boto_client):
+        get_s3_spy = MagicMock()
+        ssm_get_parameter_response_practice = {
+            'Parameter': {
+                'Value': S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+        ssm_get_parameter_response_national = {
+            'Parameter': {
+                'Value': S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+        mock_boto_client("s3").get_object = get_s3_spy
+        mock_boto_client("ssm").get_parameter.side_effect = [ssm_get_parameter_response_practice,
+                                                             ssm_get_parameter_response_national]
+
+        result = _fetch_objects_from_s3()
+
+        assert len(result) == 2
+
+        get_s3_spy.assert_has_calls([call(Bucket="metrics-bucket", Key="v12/path-to-national-metrics"),
+                                     call().__getitem__('Body'),
+                                     call().__getitem__().read(),
+                                     call().__getitem__().read().decode(),
+                                     call(Bucket="metrics-bucket", Key="v12/path-to-practice-metrics"),
+                                     call().__getitem__('Body'),
+                                     call().__getitem__().read(),
+                                     call().__getitem__().read().decode()])
+        get_s3_spy.call_count = 2
 
     def test_validation_successful(self):
         result = _validate_metrics(VALID_PRACTICE_METRICS_JSON, VALID_NATIONAL_METRICS_JSON)
