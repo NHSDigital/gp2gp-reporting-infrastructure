@@ -241,14 +241,14 @@ class TestMain(unittest.TestCase):
 
     def test_throws_error_when_practice_last_month_is_incorrect(self):
         practice_metrics_json = json.loads(VALID_PRACTICE_METRICS_JSON)
-        practice_metrics_json["generatedOn"] = "2020-10-24T16:51:21.353977"  # change generation date month
+        practice_metrics_json["generatedOn"] = "2020-10-24T16:51:21.353977+00:00"  # change generation date month
 
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
 
     def test_throws_error_and_interrupts_when_no_practice_with_6_months_worth_of_data(self):
         practice_metrics_json = json.loads(INVALID_PRACTICE_METRICS_JSON)
         # change the generated date to be correct to isolate the no practice error
-        practice_metrics_json["generatedOn"] = "2020-01-24T16:51:21.353977"
+        practice_metrics_json["generatedOn"] = "2020-01-24T16:51:21.353977+00:00"
 
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
 
@@ -261,7 +261,7 @@ class TestMain(unittest.TestCase):
 
     def test_throws_error_and_interrupts_when_month_is_incorrect_for_national_metrics(self):
         national_metrics_json = json.loads(VALID_NATIONAL_METRICS_JSON)
-        national_metrics_json["generatedOn"] = "2020-10-24 16:51:21.353977"  # change generation date month
+        national_metrics_json["generatedOn"] = "2020-10-24T16:51:21.353977+00:00"  # change generation date month
         self.assertRaises(InvalidMetrics, _is_valid_national_metrics, json.dumps(national_metrics_json))
 
     def test_throws_error_when_total_number_of_transfers_less_than_150_000_for_national_metrics(self):
@@ -271,7 +271,7 @@ class TestMain(unittest.TestCase):
 
 
 VALID_PRACTICE_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-01-24T16:51:21.353977",
+    "generatedOn": "2020-01-24T16:51:21.353977+00:00",
     "practices": [
         {
             "metrics": [
@@ -489,7 +489,7 @@ VALID_PRACTICE_METRICS_JSON = json.dumps({
 )
 
 VALID_NATIONAL_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-09-24 16:51:21.353977",
+    "generatedOn": "2020-09-24T16:51:21.353977+00:00",
     "metrics": [
         {
             "integratedOnTime": {
@@ -528,7 +528,7 @@ VALID_NATIONAL_METRICS_JSON = json.dumps({
 
 # INVALID METRICS
 INVALID_PRACTICE_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-02-24T16:51:21.353977",
+    "generatedOn": "2020-02-24T16:51:21.353977+00:00",
     "practices": [
         {
             "metrics": [
@@ -675,7 +675,7 @@ INVALID_PRACTICE_METRICS_JSON = json.dumps({
 )
 
 INVALID_NATIONAL_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-02-24T16:51:21.353977",
+    "generatedOn": "2020-02-24T16:51:21.353977+00:00",
     "metrics": [
         {
             "integratedOnTime": {

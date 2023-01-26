@@ -61,7 +61,7 @@ def _is_valid_practice_metrics(practice_metrics):
           f"number) of {month}")
     date_when_generated = practice_metrics_json["generatedOn"]
     print("Practice metrics generated on date " + date_when_generated)
-    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%dT%H:%M:%S.%f')
+    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%dT%H:%M:%S.%f+00:00')
     last_month = (datetime_when_generated.replace(day=1) - timedelta(days=1)).month
 
     # Check there is at least one instance of SICBLs and contains practices in practiceMetrics
@@ -88,9 +88,9 @@ def _is_valid_national_metrics(national_metrics):
     month = national_metrics_json["metrics"][0]["month"]
     print("National metrics data for a month (represented as a "
           f"number) of {month}")
-    date_when_generated = national_metrics_json["generatedOn"][:10]
+    date_when_generated = national_metrics_json["generatedOn"]
     print("National metrics generated on date " + date_when_generated)
-    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d')
+    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%dT%H:%M:%S.%f+00:00')
     last_month = (datetime_when_generated.replace(day=1) - timedelta(days=1)).month
 
     if transfer_count < MINIMUM_NUMBER_OF_EXPECTED_TRANSFERS_THRESHOLD or month != last_month:
