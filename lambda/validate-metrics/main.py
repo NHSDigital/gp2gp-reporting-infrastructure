@@ -64,7 +64,7 @@ def _is_valid_practice_metrics(practice_metrics):
     datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%dT%H:%M:%S.%f+00:00')
     last_month = (datetime_when_generated.replace(day=1) - timedelta(days=1)).month
 
-    # Check there is at least one instance of SICBLs and contains practices in practiceMetrics
+    # Check there is at least one instance of SICBLs, and it contains practices in practiceMetrics
     if len(list_of_sicbls[0]['practices']) < 1 or list_of_sicbls[0]['practices'][0] == "":
         raise InvalidMetrics(
             "Invalid practice metrics: sicbl instance " + json.dumps(list_of_sicbls[0]) + " does not contain a "
@@ -72,7 +72,7 @@ def _is_valid_practice_metrics(practice_metrics):
 
     # Check one practice exists with an ODS code and 6 months worth of metrics, including the latest month.
     if list_of_practices[0]["odsCode"] == "" or len(list_of_practices[0]["metrics"]) < 6 or month != last_month:
-        raise InvalidMetrics("Invalid national metrics: a practice " + json.dumps(
+        raise InvalidMetrics("Invalid practice metrics: a practice " + json.dumps(
             list_of_practices[0]) + "does not contain 6 months worth "
                                     "of metrics, including the "
                                     "latest month OR it does not "
