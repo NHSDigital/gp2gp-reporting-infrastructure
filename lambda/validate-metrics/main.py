@@ -34,10 +34,10 @@ class SsmSecretManager:
 
 def lambda_handler(event, context):
     try:
-        print("Fetching objects from S3...")
+        print("Fetching objects from s3...")
         practice_metrics, national_metrics = fetch_metrics_from_s3()
     except UnableToFetchObjectFromS3 as exception:
-        logging.error("Failed to fetch objects from S3. " + str(exception))
+        logging.error("Failed to fetch objects from s3. " + str(exception))
         raise exception
     try:
         validate_metrics(practice_metrics, national_metrics)
@@ -45,6 +45,7 @@ def lambda_handler(event, context):
         logging.error("Invalid metrics: " + str(exception))
         raise exception
     print("Metrics validation successful.")
+    return True
 
 
 def validate_metrics(practice_metrics, national_metrics):
@@ -55,34 +56,44 @@ def _is_valid_practice_metrics(practice_metrics):
     practice_metrics_json = json.loads(practice_metrics)
     list_of_sicbls = practice_metrics_json["sicbls"]
     list_of_practices = practice_metrics_json["practices"]
+    month = list_of_practices[0]["metrics"][0]["month"]
+    print("Practice metrics data for a month (represented as a "
+          f"number) of {month}")
+    date_when_generated = practice_metrics_json["generatedOn"]
+    print("Practice metrics generated on date " + date_when_generated)
+    datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%dT%H:%M:%S.%f')
+    last_month = (datetime_when_generated.replace(day=1) - timedelta(days=1)).month
 
     # Check there is at least one instance of SICBLs and contains practices in practiceMetrics
     if len(list_of_sicbls[0]['practices']) < 1 or list_of_sicbls[0]['practices'][0] == "":
         raise InvalidMetrics(
-            "Invalid practice metrics: sicbl " + json.dumps(list_of_sicbls[0]) + " instance does not contain a "
+            "Invalid practice metrics: sicbl instance " + json.dumps(list_of_sicbls[0]) + " does not contain a "
                                                                                  "practice")
 
-    # Check at least one practice exists with an ODS code and 6 months worth of metrics, including the latest month.
-    if list_of_practices[0]["odsCode"] == "" or len(list_of_practices[0]["metrics"]) < 6:
-        raise InvalidMetrics("Invalid national metrics: a practice " + list_of_practices[
-            0] + " does not contain 6 months worth of metrics OR it does not contain an ODS Code")
+    # Check one practice exists with an ODS code and 6 months worth of metrics, including the latest month.
+    if list_of_practices[0]["odsCode"] == "" or len(list_of_practices[0]["metrics"]) < 6 or month != last_month:
+        raise InvalidMetrics("Invalid national metrics: a practice " + json.dumps(
+            list_of_practices[0]) + "does not contain 6 months worth "
+                                    "of metrics, including the "
+                                    "latest month OR it does not "
+                                    "contain an ODS Code")
 
     return True
 
 
 def _is_valid_national_metrics(national_metrics):
     national_metrics_json = json.loads(national_metrics)
-    print("National metrics data for a month", national_metrics_json["metrics"][0])
     transfer_count = national_metrics_json["metrics"][0]["transferCount"]
     print("National metrics total transfer count: " + str(transfer_count))
     month = national_metrics_json["metrics"][0]["month"]
-    # take the month when data was generated and subtract one to obtain the previous month
+    print("National metrics data for a month (represented as a "
+          f"number) of {month}")
     date_when_generated = national_metrics_json["generatedOn"][:10]
     print("National metrics generated on date " + date_when_generated)
     datetime_when_generated = datetime.strptime(date_when_generated, '%Y-%m-%d')
-    last_month = datetime_when_generated.replace(day=1) - timedelta(days=1)
+    last_month = (datetime_when_generated.replace(day=1) - timedelta(days=1)).month
 
-    if transfer_count < MINIMUM_NUMBER_OF_EXPECTED_TRANSFERS_THRESHOLD or month != last_month.month:
+    if transfer_count < MINIMUM_NUMBER_OF_EXPECTED_TRANSFERS_THRESHOLD or month != last_month:
         raise InvalidMetrics(
             f"Invalid national metrics: the transfer count is smaller than 150 000 or the month (represented as a "
             f"number) of {month} is incorrect.")
@@ -94,9 +105,9 @@ def fetch_metrics_from_s3():
     secret_manager = SsmSecretManager(ssm)
     s3 = boto3.client("s3")
     try:
-        print("Fetching s3_file_name_practice_metrics from ssm parameters:")
+        print("Fetching s3_file_name_practice_metrics from ssm parameters...")
         s3_file_name_practice_metrics = secret_manager.get_secret(os.environ["S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME"])
-        print("Fetching s3_file_name_national_metrics from ssm parameters:")
+        print("Fetching s3_file_name_national_metrics from ssm parameters...")
         s3_file_name_national_metrics = secret_manager.get_secret(os.environ["S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME"])
     except Exception as e:
         print("Unable to fetch SSM Parameter", e)
@@ -125,4 +136,3 @@ def fetch_metrics_from_s3():
     except Exception as e:
         print("Unable to fetch metrics from s3: ", e)
         raise UnableToFetchObjectFromS3()
-

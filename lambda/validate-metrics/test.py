@@ -1,10 +1,13 @@
+import io
 import json
 import os
 import unittest
 from unittest.mock import MagicMock, call, patch
 
+from botocore.response import StreamingBody
+
 from main import fetch_metrics_from_s3, validate_metrics, _is_valid_national_metrics, \
-    InvalidMetrics, _is_valid_practice_metrics
+    InvalidMetrics, _is_valid_practice_metrics, lambda_handler
 
 S3_METRICS_BUCKET_NAME = "metrics-bucket"
 S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME = "path-to-national-metrics"
@@ -12,6 +15,143 @@ S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME = "path-to-practice-metrics"
 
 
 class TestMain(unittest.TestCase):
+
+    @patch('boto3.client')
+    @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
+                             "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_METRICS_VERSION": "v12"})
+    def test_successful_lambda_handler(self, mock_boto_client):
+        ssm_get_parameter_mock_response_practice = {
+            'Parameter': {
+                'Value': S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+        ssm_get_parameter_mock_response_national = {
+            'Parameter': {
+                'Value': S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+
+        body_encoded_practice = VALID_PRACTICE_METRICS_JSON.encode()
+        body_encoded_national = VALID_NATIONAL_METRICS_JSON.encode()
+
+        body_practice = StreamingBody(
+            io.BytesIO(body_encoded_practice),
+            len(body_encoded_practice)
+        )
+        body_national = StreamingBody(
+            io.BytesIO(body_encoded_national),
+            len(body_encoded_national)
+        )
+
+        s3_practice_metrics_mocked_response = {
+            "Body": body_practice,
+        }
+
+        s3_national_metrics_mocked_response = {
+            "Body": body_national,
+        }
+
+        mock_boto_client("ssm").get_parameter.side_effect = [ssm_get_parameter_mock_response_practice,
+                                                             ssm_get_parameter_mock_response_national]
+        mock_boto_client("s3").get_object.side_effect = [s3_practice_metrics_mocked_response,
+                                                         s3_national_metrics_mocked_response]
+
+        assert lambda_handler(None, None)
+
+    @patch('boto3.client')
+    @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
+                             "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_METRICS_VERSION": "v12"})
+    def test_fail_lambda_handler_when_invalid_national_metrics(self, mock_boto_client):
+        ssm_get_parameter_mock_response_practice = {
+            'Parameter': {
+                'Value': S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+        ssm_get_parameter_mock_response_national = {
+            'Parameter': {
+                'Value': S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+
+        body_encoded_practice = VALID_PRACTICE_METRICS_JSON.encode()
+        body_encoded_national = INVALID_NATIONAL_METRICS_JSON.encode()
+
+        body_practice = StreamingBody(
+            io.BytesIO(body_encoded_practice),
+            len(body_encoded_practice)
+        )
+        body_national = StreamingBody(
+            io.BytesIO(body_encoded_national),
+            len(body_encoded_national)
+        )
+
+        s3_practice_metrics_mocked_response = {
+            "Body": body_practice,
+        }
+
+        s3_national_metrics_mocked_response = {
+            "Body": body_national,
+        }
+
+        mock_boto_client("ssm").get_parameter.side_effect = [ssm_get_parameter_mock_response_practice,
+                                                             ssm_get_parameter_mock_response_national]
+        mock_boto_client("s3").get_object.side_effect = [s3_practice_metrics_mocked_response,
+                                                         s3_national_metrics_mocked_response]
+
+        expected_error_message = "Invalid national metrics: the transfer count is smaller than 150 000 or the month " \
+                                 "\\(represented as a number\\) of 12 is incorrect."
+
+        self.assertRaisesRegex(InvalidMetrics, expected_error_message, lambda_handler, None, None)
+
+    @patch('boto3.client')
+    @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
+                             "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME": S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME,
+                             "S3_METRICS_VERSION": "v12"})
+    def test_fail_lambda_handler_when_invalid_practice_metrics(self, mock_boto_client):
+        ssm_get_parameter_mock_response_practice = {
+            'Parameter': {
+                'Value': S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+        ssm_get_parameter_mock_response_national = {
+            'Parameter': {
+                'Value': S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME
+            }
+        }
+
+        body_encoded_practice = INVALID_PRACTICE_METRICS_JSON.encode()
+        body_encoded_national = VALID_NATIONAL_METRICS_JSON.encode()
+
+        body_practice = StreamingBody(
+            io.BytesIO(body_encoded_practice),
+            len(body_encoded_practice)
+        )
+        body_national = StreamingBody(
+            io.BytesIO(body_encoded_national),
+            len(body_encoded_national)
+        )
+
+        s3_practice_metrics_mocked_response = {
+            "Body": body_practice,
+        }
+
+        s3_national_metrics_mocked_response = {
+            "Body": body_national,
+        }
+
+        mock_boto_client("ssm").get_parameter.side_effect = [ssm_get_parameter_mock_response_practice,
+                                                             ssm_get_parameter_mock_response_national]
+        mock_boto_client("s3").get_object.side_effect = [s3_practice_metrics_mocked_response,
+                                                         s3_national_metrics_mocked_response]
+        expected_error_message = "Invalid practice metrics: sicbl instance \\{\"odsCode\": \"10D\", \"name\": \"Test " \
+                                 "ICB - 10D\", \"practices\": \\[\\]\\} does not contain a practice"
+
+        self.assertRaisesRegex(InvalidMetrics, expected_error_message, lambda_handler, None, None)
 
     @patch('boto3.client')
     @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
@@ -99,10 +239,16 @@ class TestMain(unittest.TestCase):
     def test_throws_error_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, INVALID_PRACTICE_METRICS_JSON)
 
+    def test_throws_error_when_practice_last_month_is_incorrect(self):
+        practice_metrics_json = json.loads(VALID_PRACTICE_METRICS_JSON)
+        practice_metrics_json["generatedOn"] = "2020-10-24T16:51:21.353977"  # change generation date month
+
+        self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
+
     def test_throws_error_and_interrupts_when_no_practice_with_6_months_worth_of_data(self):
         practice_metrics_json = json.loads(INVALID_PRACTICE_METRICS_JSON)
         # change the generated date to be correct to isolate the no practice error
-        practice_metrics_json["generatedOn"] = "2020-01-24T16:51:21.353977",
+        practice_metrics_json["generatedOn"] = "2020-01-24T16:51:21.353977"
 
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
 
@@ -125,7 +271,7 @@ class TestMain(unittest.TestCase):
 
 
 VALID_PRACTICE_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-02-24 16:51:21.353977",
+    "generatedOn": "2020-01-24T16:51:21.353977",
     "practices": [
         {
             "metrics": [
@@ -382,7 +528,7 @@ VALID_NATIONAL_METRICS_JSON = json.dumps({
 
 # INVALID METRICS
 INVALID_PRACTICE_METRICS_JSON = json.dumps({
-    "generatedOn": "2020-02-24 16:51:21.353977",
+    "generatedOn": "2020-02-24T16:51:21.353977",
     "practices": [
         {
             "metrics": [
