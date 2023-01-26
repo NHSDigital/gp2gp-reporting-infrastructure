@@ -37,12 +37,15 @@ def lambda_handler(event, context):
         print("Fetching objects from s3...")
         practice_metrics, national_metrics = fetch_metrics_from_s3()
     except UnableToFetchObjectFromS3 as exception:
-        logging.error("Failed to fetch objects from s3. " + str(exception))
+        logging.error("Failed to fetch objects from s3. " + str(exception),
+                      extra={"event": "FAILED_TO_VALIDATE_METRICS", "reason": "UNABLE_TO_FETCH_FILE_FROM_S3",
+                             "level": "error"})
         raise exception
     try:
         validate_metrics(practice_metrics, national_metrics)
     except InvalidMetrics as exception:
-        logging.error("Invalid metrics: " + str(exception))
+        logging.error("Invalid metrics: " + str(exception),
+                      extra={"event": "FAILED_TO_VALIDATE_METRICS", "reason": "INVALID_METRICS", "level": "error"})
         raise exception
     print("Metrics validation successful.")
     return True
@@ -68,7 +71,7 @@ def _is_valid_practice_metrics(practice_metrics):
     if len(list_of_sicbls[0]['practices']) < 1 or list_of_sicbls[0]['practices'][0] == "":
         raise InvalidMetrics(
             "Invalid practice metrics: sicbl instance " + json.dumps(list_of_sicbls[0]) + " does not contain a "
-                                                                                 "practice")
+                                                                                          "practice")
 
     # Check one practice exists with an ODS code and 6 months worth of metrics, including the latest month.
     if list_of_practices[0]["odsCode"] == "" or len(list_of_practices[0]["metrics"]) < 6 or month != last_month:
