@@ -236,7 +236,7 @@ class TestMain(unittest.TestCase):
         practice_metrics_json["sicbls"] = json.loads(wrong_sicbl)
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
 
-    def test_throws_error_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
+    def test_throws_error_when_no_practice_with_6_months_worth_of_data_and_no_ods_code_and_wrong_month(self):
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, INVALID_PRACTICE_METRICS_JSON)
 
     def test_throws_error_when_practice_last_month_is_incorrect(self):
@@ -251,9 +251,6 @@ class TestMain(unittest.TestCase):
         practice_metrics_json["generatedOn"] = "2020-01-24T16:51:21.353977+00:00"
 
         self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, json.dumps(practice_metrics_json))
-
-    def test_throws_error_and_interrupts_when_no_practice_with_6_months_worth_of_data_and_no_ods_code(self):
-        self.assertRaises(InvalidMetrics, _is_valid_practice_metrics, INVALID_PRACTICE_METRICS_JSON)
 
     def test_throws_error_when_total_number_of_transfers_less_than_150_000_and_wrong_month_for_national_metrics(
             self):
