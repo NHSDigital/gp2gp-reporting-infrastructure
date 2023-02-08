@@ -25,15 +25,3 @@ resource "aws_ssm_parameter" "outbound_only_security_group_id" {
   )
 }
 
-resource "aws_ssm_parameter" "gocd_vpc_outbound_only_security_group_id" {
-  name  = "/registrations/${var.environment}/data-pipeline/base-networking/gocd-vpc-outbound-only-security-group-id"
-  type  = "String"
-  value = aws_security_group.gocd_vpc_outbound_only.id
-  tags  = merge(
-    local.common_tags,
-    {
-      Name            = "${var.environment}-gocd-vpc-outbound-only-security-group-id"
-      ApplicationRole = "AwsSsmParameter"
-    }
-  )
-}
