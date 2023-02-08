@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "data_pipeline_cluster" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-dashboard-pipeline-gocd-data-pipeline-cluster"
+      Name = "${var.environment}-gp2gp-dashboard-pipeline-cluster"
       ApplicationRole = "AwsEcsCluster"
     }
   )
