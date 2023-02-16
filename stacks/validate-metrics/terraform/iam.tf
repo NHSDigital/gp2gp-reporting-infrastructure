@@ -1,5 +1,5 @@
 resource "aws_iam_role" "validate_metrics_lambda_role" {
-  name               = "${var.environment}-validate_metrics-lambda-role"
+  name               = "${var.environment}-validate-metrics-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.validate_metrics_lambda_assume_role.json
   managed_policy_arns = [
     aws_iam_policy.validate_metrics_lambda_ssm_access.arn,
