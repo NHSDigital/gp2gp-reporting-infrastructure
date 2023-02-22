@@ -86,6 +86,7 @@ plan)
   build_lambda log-alerts-pipeline-error
   build_lambda email-report
   build_lambda validate-metrics
+  build_lambda gp2gp-dashboard-alert
   tf_init
   terraform plan -var environment=$env_name \
     -var-file=stacks/${stack_name}/vars/${stack_env}.tfvars \
@@ -115,6 +116,7 @@ build-lambda)
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda email-report
   build_lambda validate-metrics
+  build_lambda gp2gp-dashboard-alert
 ;;
 *)
   echo "Invalid task: '${task}'"

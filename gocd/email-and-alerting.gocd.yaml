@@ -9,7 +9,7 @@ pipelines:
           id: git-path
         options:
           url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
-          path: stacks/email-and-alerting, lambda/log-alerts-technical-failures-above-threshold, lambda/log-alerts-pipeline_error, lambda/email-report
+          path: stacks/email-and-alerting, lambda/log-alerts-technical-failures-above-threshold, lambda/log-alerts-pipeline_error, lambda/email-report, lambda/gp2gp-dashboard-alert
       reports_generator_task:
         pipeline: data-pipeline-reports-generator-task
         stage: apply_dev
@@ -43,6 +43,9 @@ pipelines:
                     destination: lambda/build/
                 - build:
                     source: lambda/build/email-report.zip
+                    destination: lambda/build/
+                - build:
+                    source: lambda/build/gp2gp-dashboard-alert.zip
                     destination: lambda/build/
               tasks:
                 - exec:
@@ -78,6 +81,12 @@ pipelines:
                     stage: plan_dev
                     job: plan
                     source: lambda/build/email-report.zip
+                    destination: lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: lambda/build/gp2gp-dashboard-alert.zip
                     destination: lambda/build/
                     is_file: yes
                 - exec:
@@ -118,6 +127,9 @@ pipelines:
                 - build:
                     source: lambda/build/email-report.zip
                     destination: lambda/build/
+                - build:
+                    source: lambda/build/gp2gp-dashboard-alert.zip
+                    destination: lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -155,6 +167,12 @@ pipelines:
                     stage: plan_prod
                     job: plan
                     source: lambda/build/email-report.zip
+                    destination: lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: lambda/build/gp2gp-dashboard-alert.zip
                     destination: lambda/build/
                     is_file: yes
                 - exec:
