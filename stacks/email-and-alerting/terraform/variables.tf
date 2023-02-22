@@ -77,6 +77,12 @@ variable "log_alerts_pipeline_error_lambda_zip" {
   default     = "lambda/build/log-alerts-pipeline-error.zip"
 }
 
+variable "gp2gp_dashboard_alert_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing lambda code for log alerts"
+  default     = "lambda/build/gp2gp-dashboard-alert.zip"
+}
+
 variable "log_alerts_technical_failures_webhook_url_param_name" {
   type        = string
   description = "SSM parameter containing the webhook url to send notifications to"

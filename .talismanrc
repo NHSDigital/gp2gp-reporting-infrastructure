@@ -4,3 +4,8 @@ fileignoreconfig:
 - filename: lambda/validate-metrics/test.py
   checksum: 1721bea5bee93a0b309fb3c22be5843afa1a888ca74a586e29ca678d515d3c32
 version: ""
+
+fileignoreconfig:
+- filename: lambda/gp2gp-dashboard-alert/main.py
+  checksum: c45153dffd35bd6d2cd28d284116d494805e30b5712daac3dc0d4e981403720e
+version: ""

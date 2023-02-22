@@ -146,7 +146,8 @@ data "aws_iam_policy_document" "log_alerts_cloudwatch_log_access" {
     ]
     resources = [
       "${aws_cloudwatch_log_group.log_alerts_technical_failures_above_threshold.arn}:*",
-      "${aws_cloudwatch_log_group.log_alerts_pipeline_error.arn}:*"
+      "${aws_cloudwatch_log_group.log_alerts_pipeline_error.arn}:*",
+      "${aws_cloudwatch_log_group.gp2gp_dashboard_alert.arn}:*"
     ]
   }
 }
