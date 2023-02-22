@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
 
-    gp2gp_dashboard_step_function_url = os.environ["CLOUDWATCH_DASHBOARD_URL"]
+    gp2gp_dashboard_step_function_url = os.environ["GP2GP_DASHBOARD_STEP_FUNCTION_URL"]
 
     text = (
         f"## **There was an error running the gp2gp dashboard step function:** <br>"

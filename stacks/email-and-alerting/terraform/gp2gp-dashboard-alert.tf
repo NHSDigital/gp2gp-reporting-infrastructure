@@ -21,7 +21,7 @@ resource "aws_lambda_function" "gp2gp_dashboard_alert_lambda" {
   environment {
     variables = {
       LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
-      CLOUDWATCH_DASHBOARD_URL = var.cloudwatch_dashboard_url
+      GP2GP_DASHBOARD_STEP_FUNCTION_URL = "https://${data.aws_region.current.name}.console.aws.amazon.com/states/home#/statemachines/view/arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:dashboard-pipeline"
     }
   }
 }
