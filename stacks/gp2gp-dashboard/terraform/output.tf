@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "gp2gp_dashboard_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-p2gp-dashboard-iam-role-arn"
+      Name = "${var.environment}-gp2gp-dashboard-iam-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
