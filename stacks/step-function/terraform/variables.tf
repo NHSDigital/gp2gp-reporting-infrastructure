@@ -109,3 +109,8 @@ variable "validate_metrics_lambda_arn_param_name" {
   type        = string
   description = "SSM parameter containing Validate Metrics Lambda ARN"
 }
+
+variable "gp2gp_dashboard_alert_lambda_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing the gp2gp dashboard alert lambda ARN"
+}

@@ -17,3 +17,4 @@ log_group_param_name="/registrations/prod/data-pipeline/cloudwatch-log-group-nam
 gp2gp_dashboard_task_definition_arn_param_name="/registrations/prod/data-pipeline/gp2gp-dashboard/task-definition-arn"
 gp2gp_dashboard_iam_role_arn_param_name="/registrations/prod/data-pipeline/gp2gp-dashboard/iam-role-arn"
 validate_metrics_lambda_arn_param_name="/registrations/prod/data-pipeline/validate-metrics/lambda-arn"
+gp2gp_dashboard_alert_lambda_arn_param_name="/registrations/prod/data-pipeline/gp2gp-dashboard/gp2gp-dashboard-alert-lambda-arn"

@@ -86,3 +86,7 @@ data "aws_ssm_parameter" "gp2gp_dashboard_task_definition_arn" {
 data "aws_ssm_parameter" "validate_metrics_lambda_arn" {
   name = var.validate_metrics_lambda_arn_param_name
 }
+
+data "aws_ssm_parameter" "gp2gp_dashboard_alert_lambda_arn" {
+  name = var.gp2gp_dashboard_alert_lambda_arn_param_name
+}
