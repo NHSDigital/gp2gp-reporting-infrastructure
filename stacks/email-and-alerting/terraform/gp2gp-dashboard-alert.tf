@@ -26,14 +26,6 @@ resource "aws_lambda_function" "gp2gp_dashboard_alert_lambda" {
   }
 }
 
-#resource "aws_lambda_permission" "gp2gp_dashboard_alert_lambda_allow_cloudwatch" {
-#  statement_id = "gp2gp-dashboard-alert-lambda-allow-cloudwatch"
-#  action        = "lambda:InvokeFunction"
-#  function_name = aws_lambda_function.gp2gp_dashboard_alert_lambda.function_name
-#  principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
-#  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
-#}
-
 resource "aws_cloudwatch_log_group" "gp2gp_dashboard_alert" {
   name = "/aws/lambda/${var.environment}-${var.gp2gp_dashboard_alert_lambda_name}"
   tags = merge(
