@@ -97,3 +97,9 @@ variable "log_alerts_general_webhook_url_param_name" {
   type        = string
   description = "SSM parameter containing the general webhook url channel to send failure threshold succeeded notifications to"
 }
+
+variable "gp2gp_dashboard_national_statistics_url" {
+  type        = string
+  description = "Url for the gp2gp dashboard nationalist statistics"
+}
+

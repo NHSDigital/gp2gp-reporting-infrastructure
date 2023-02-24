@@ -21,7 +21,8 @@ resource "aws_lambda_function" "gp2gp_dashboard_alert_lambda" {
   environment {
     variables = {
       LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
-      GP2GP_DASHBOARD_STEP_FUNCTION_URL = "https://${data.aws_region.current.name}.console.aws.amazon.com/states/home#/statemachines/view/arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:dashboard-pipeline"
+      GP2GP_DASHBOARD_STEP_FUNCTION_URL = "https://${data.aws_region.current.name}.console.aws.amazon.com/states/home#/statemachines/view/arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:dashboard-pipeline",
+      GP2GP_DASHBOARD_NATIONAL_STATISTICS_URL = var.gp2gp_dashboard_national_statistics_url,
     }
   }
 }

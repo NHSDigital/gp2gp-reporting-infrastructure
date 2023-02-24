@@ -9,3 +9,4 @@ log_alerts_technical_failures_webhook_url_param_name="/registrations/prod/user-i
 log_alerts_technical_failures_above_threshold_webhook_url_param_name="/registrations/prod/user-input/log-alerts-technical-failures-above-threshold-webhook-url"
 log_alerts_general_webhook_url_param_name="/registrations/prod/user-input/log-alerts-general-webhook-url"
 cloudwatch_dashboard_url="https://console.aws.amazon.com/cloudwatch/home?#dashboards:"
+gp2gp_dashboard_national_statistics_url="https://gp-registrations-data.nhs.uk/national-gp2gp-statistics"
