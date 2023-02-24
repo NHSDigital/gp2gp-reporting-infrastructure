@@ -22,6 +22,7 @@ def lambda_handler(event, context):
     secret_manager = SsmSecretManager(ssm)
 
     gp2gp_dashboard_step_function_url = os.environ["GP2GP_DASHBOARD_STEP_FUNCTION_URL"]
+    gp2gp_dashboard_national_statistics_url = os.environ["GP2GP_DASHBOARD_NATIONAL_STATISTICS_URL"]
 
     if "metricsFailed" in event:
         text = (
@@ -44,8 +45,7 @@ def lambda_handler(event, context):
     else:
         text = (
             f"<h2>The dashboard has successfully been deployed 🎉</h2>"
-            f"<p>Technical failure rate: x%.</p>"
-            f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the GP2GP Dashboard.</a>"
+            f"<a href='{gp2gp_dashboard_national_statistics_url}'>Click here to see the GP2GP Dashboard - National Statistics.</a>"
         )
 
     msg = {
