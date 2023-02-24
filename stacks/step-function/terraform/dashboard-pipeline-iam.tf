@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "InvokeLambdaFunction"
+    sid     = "InvokeValidateMetricsLambdaFunction"
     actions = [
       "lambda:InvokeFunction"
     ]
@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "InvokeLambdaFunction"
+    sid     = "InvokeGP2GPDashboardAlertLambdaFunction"
     actions = [
       "lambda:InvokeFunction"
     ]
