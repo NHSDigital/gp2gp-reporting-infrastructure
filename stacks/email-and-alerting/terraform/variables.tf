@@ -103,3 +103,7 @@ variable "gp2gp_dashboard_national_statistics_url" {
   description = "Url for the gp2gp dashboard nationalist statistics"
 }
 
+variable "gp2gp_dashboard_pipeline_step_function_arn_param_name" {
+  type        = string
+  description = "SSM parameter containing the gp2gp dashboard pipeline step function arn"
+}
