@@ -23,13 +23,13 @@ def lambda_handler(event, context):
 
     gp2gp_dashboard_step_function_url = os.environ["GP2GP_DASHBOARD_STEP_FUNCTION_URL"]
 
-    text = (
-        f"## **There was an error running the gp2gp dashboard step function:** <br>"
-        f"See all the latest step function for more details: {gp2gp_dashboard_step_function_url}%<br>"
+    failure_text = (
+        f"<h2>There was an error running the gp2gp dashboard step function</h2>"
+        f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
     )
 
     msg = {
-        "text": text,
+        "text": failure_text,
         "textFormat": "markdown"
     }
     pipeline_error_encoded_msg = json.dumps(msg).encode('utf-8')
