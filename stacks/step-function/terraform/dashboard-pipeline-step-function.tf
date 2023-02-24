@@ -77,6 +77,16 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
         "Resource" : data.aws_ssm_parameter.gp2gp_dashboard_alert_lambda_arn.value,
         "End" : true
       },
+      "GP2GP Dashboard Alert - FAILED" : {
+        "Comment" : "GP2GP Dashboard Alert - runs a lambda to send a success alert to teams",
+        "Type": "Task",
+        "Resource" : data.aws_ssm_parameter.gp2gp_dashboard_alert_lambda_arn.value,
+        "Next" : "Fail"
+      },
+      "Fail": {
+        "Type": "Fail",
+        "End" : true
+      }
     }
   })
 }
