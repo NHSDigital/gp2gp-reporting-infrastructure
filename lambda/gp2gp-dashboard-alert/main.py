@@ -26,25 +26,25 @@ def lambda_handler(event, context):
     if "metricsFailed" in event:
         text = (
             f"<h2>There was an error running the gp2gp dashboard step function</h2>"
-            f"<p>Reason: Unable to run metrics calculator. See relevant cloudwatch logs for more details</p>"
+            f"<p>Reason: Unable to run metrics calculator. See relevant cloudwatch logs for more details.</p>"
             f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
         )
     elif "validationError" in event:
         text = (
             f"<h2>There was an error running the gp2gp dashboard step function</h2>"
-            f"<p>Reason: Validation failed. See relevant cloudwatch logs for more details</p>"
+            f"<p>Reason: Validation failed. See relevant cloudwatch logs for more details.</p>"
             f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
         )
     elif "dashboardError" in event:
         text = (
             f"<h2>There was an error running the gp2gp dashboard step function</h2>"
-            f"<p>Reason: Failed to build/deploy the dashboard. See relevant cloudwatch logs for more details</p>"            
+            f"<p>Reason: Failed to build/deploy the dashboard. See relevant cloudwatch logs for more details.</p>"            
             f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
         )
     else:
         text = (
             f"<h2>The dashboard has successfully been deployed 🎉</h2>"
-            f"<p>Technical failure rate: x%</p>"
+            f"<p>Technical failure rate: x%.</p>"
             f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the GP2GP Dashboard.</a>"
         )
 
