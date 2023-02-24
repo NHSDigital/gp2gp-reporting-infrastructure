@@ -42,12 +42,30 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
             }
           },
         },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "GP2GP Dashboard Alert - FAILED",
+            "ResultPath": "$.metricsFailed"
+          }
+        ],
         "Next" : "ValidateMetrics"
       },
       "ValidateMetrics" : {
         "Comment" : "Validate Metrics - responsible for reading practice and national metrics and validating them",
         "Type": "Task",
         "Resource" : data.aws_ssm_parameter.validate_metrics_lambda_arn.value,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "GP2GP Dashboard Alert - FAILED",
+            "ResultPath": "$.validationError"
+          }
+        ],
         "Next" : "GP2GP Dashboard Build And Deploy"
       },
       "GP2GP Dashboard Build And Deploy" : {
@@ -69,6 +87,15 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
             }
           },
         },
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Next": "GP2GP Dashboard Alert - FAILED",
+            "ResultPath": "$.dashboardError"
+          }
+        ],
         "Next" : "GP2GP Dashboard Alert - SUCCESS"
       },
       "GP2GP Dashboard Alert - SUCCESS" : {
@@ -84,8 +111,7 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
         "Next" : "Fail"
       },
       "Fail": {
-        "Type": "Fail",
-        "End" : true
+        "Type": "Fail"
       }
     }
   })
