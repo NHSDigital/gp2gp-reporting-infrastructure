@@ -38,7 +38,3 @@ resource "aws_cloudwatch_log_group" "gp2gp_dashboard_alert" {
   )
   retention_in_days = 60
 }
-
-data "aws_ssm_parameter" "gp2gp_dashboard_pipeline_step_function_arn" {
-  name = var.gp2gp_dashboard_pipeline_step_function_arn_param_name
-}
