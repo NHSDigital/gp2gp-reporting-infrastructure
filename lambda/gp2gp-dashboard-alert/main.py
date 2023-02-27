@@ -29,7 +29,7 @@ def lambda_handler(event, context):
         f"<a href='{gp2gp_dashboard_national_statistics_url}'>Click here to see the GP2GP Dashboard - National Statistics.</a>"
     )
 
-    if event is dict:
+    if isinstance(event, dict):
         if "metricsFailed" in event:
             text = (
                 f"<h2>There was an error running the gp2gp dashboard step function</h2>"
