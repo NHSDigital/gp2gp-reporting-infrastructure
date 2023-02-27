@@ -44,7 +44,7 @@ def lambda_handler(event, context):
         )
     else:
         text = (
-            f"<h2>🟢 The dashboard has successfully been deployed 🎉</h2>"
+            f"<h2>🟢  The dashboard has successfully been deployed  🎉</h2>"
             f"<a href='{gp2gp_dashboard_national_statistics_url}'>Click here to see the GP2GP Dashboard - National Statistics.</a>"
         )
 

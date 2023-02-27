@@ -72,7 +72,7 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
         "Type" : "Task",
         "Comment" : "GP2GP Dashboard Build And Deploy Fronted",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
-        "ResultPath" : "$.dashboardBuildAndDeploy",
+        "OutputPath" : "$.dashboardBuildAndDeploy",
         "Parameters" : {
           "LaunchType" : "FARGATE",
           "Cluster" : data.aws_ssm_parameter.data_pipeline_ecs_cluster_arn.value,
