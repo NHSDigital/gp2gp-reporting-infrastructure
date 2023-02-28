@@ -23,28 +23,29 @@ def lambda_handler(event, context):
 
     gp2gp_dashboard_step_function_url = os.environ["GP2GP_DASHBOARD_STEP_FUNCTION_URL"]
     gp2gp_dashboard_national_statistics_url = os.environ["GP2GP_DASHBOARD_NATIONAL_STATISTICS_URL"]
+    deployment_environment = os.environ["ENVIRONMENT"]
 
     text = (
-        f"<h2>🟢  The dashboard has successfully been deployed  🎉</h2>"
+        f"<h2>🟢ㅤThe dashboard has successfully been deployed ({deployment_environment})ㅤ🎉</h2>"
         f"<a href='{gp2gp_dashboard_national_statistics_url}'>Click here to see the GP2GP Dashboard - National Statistics.</a>"
     )
 
     if isinstance(event, dict):
         if "metricsFailed" in event:
             text = (
-                f"<h2>There was an error running the gp2gp dashboard step function</h2>"
+                f"<h2>There was an error running the gp2gp dashboard step function ({deployment_environment})</h2>"
                 f"<p>Reason: Unable to run metrics calculator. See relevant cloudwatch logs for more details.</p>"
                 f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
             )
         elif "validationError" in event:
             text = (
-                f"<h2>There was an error running the gp2gp dashboard step function</h2>"
+                f"<h2>There was an error running the gp2gp dashboard step function ({deployment_environment})</h2>"
                 f"<p>Reason: Validation failed. See relevant cloudwatch logs for more details.</p>"
                 f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
             )
         elif "dashboardError" in event:
             text = (
-                f"<h2>There was an error running the gp2gp dashboard step function</h2>"
+                f"<h2>There was an error running the gp2gp dashboard step function ({deployment_environment})</h2>"
                 f"<p>Reason: Failed to build/deploy the dashboard. See relevant cloudwatch logs for more details.</p>"            
                 f"<a href='{gp2gp_dashboard_step_function_url}'>Click here to see the step function overview.</a>"
             )
