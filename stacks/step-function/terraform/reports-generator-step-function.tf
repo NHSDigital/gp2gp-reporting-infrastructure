@@ -91,7 +91,7 @@ resource "aws_sfn_state_machine" "reports_generator" {
       },
       "Daily/weekly reporting window" : {
         "Type" : "Task",
-        "Comment" : "Reports Generator - creates a specific report needed for analysing GP2GP transfers. Valid reports: [TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,TRANSFER_LEVEL_TECHNICAL_FAILURES,SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES,TRANSFER_DETAILS_BY_HOUR]",
+        "Comment" : "Reports Generator - creates a specific report needed for analysing GP2GP transfers. Reports: [TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,TRANSFER_LEVEL_TECHNICAL_FAILURES,SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES,TRANSFER_DETAILS_BY_HOUR]",
         "Resource" : "arn:aws:states:::ecs:runTask.sync",
         "Parameters" : {
           "LaunchType" : "FARGATE",
