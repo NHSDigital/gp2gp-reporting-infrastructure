@@ -4,8 +4,12 @@ pipelines:
     group: gp2gp-data-pipeline-infra
     label_template: "${git[:8]}"
     materials:
-      git:
-        type: configrepo
+      gp2gp_dashbord_task:
+        plugin_configuration:
+          id: git-path
+        options:
+          url: https://github.com/nhsconnect/prm-gp2gp-data-pipeline-infra.git
+          path: stacks/gp2gp-dashboard
       prm_gp2gp_dashboard_docker_image:
         pipeline: prm-gp2gp-dashboard
         stage: build_and_publish_docker
