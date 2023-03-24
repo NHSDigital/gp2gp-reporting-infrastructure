@@ -2,7 +2,7 @@ format_version: 4
 pipelines:
   "prm-gp2gp-dashboard-task":
     group: gp2gp-data-pipeline-infra
-    label_template: "${git[:8]}"
+    label_template: "${gp2gp_dashbord_task[:8]}"
     materials:
       gp2gp_dashbord_task:
         plugin_configuration:
