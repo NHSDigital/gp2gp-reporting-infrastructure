@@ -31,8 +31,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
-              tasks:
+                    source: stacks/container-repositories/terraform/dev.tfplan
+                    destination: stacks/container-repositories/terraform
+                - build:
+                    source: stacks/container-repositories/terraform/.terraform.lock.hcl
+                    destination: stacks/container-repositories/terraform
                 - exec:
                     command: /bin/bash
                     arguments:
@@ -48,7 +51,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/container-repositories/terraform/dev.tfplan
+                    destination: stacks/container-repositories/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/container-repositories/terraform/.terraform.lock.hcl
+                    destination: stacks/container-repositories/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -78,7 +88,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/container-repositories/terraform/prod.tfplan
+                    destination: stacks/container-repositories/terraform
+                - build:
+                    source: stacks/container-repositories/terraform/.terraform.lock.hcl
+                    destination: stacks/container-repositories/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -98,7 +112,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/container-repositories/terraform/prod.tfplan
+                    destination: stacks/container-repositories/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/container-repositories/terraform/.terraform.lock.hcl
+                    destination: stacks/container-repositories/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
