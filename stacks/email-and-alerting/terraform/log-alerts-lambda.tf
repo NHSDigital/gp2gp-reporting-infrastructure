@@ -4,11 +4,11 @@ variable "log_alerts_technical_failures_above_threshold_lambda_name" {
 }
 
 resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_lambda" {
-  filename      = var.log_alerts_technical_failures_above_threshold_lambda_zip
+  filename      = "${path.cwd}/${var.log_alerts_technical_failures_above_threshold_lambda_zip}"
   function_name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
   role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
-  source_code_hash = filebase64sha256(var.log_alerts_technical_failures_above_threshold_lambda_zip)
+  source_code_hash = filebase64sha256("${path.cwd}/${var.log_alerts_technical_failures_above_threshold_lambda_zip}")
   runtime = "python3.9"
   timeout = 15
   tags = merge(
@@ -52,11 +52,11 @@ variable "log_alerts_pipeline_error_lambda_name" {
 }
 
 resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
-  filename      = var.log_alerts_pipeline_error_lambda_zip
+  filename      = "${path.cwd}/${var.log_alerts_pipeline_error_lambda_zip}"
   function_name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
   role          = aws_iam_role.log_alerts_lambda_role.arn
   handler       = "main.lambda_handler"
-  source_code_hash = filebase64sha256(var.log_alerts_pipeline_error_lambda_zip)
+  source_code_hash = filebase64sha256("${path.cwd}/${var.log_alerts_pipeline_error_lambda_zip}")
   runtime = "python3.9"
   timeout = 15
   tags = merge(

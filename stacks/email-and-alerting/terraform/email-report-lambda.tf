@@ -1,9 +1,9 @@
 resource "aws_lambda_function" "email_report_lambda" {
-  filename      = var.email_report_lambda_zip
+  filename      = "${path.cwd}/${var.email_report_lambda_zip}"
   function_name = "${var.environment}-${var.email_report_lambda_name}"
   role          = aws_iam_role.email_report_lambda_role.arn
   handler       = "main.lambda_handler"
-  source_code_hash = filebase64sha256(var.email_report_lambda_zip)
+  source_code_hash = filebase64sha256("${path.cwd}/${var.email_report_lambda_zip}")
   runtime = "python3.9"
   timeout = 15
   tags = merge(
