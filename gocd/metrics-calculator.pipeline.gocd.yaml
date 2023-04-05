@@ -34,7 +34,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/metrics-calculator/terraform/dev.tfplan
+                    destination: stacks/metrics-calculator/terraform
+                - build:
+                    source: stacks/metrics-calculator/terraform/.terraform.lock.hcl
+                    destination: stacks/metrics-calculator/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,7 +55,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/metrics-calculator/terraform/dev.tfplan
+                    destination: stacks/metrics-calculator/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/metrics-calculator/terraform/.terraform.lock.hcl
+                    destination: stacks/metrics-calculator/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -81,7 +92,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/metrics-calculator/terraform/prod.tfplan
+                    destination: stacks/metrics-calculator/terraform
+                - build:
+                    source: stacks/metrics-calculator/terraform/.terraform.lock.hcl
+                    destination: stacks/metrics-calculator/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -101,7 +116,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/metrics-calculator/terraform/prod.tfplan
+                    destination: stacks/metrics-calculator/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/metrics-calculator/terraform/.terraform.lock.hcl
+                    destination: stacks/metrics-calculator/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
