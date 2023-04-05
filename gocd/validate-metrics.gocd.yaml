@@ -31,7 +31,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/validate-metrics/terraform/dev.tfplan
+                    destination: stacks/validate-metrics/terraform
+                - build:
+                    source: stacks/validate-metrics/terraform/.terraform.lock.hcl
+                    destination: stacks/validate-metrics/terraform
                 - build:
                     source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
@@ -51,7 +55,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/validate-metrics/terraform/dev.tfplan
+                    destination: stacks/validate-metrics/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/validate-metrics/terraform/.terraform.lock.hcl
+                    destination: stacks/validate-metrics/terraform
                     is_file: yes
                 - fetch:
                     stage: plan_dev
@@ -87,7 +98,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/validate-metrics/terraform/prod.tfplan
+                    destination: stacks/validate-metrics/terraform
+                - build:
+                    source: stacks/validate-metrics/terraform/.terraform.lock.hcl
+                    destination: stacks/validate-metrics/terraform
                 - build:
                     source: lambda/build/validate-metrics.zip
                     destination: lambda/build/
@@ -110,7 +125,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/validate-metrics/terraform/prod.tfplan
+                    destination: stacks/validate-metrics/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/validate-metrics/terraform/.terraform.lock.hcl
+                    destination: stacks/validate-metrics/terraform
                     is_file: yes
                 - fetch:
                     stage: plan_prod
