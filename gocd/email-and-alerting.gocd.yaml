@@ -34,7 +34,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/email-and-alerting/terraform/dev.tfplan
+                    destination: stacks/email-and-alerting/terraform
+                - build:
+                    source: stacks/email-and-alerting/terraform/.terraform.lock.hcl
+                    destination: stacks/email-and-alerting/terraform
                 - build:
                     source: lambda/build/log-alerts-technical-failures-above-threshold.zip
                     destination: lambda/build/
@@ -63,7 +67,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/email-and-alerting/terraform/dev.tfplan
+                    destination: stacks/email-and-alerting/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/email-and-alerting/terraform/.terraform.lock.hcl
+                    destination: stacks/email-and-alerting/terraform
                     is_file: yes
                 - fetch:
                     stage: plan_dev
@@ -117,7 +128,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/email-and-alerting/terraform/prod.tfplan
+                    destination: stacks/email-and-alerting/terraform
+                - build:
+                    source: stacks/email-and-alerting/terraform/.terraform.lock.hcl
+                    destination: stacks/email-and-alerting/terraform
                 - build:
                     source: lambda/build/log-alerts-technical-failures-above-threshold.zip
                     destination: lambda/build/
@@ -149,7 +164,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/email-and-alerting/terraform/prod.tfplan
+                    destination: stacks/email-and-alerting/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/email-and-alerting/terraform/.terraform.lock.hcl
+                    destination: stacks/email-and-alerting/terraform
                     is_file: yes
                 - fetch:
                     stage: plan_prod

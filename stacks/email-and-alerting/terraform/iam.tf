@@ -192,5 +192,3 @@ resource "aws_iam_policy" "log_alerts_ssm_access" {
   name   = "${var.environment}-log-alerts-ssm-access"
   policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
 }
-
-
