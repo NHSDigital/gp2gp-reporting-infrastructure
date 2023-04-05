@@ -45,7 +45,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ls -lsa ./
+                      - ls -lsa
                 - exec:
                     command: /bin/bash
                     arguments:
