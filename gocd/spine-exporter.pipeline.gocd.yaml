@@ -34,7 +34,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/spine-exporter/terraform/dev.tfplan
+                    destination: stacks/spine-exporter/terraform
+                - build:
+                    source: stacks/spine-exporter/terraform/.terraform.lock.hcl
+                    destination: stacks/spine-exporter/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,7 +55,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/spine-exporter/terraform/dev.tfplan
+                    destination: stacks/spine-exporter/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/spine-exporter/terraform/.terraform.lock.hcl
+                    destination: stacks/spine-exporter/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -81,7 +92,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/spine-exporter/terraform/prod.tfplan
+                    destination: stacks/spine-exporter/terraform
+                - build:
+                    source: stacks/spine-exporter/terraform/.terraform.lock.hcl
+                    destination: stacks/spine-exporter/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -101,7 +116,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/spine-exporter/terraform/prod.tfplan
+                    destination: stacks/spine-exporter/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/spine-exporter/terraform/.terraform.lock.hcl
+                    destination: stacks/spine-exporter/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
