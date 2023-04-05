@@ -34,7 +34,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/ods-downloader/terraform/dev.tfplan
+                    destination: stacks/ods-downloader/terraform
+                - build:
+                    source: stacks/ods-downloader/terraform/.terraform.lock.hcl
+                    destination: stacks/ods-downloader/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,7 +55,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/ods-downloader/terraform/dev.tfplan
+                    destination: stacks/ods-downloader/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/ods-downloader/terraform/.terraform.lock.hcl
+                    destination: stacks/ods-downloader/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -81,7 +92,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/ods-downloader/terraform/prod.tfplan
+                    destination: stacks/ods-downloader/terraform
+                - build:
+                    source: stacks/ods-downloader/terraform/.terraform.lock.hcl
+                    destination: stacks/ods-downloader/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -101,7 +116,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/ods-downloader/terraform/prod.tfplan
+                    destination: stacks/ods-downloader/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/ods-downloader/terraform/.terraform.lock.hcl
+                    destination: stacks/ods-downloader/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
