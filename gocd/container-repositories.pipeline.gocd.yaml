@@ -36,16 +36,12 @@ pipelines:
                 - build:
                     source: stacks/container-repositories/terraform/.terraform.lock.hcl
                     destination: stacks/container-repositories/terraform
+              tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
                       - ./tasks dojo-plan container-repositories dev
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ls -lsa stacks/container-repositories/terraform
       - apply_dev:
           clean_workspace: true
           jobs:
