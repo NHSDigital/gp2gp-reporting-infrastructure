@@ -45,11 +45,6 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ls -lsa
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
                       - ls -lsa stacks/container-repositories/terraform
       - apply_dev:
           clean_workspace: true
