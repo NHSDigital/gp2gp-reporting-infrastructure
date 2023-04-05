@@ -49,7 +49,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: dev.tfplan
+                    source: stacks/step-function/terraform/dev.tfplan
+                    destination: stacks/step-function/terraform
+                - build:
+                    source: stacks/step-function/terraform/.terraform.lock.hcl
+                    destination: stacks/step-function/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -66,7 +70,14 @@ pipelines:
                 - fetch:
                     stage: plan_dev
                     job: plan
-                    source: dev.tfplan
+                    source: stacks/step-function/terraform/dev.tfplan
+                    destination: stacks/step-function/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_dev
+                    job: plan
+                    source: stacks/step-function/terraform/.terraform.lock.hcl
+                    destination: stacks/step-function/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
@@ -96,7 +107,11 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: prod.tfplan
+                    source: stacks/step-function/terraform/prod.tfplan
+                    destination: stacks/step-function/terraform
+                - build:
+                    source: stacks/step-function/terraform/.terraform.lock.hcl
+                    destination: stacks/step-function/terraform
               tasks:
                 - exec:
                     command: /bin/bash
@@ -116,7 +131,14 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: prod.tfplan
+                    source: stacks/step-function/terraform/prod.tfplan
+                    destination: stacks/step-function/terraform
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: stacks/step-function/terraform/.terraform.lock.hcl
+                    destination: stacks/step-function/terraform
                     is_file: yes
                 - exec:
                     command: /bin/bash
