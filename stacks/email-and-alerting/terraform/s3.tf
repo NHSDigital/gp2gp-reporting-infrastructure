@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "asid_storage" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-asid-email-attatchment-storage"
+      Name            = "${var.environment}-asid-email-attatchment-storage"
       ApplicationRole = "AwsS3Bucket"
     }
   )

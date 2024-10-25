@@ -130,7 +130,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_thresho
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+      Name            = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
@@ -205,12 +205,12 @@ data "aws_iam_policy_document" "asid_storage_ses_assume_role" {
 
 data "aws_iam_policy_document" "asid_storage_s3_put_policy" {
   statement {
-    sid = "AllowSESPuts"
-    actions = ["s3:PutObject"]
+    sid       = "AllowSESPuts"
+    actions   = ["s3:PutObject"]
     resources = ["arn:aws:s3:::${aws_s3_bucket.asid_storage.bucket}/*"]
 
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ses.amazonaws.com"]
     }
   }
