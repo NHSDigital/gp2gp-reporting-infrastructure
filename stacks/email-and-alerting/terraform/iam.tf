@@ -192,3 +192,39 @@ resource "aws_iam_policy" "log_alerts_ssm_access" {
   name   = "${var.environment}-log-alerts-ssm-access"
   policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
 }
+
+data "aws_iam_policy_document" "asid_storage_ses_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ses.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "asid_storage_s3_put_policy" {
+  statement {
+    sid = "AllowSESPuts"
+    actions = ["s3:PutObject"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.asid_storage.bucket}/*"]
+
+    principals {
+      type = "Service"
+      identifiers = ["ses.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_policy" "asid_storage_policy" {
+  name   = "${var.environment}-ses-asid-storage-policy"
+  policy = data.aws_iam_policy_document.asid_storage_s3_put_policy.json
+}
+
+resource "aws_iam_role" "asid_storage_role" {
+  name               = "${var.environment}-ses-asid-storage-role"
+  assume_role_policy = data.aws_iam_policy_document.asid_storage_ses_assume_role.json
+  managed_policy_arns = [
+    aws_iam_policy.asid_storage_policy.arn,
+  ]
+}

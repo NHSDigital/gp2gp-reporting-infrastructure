@@ -3,6 +3,11 @@ variable "environment" {
   description = "Uniquely identifies each deployment, i.e. dev, prod."
 }
 
+variable "ses_domain" {
+  type        = string
+  description = "Identifies SES domain identity for the current environment."
+}
+
 variable "team" {
   type        = string
   default     = "Registrations"
