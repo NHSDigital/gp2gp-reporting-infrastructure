@@ -193,7 +193,7 @@ resource "aws_iam_policy" "log_alerts_ssm_access" {
   policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
 }
 
-data "aws_iam_policy_document" "asid_storage_ses_assume_role" {
+data "aws_iam_policy_document" "gp2gp_inbox_ses_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -203,11 +203,11 @@ data "aws_iam_policy_document" "asid_storage_ses_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "asid_storage_s3_put_policy" {
+data "aws_iam_policy_document" "gp2gp_inbox_storage_s3_put_policy" {
   statement {
     sid       = "AllowSESPuts"
     actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::${aws_s3_bucket.asid_storage.bucket}/*"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.gp2gp_inbox_storage.id}/*"]
 
     principals {
       type        = "Service"
@@ -216,15 +216,15 @@ data "aws_iam_policy_document" "asid_storage_s3_put_policy" {
   }
 }
 
-resource "aws_iam_policy" "asid_storage_policy" {
-  name   = "${var.environment}-ses-asid-storage-policy"
-  policy = data.aws_iam_policy_document.asid_storage_s3_put_policy.json
+resource "aws_iam_policy" "gp2gp_inbox_storage_policy" {
+  name   = "${var.environment}-gp2gp-inbox-storage-policy"
+  policy = data.aws_iam_policy_document.gp2gp_inbox_storage_s3_put_policy.json
 }
 
 resource "aws_iam_role" "asid_storage_role" {
-  name               = "${var.environment}-ses-asid-storage-role"
-  assume_role_policy = data.aws_iam_policy_document.asid_storage_ses_assume_role.json
+  name               = "${var.environment}-gp2gp-inbox-storage-role"
+  assume_role_policy = data.aws_iam_policy_document.gp2gp_inbox_ses_assume_role.json
   managed_policy_arns = [
-    aws_iam_policy.asid_storage_policy.arn,
+    aws_iam_policy.gp2gp_inbox_storage_policy.arn,
   ]
 }
