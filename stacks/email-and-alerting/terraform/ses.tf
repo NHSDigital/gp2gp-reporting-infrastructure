@@ -30,7 +30,7 @@ resource "aws_ses_domain_dkim" "gp2gp_inbox_domain_identification" {
   depends_on = [aws_ses_domain_identity.gp2gp_inbox]
 }
 
-resource "aws_route53_record" "ndr_ses_dkim_record" {
+resource "aws_route53_record" "gp2gp_inbox_dkim_record" {
   count   = 3
   zone_id = var.zone_id # TODO: Find where this is configured in tf and set as output, otherwise may need to add SSM param as we are not in control of domain
   name    = "${aws_ses_domain_dkim.gp2gp_inbox_domain_identification.dkim_tokens[count.index]}._domainkey.${var.ses_domain}"
@@ -41,7 +41,7 @@ resource "aws_route53_record" "ndr_ses_dkim_record" {
   depends_on = [aws_ses_domain_dkim.gp2gp_inbox_domain_identification]
 }
 
-resource "aws_route53_record" "dmarc_record" {
+resource "aws_route53_record" "gp2gp_inbox_dmarc_record" {
   zone_id = var.zone_id
   name    = "_dmarc.${var.ses_domain}"
   type    = "TXT"
