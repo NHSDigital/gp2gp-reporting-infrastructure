@@ -1,25 +1,25 @@
 resource "aws_lambda_function" "email_report_lambda" {
-  filename      = "${path.cwd}/${var.email_report_lambda_zip}"
-  function_name = "${var.environment}-${var.email_report_lambda_name}"
-  role          = aws_iam_role.email_report_lambda_role.arn
-  handler       = "main.lambda_handler"
+  filename         = "${path.cwd}/${var.email_report_lambda_zip}"
+  function_name    = "${var.environment}-${var.email_report_lambda_name}"
+  role             = aws_iam_role.email_report_lambda_role.arn
+  handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${path.cwd}/${var.email_report_lambda_zip}")
-  runtime = "python3.9"
-  timeout = 15
+  runtime          = "python3.9"
+  timeout          = 15
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.email_report_lambda_name}"
+      Name            = "${var.environment}-${var.email_report_lambda_name}"
       ApplicationRole = "AwsLambdaFunction"
     }
   )
 
   environment {
     variables = {
-      EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME = var.email_report_sender_email_param_name,
-      EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME = var.email_report_recipient_email_param_name
+      EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME             = var.email_report_sender_email_param_name,
+      EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME          = var.email_report_recipient_email_param_name
       EMAIL_REPORT_RECIPIENT_INTERNAL_EMAIL_PARAM_NAME = var.email_report_recipient_internal_email_param_name
-      EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME = var.email_report_sender_email_key_param_name
+      EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME         = var.email_report_sender_email_key_param_name
     }
   }
 }
@@ -29,7 +29,7 @@ resource "aws_cloudwatch_log_group" "email_report_lambda" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.email_report_lambda_name}"
+      Name            = "${var.environment}-${var.email_report_lambda_name}"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
@@ -37,12 +37,12 @@ resource "aws_cloudwatch_log_group" "email_report_lambda" {
 }
 
 resource "aws_lambda_permission" "allow_trigger_from_s3_object_created" {
-  statement_id  = "AllowExecutionFromS3Bucket"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.email_report_lambda.arn
-  principal     = "s3.amazonaws.com"
-  source_arn    = "arn:aws:s3:::${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
-  source_account= data.aws_caller_identity.current.account_id
+  statement_id   = "AllowExecutionFromS3Bucket"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.email_report_lambda.arn
+  principal      = "s3.amazonaws.com"
+  source_arn     = "arn:aws:s3:::${data.aws_ssm_parameter.reports_generator_bucket_name.value}"
+  source_account = data.aws_caller_identity.current.account_id
 }
 
 resource "aws_s3_bucket_notification" "reports_generator_s3_object_created" {

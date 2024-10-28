@@ -4,33 +4,33 @@ variable "log_alerts_technical_failures_above_threshold_lambda_name" {
 }
 
 resource "aws_lambda_function" "log_alerts_technical_failures_above_threshold_lambda" {
-  filename      = "${path.cwd}/${var.log_alerts_technical_failures_above_threshold_lambda_zip}"
-  function_name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
-  role          = aws_iam_role.log_alerts_lambda_role.arn
-  handler       = "main.lambda_handler"
+  filename         = "${path.cwd}/${var.log_alerts_technical_failures_above_threshold_lambda_zip}"
+  function_name    = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+  role             = aws_iam_role.log_alerts_lambda_role.arn
+  handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${path.cwd}/${var.log_alerts_technical_failures_above_threshold_lambda_zip}")
-  runtime = "python3.9"
-  timeout = 15
+  runtime          = "python3.9"
+  timeout          = 15
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+      Name            = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
       ApplicationRole = "AwsLambdaFunction"
     }
   )
 
   environment {
     variables = {
-      LOG_ALERTS_TECHNICAL_FAILURES_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_webhook_url_param_name,
+      LOG_ALERTS_TECHNICAL_FAILURES_WEBHOOK_URL_PARAM_NAME                 = var.log_alerts_technical_failures_webhook_url_param_name,
       LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_WEBHOOK_URL_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_webhook_url_param_name,
-      LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
-      LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME = var.log_alerts_technical_failures_above_threshold_rate_param_name
+      LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME                            = var.log_alerts_general_webhook_url_param_name,
+      LOG_ALERTS_TECHNICAL_FAILURES_ABOVE_THRESHOLD_RATE_PARAM_NAME        = var.log_alerts_technical_failures_above_threshold_rate_param_name
     }
   }
 }
 
 resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_lambda_allow_cloudwatch" {
-  statement_id = "log-alerts-technical-failures-above-threshold-lambda-allow-cloudwatch"
+  statement_id  = "log-alerts-technical-failures-above-threshold-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.function_name
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
@@ -52,17 +52,17 @@ variable "log_alerts_pipeline_error_lambda_name" {
 }
 
 resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
-  filename      = "${path.cwd}/${var.log_alerts_pipeline_error_lambda_zip}"
-  function_name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
-  role          = aws_iam_role.log_alerts_lambda_role.arn
-  handler       = "main.lambda_handler"
+  filename         = "${path.cwd}/${var.log_alerts_pipeline_error_lambda_zip}"
+  function_name    = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+  role             = aws_iam_role.log_alerts_lambda_role.arn
+  handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${path.cwd}/${var.log_alerts_pipeline_error_lambda_zip}")
-  runtime = "python3.9"
-  timeout = 15
+  runtime          = "python3.9"
+  timeout          = 15
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+      Name            = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
       ApplicationRole = "AwsLambdaFunction"
     }
   )
@@ -70,13 +70,13 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
   environment {
     variables = {
       LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
-      CLOUDWATCH_DASHBOARD_URL = var.cloudwatch_dashboard_url
+      CLOUDWATCH_DASHBOARD_URL                  = var.cloudwatch_dashboard_url
     }
   }
 }
 
 resource "aws_lambda_permission" "log_alerts_pipeline_error_lambda_allow_cloudwatch" {
-  statement_id = "log-alerts-pipeline-error-lambda-allow-cloudwatch"
+  statement_id  = "log-alerts-pipeline-error-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alerts_pipeline_error_lambda.function_name
   principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
@@ -97,7 +97,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_pipeline_error" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
+      Name            = "${var.environment}-${var.log_alerts_pipeline_error_lambda_name}"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )

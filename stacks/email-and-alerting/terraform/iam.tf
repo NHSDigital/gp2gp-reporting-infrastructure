@@ -221,7 +221,7 @@ resource "aws_iam_policy" "gp2gp_inbox_storage_policy" {
   policy = data.aws_iam_policy_document.gp2gp_inbox_storage_s3_put_policy.json
 }
 
-resource "aws_iam_role" "asid_storage_role" {
+resource "aws_iam_role" "gp2gp_inbox_storage_role" {
   name               = "${var.environment}-gp2gp-inbox-storage-role"
   assume_role_policy = data.aws_iam_policy_document.gp2gp_inbox_ses_assume_role.json
   managed_policy_arns = [
