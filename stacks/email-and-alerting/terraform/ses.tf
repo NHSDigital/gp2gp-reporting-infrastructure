@@ -1,10 +1,12 @@
-
+locals {
+  ses_domain = "mail.${var.hosted_zone_name}"
+}
 resource "aws_ses_email_identity" "gp2gp_inbox_sender_address" {
   email = data.aws_ssm_parameter.email_report_sender_email.value
 }
 
 resource "aws_ses_domain_identity" "gp2gp_inbox" {
-  domain = var.ses_domain
+  domain = local.ses_domain
 }
 
 resource "aws_ses_receipt_rule_set" "gp2gp_inbox_rules" {
@@ -33,7 +35,7 @@ resource "aws_ses_domain_dkim" "gp2gp_inbox_domain_identification" {
 resource "aws_route53_record" "gp2gp_inbox_dkim_record" {
   count   = 3
   zone_id = data.aws_route53_zone.gp_registrations.zone_id
-  name    = "${aws_ses_domain_dkim.gp2gp_inbox_domain_identification.dkim_tokens[count.index]}._domainkey.${var.ses_domain}"
+  name    = "${aws_ses_domain_dkim.gp2gp_inbox_domain_identification.dkim_tokens[count.index]}._domainkey.${local.ses_domain}"
   type    = "CNAME"
   ttl     = 1800
   records = ["${aws_ses_domain_dkim.gp2gp_inbox_domain_identification.dkim_tokens[count.index]}.dkim.amazonses.com"]
@@ -43,11 +45,11 @@ resource "aws_route53_record" "gp2gp_inbox_dkim_record" {
 
 resource "aws_route53_record" "gp2gp_inbox_dmarc_record" {
   zone_id = data.aws_route53_zone.gp_registrations.zone_id
-  name    = "_dmarc.${var.ses_domain}"
+  name    = "_dmarc.${local.ses_domain}"
   type    = "TXT"
   ttl     = 300
 
   records = [
-    "v=DMARC1; p=none;"
+    "v=DMARC1; p=reject;"
   ]
 }

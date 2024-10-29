@@ -203,7 +203,7 @@ data "aws_iam_policy_document" "gp2gp_inbox_ses_assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "gp2gp_inbox_storage_s3_put_policy" {
+data "aws_iam_policy_document" "ses_to_s3_policy" {
   statement {
     sid       = "AllowSESPuts"
     actions   = ["s3:PutObject"]
@@ -213,18 +213,22 @@ data "aws_iam_policy_document" "gp2gp_inbox_storage_s3_put_policy" {
       type        = "Service"
       identifiers = ["ses.amazonaws.com"]
     }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceArn"
+      values   = [aws_ses_receipt_rule.store_email_in_s3_rule.arn]
+    }
   }
 }
 
-resource "aws_iam_policy" "gp2gp_inbox_storage_policy" {
-  name   = "${var.environment}-gp2gp-inbox-storage-policy"
-  policy = data.aws_iam_policy_document.gp2gp_inbox_storage_s3_put_policy.json
-}
-
-resource "aws_iam_role" "gp2gp_inbox_storage_role" {
-  name               = "${var.environment}-gp2gp-inbox-storage-role"
-  assume_role_policy = data.aws_iam_policy_document.gp2gp_inbox_ses_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.gp2gp_inbox_storage_policy.arn,
-  ]
+resource "aws_s3_bucket_policy" "gp2gp_inbox_storage_policy" {
+   bucket = aws_s3_bucket.gp2gp_inbox_storage.id
+   policy = data.aws_iam_policy_document.ses_to_s3_policy.json
 }

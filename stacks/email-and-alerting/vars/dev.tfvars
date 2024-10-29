@@ -1,4 +1,3 @@
-ses_domain                                                           = "mail.dev.gp-registrations-data.nhs.uk"
 hosted_zone_name                                                     = "dev.gp-registrations-data.nhs.uk"
 reports_generator_bucket_param_name                                  = "/registrations/dev/data-pipeline/reports-generator/output-bucket-name"
 log_group_param_name                                                 = "/registrations/dev/data-pipeline/cloudwatch-log-group-name"
