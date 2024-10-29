@@ -193,16 +193,6 @@ resource "aws_iam_policy" "log_alerts_ssm_access" {
   policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
 }
 
-data "aws_iam_policy_document" "gp2gp_inbox_ses_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ses.amazonaws.com"]
-    }
-  }
-}
-
 data "aws_iam_policy_document" "ses_to_s3_policy" {
   statement {
     sid       = "AllowSESPuts"
