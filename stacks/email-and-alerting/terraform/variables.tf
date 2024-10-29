@@ -108,7 +108,7 @@ variable "gp2gp_dashboard_national_statistics_url" {
   description = "Url for the gp2gp dashboard nationalist statistics"
 }
 
-variable "hosted_zone_id" {
+variable "hosted_zone_name" {
   type        = string
-  description = "Hosted Zone ID for domain"
+  description = "Route53 hosted zone name"
 }

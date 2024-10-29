@@ -32,7 +32,7 @@ resource "aws_ses_domain_dkim" "gp2gp_inbox_domain_identification" {
 
 resource "aws_route53_record" "gp2gp_inbox_dkim_record" {
   count   = 3
-  zone_id = data.aws_ssm_parameter.hosted_zone_id.id
+  zone_id = data.aws_route53_zone.gp_registrations.zone_id
   name    = "${aws_ses_domain_dkim.gp2gp_inbox_domain_identification.dkim_tokens[count.index]}._domainkey.${var.ses_domain}"
   type    = "CNAME"
   ttl     = 1800
@@ -42,7 +42,7 @@ resource "aws_route53_record" "gp2gp_inbox_dkim_record" {
 }
 
 resource "aws_route53_record" "gp2gp_inbox_dmarc_record" {
-  zone_id = data.aws_ssm_parameter.hosted_zone_id.id
+  zone_id = data.aws_route53_zone.gp_registrations.zone_id
   name    = "_dmarc.${var.ses_domain}"
   type    = "TXT"
   ttl     = 300
