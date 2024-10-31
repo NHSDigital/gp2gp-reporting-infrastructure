@@ -10,20 +10,28 @@ resource "aws_ses_domain_identity" "gp2gp_inbox" {
 }
 
 resource "aws_ses_receipt_rule_set" "gp2gp_inbox_rules" {
-  rule_set_name = "gp2gp-inbox-${var.environment}"
+  rule_set_name = "gp2gp-inbox-rules-${var.environment}"
 }
 
-resource "aws_ses_receipt_rule" "store_email_in_s3_rule" {
-  name          = "gp2gp-store-email-in-s3-${var.environment}"
+resource "aws_ses_active_receipt_rule_set" "active_rule_set" {
+  rule_set_name = aws_ses_receipt_rule_set.gp2gp_inbox_rules.rule_set_name
+}
+
+resource "aws_ses_receipt_rule" "store_asid_lookup_in_s3" {
+  name          = "store-asid-lookup-in-s3-${var.environment}"
   rule_set_name = aws_ses_receipt_rule_set.gp2gp_inbox_rules.rule_set_name
   enabled       = true
   scan_enabled  = true
+  recipients    = ["asidlookup@${local.ses_domain}"]
   s3_action {
-    bucket_name = aws_s3_bucket.gp2gp_inbox_storage.id
-    position    = 1
+    bucket_name       = aws_s3_bucket.gp2gp_inbox_storage.bucket
+    object_key_prefix = "asid_lookup/"
+    position          = 1
   }
 
-  depends_on = [aws_ses_receipt_rule_set.gp2gp_inbox_rules]
+  depends_on = [
+    aws_s3_bucket_policy.gp2gp_inbox_storage_policy
+  ]
 }
 
 resource "aws_ses_domain_dkim" "gp2gp_inbox_domain_identification" {
@@ -50,6 +58,6 @@ resource "aws_route53_record" "gp2gp_inbox_dmarc_record" {
   ttl     = 300
 
   records = [
-    "v=DMARC1; p=reject;"
+    "v=DMARC1; p=none;"
   ]
 }

@@ -211,14 +211,19 @@ data "aws_iam_policy_document" "ses_to_s3_policy" {
     }
 
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
       variable = "aws:SourceArn"
-      values   = [aws_ses_receipt_rule.store_email_in_s3_rule.arn]
+      values   = ["${aws_ses_receipt_rule_set.gp2gp_inbox_rules.arn}:receipt-rule/*"]
     }
   }
 }
 
 resource "aws_s3_bucket_policy" "gp2gp_inbox_storage_policy" {
-   bucket = aws_s3_bucket.gp2gp_inbox_storage.id
-   policy = data.aws_iam_policy_document.ses_to_s3_policy.json
+  bucket = aws_s3_bucket.gp2gp_inbox_storage.id
+  policy = data.aws_iam_policy_document.ses_to_s3_policy.json
+
+  depends_on = [
+    aws_ses_receipt_rule_set.gp2gp_inbox_rules,
+    aws_s3_bucket.gp2gp_inbox_storage
+  ]
 }
