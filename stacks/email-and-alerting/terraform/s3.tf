@@ -1,5 +1,9 @@
+locals {
+  gp2gp_inbox_storage_bucket_name = "prm-gp2gp-inbox-storage-${var.environment}"
+}
+
 resource "aws_s3_bucket" "gp2gp_inbox_storage" {
-  bucket = "prm-gp2gp-inbox-storage-${var.environment}"
+  bucket = local.gp2gp_inbox_storage_bucket_name
 
   lifecycle {
     prevent_destroy = true
@@ -8,21 +12,17 @@ resource "aws_s3_bucket" "gp2gp_inbox_storage" {
   tags = merge(
     local.common_tags,
     {
-      Name            = "${var.environment}-asid-email-attatchment-storage"
+      Name            = local.gp2gp_inbox_storage_bucket_name
       ApplicationRole = "AwsS3Bucket"
     }
   )
 }
 
-resource "aws_s3_bucket_versioning" "gp2gp_inbox_storage_versioning" {
+resource "aws_s3_bucket_versioning" "gp2gp_inbox_storage" {
   bucket = aws_s3_bucket.gp2gp_inbox_storage.id
   versioning_configuration {
     status = "Enabled"
   }
-
-  depends_on = [
-    aws_s3_bucket.gp2gp_inbox_storage
-  ]
 }
 
 resource "aws_s3_bucket_public_access_block" "gp2gp_inbox_storage" {
