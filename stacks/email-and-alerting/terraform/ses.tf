@@ -2,6 +2,10 @@ locals {
   ses_domain = "mail.${var.hosted_zone_name}"
 }
 
+data "aws_ssm_parameter" "asid_lookup_address_prefix" {
+  name = var.asid_lookup_inbox_prefix_param_name
+}
+
 resource "aws_ses_email_identity" "gp2gp_inbox_sender_address" {
   email = data.aws_ssm_parameter.email_report_sender_email.value
 }
@@ -28,7 +32,7 @@ resource "aws_ses_receipt_rule" "asid_lookup" {
   rule_set_name = aws_ses_receipt_rule_set.gp2gp_inbox.rule_set_name
   enabled       = true
   scan_enabled  = true
-  recipients    = ["asidlookup@${local.ses_domain}"]
+  recipients    = ["${data.aws_ssm_parameter.asid_lookup_address_prefix.value}@${local.ses_domain}"]
   s3_action {
     bucket_name       = aws_s3_bucket.gp2gp_inbox_storage.id
     object_key_prefix = "asid_lookup/"
