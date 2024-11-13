@@ -130,7 +130,7 @@ resource "aws_cloudwatch_log_group" "log_alerts_technical_failures_above_thresho
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
+      Name            = "${var.environment}-${var.log_alerts_technical_failures_above_threshold_lambda_name}"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )
@@ -191,4 +191,34 @@ data "aws_iam_policy_document" "log_alerts_ssm_access" {
 resource "aws_iam_policy" "log_alerts_ssm_access" {
   name   = "${var.environment}-log-alerts-ssm-access"
   policy = data.aws_iam_policy_document.log_alerts_ssm_access.json
+}
+
+data "aws_iam_policy_document" "ses_to_s3" {
+  statement {
+    sid       = "AllowSESPuts"
+    actions   = ["s3:PutObject"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.gp2gp_inbox_storage.id}/*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ses.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:SourceArn"
+      values   = ["${aws_ses_receipt_rule_set.gp2gp_inbox.arn}:receipt-rule/*"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "gp2gp_inbox_storage" {
+  bucket = aws_s3_bucket.gp2gp_inbox_storage.id
+  policy = data.aws_iam_policy_document.ses_to_s3.json
 }

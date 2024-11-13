@@ -102,3 +102,13 @@ variable "gp2gp_dashboard_national_statistics_url" {
   type        = string
   description = "Url for the gp2gp dashboard nationalist statistics"
 }
+
+variable "hosted_zone_name" {
+  type        = string
+  description = "Route53 hosted zone name"
+}
+
+variable "asid_lookup_inbox_prefix_param_name" {
+  type        = string
+  description = "SSM parameter containing the gp2gp inbox address prefix for asid lookup"
+}

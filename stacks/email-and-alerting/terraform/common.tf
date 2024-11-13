@@ -9,3 +9,8 @@ locals {
 data "aws_ssm_parameter" "cloud_watch_log_group" {
   name = var.log_group_param_name
 }
+
+data "aws_route53_zone" "gp_registrations" {
+  name         = var.hosted_zone_name
+  private_zone = false
+}
