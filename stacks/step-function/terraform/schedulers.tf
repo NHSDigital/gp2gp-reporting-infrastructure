@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_event_rule" "run_daily_5am_cron_expression" {
   name                = "${var.environment}-run-data-pipeline-step-functions-daily-5-30am"
-  description         = "Eventbridge Event Rule that triggers the Daily Spine Export and Transfer Classifier Step function 5:30am every morning"
-  schedule_expression = "cron(30 5 * * ? *)" // 5:30 ensures data is pulled outside of maintenance hours
+  description         = "Eventbridge Event Rule that triggers the Daily Spine Export and Transfer Classifier Step function 5:37am every morning"
+  schedule_expression = "cron(37 5 * * ? *)" // 5:37 ensures data is pulled outside of maintenance hours
   tags = merge(
     local.common_tags,
     {
