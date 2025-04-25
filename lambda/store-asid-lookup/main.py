@@ -30,6 +30,7 @@ def lambda_handler(event, context):
     compressed_csv = compress_csv(attached_csv)
     store_file_in_destination_s3(compressed_csv)
 
+
 def validate_email_event(email_event: dict):
     ses_mail = email_event['ses']['mail']
     ses_receipt = email_event['ses']['receipt']
@@ -45,8 +46,9 @@ def validate_email_event(email_event: dict):
         remove_email_from_s3(email_event)
         raise e
 
+
 def validate_event_source(ses_mail: dict):
-    raw_permitted_emails = get_ssm_param(permitted_emails_ssm_location) # permitted emails should be comma separated
+    raw_permitted_emails = get_ssm_param(permitted_emails_ssm_location)  # permitted emails should be comma separated
     permitted_emails = [email_address.strip() for email_address in raw_permitted_emails.split(",")]
 
     source = ses_mail['source']
@@ -56,6 +58,7 @@ def validate_event_source(ses_mail: dict):
 
     print(f"Source validation passed - email from permitted sender: {source}")
 
+
 def validate_event_destination(ses_mail: dict):
     destination = ses_mail['destination']
 
@@ -63,6 +66,7 @@ def validate_event_destination(ses_mail: dict):
         raise EmailValidationError(f"Unexpected destination: {destination}")
 
     print('Destination validation passed')
+
 
 def validate_event_headers(ses_mail: dict):
     headers = {h["name"]: h["value"] for h in ses_mail["headers"]}
@@ -78,17 +82,19 @@ def validate_event_headers(ses_mail: dict):
 
     print('Header validation passed')
 
+
 def validate_event_receipt(ses_receipt: dict):
     if not all([
         ses_receipt['spamVerdict']['status'] == 'PASS',
         ses_receipt['virusVerdict']['status'] == 'PASS',
-        ses_receipt['spfVerdict']['status'] == 'PASS', # TODO PRM-131 Is this expected?
-        ses_receipt['dkimVerdict']['status'] == 'PASS', # TODO PRM-131 Is this expected?
-        ses_receipt['dmarcVerdict']['status'] == 'PASS', # TODO PRM-131 Is this expected?
+        ses_receipt['spfVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
+        ses_receipt['dkimVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
+        ses_receipt['dmarcVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
     ]):
         raise EmailValidationError("Email validation failed due to incorrect receipt")
 
     print('Receipt validation passed')
+
 
 def remove_email_from_s3(email_event: dict):
     source_s3_bucket = get_ssm_param(source_s3_bucket_ssm_location)
@@ -100,6 +106,7 @@ def remove_email_from_s3(email_event: dict):
     except ClientError as e:
         print(f"Failed to delete email from S3: bucket={source_s3_bucket}, key={file_key}, error={e}")
 
+
 def get_raw_email_from_source_s3(email_event: dict):
     source_s3_bucket = get_ssm_param(source_s3_bucket_ssm_location)
     file_key = email_event['ses']['mail']['messageId']
@@ -110,6 +117,7 @@ def get_raw_email_from_source_s3(email_event: dict):
     except ClientError as e:
         raise RuntimeError(f"Failed to retrieve email from S3: bucket={source_s3_bucket}, key={file_key}, error={e}")
 
+
 def extract_csv_attachment_from_email(raw_email: bytes):
     msg = email.message_from_bytes(raw_email)
     for part in msg.walk():
@@ -117,6 +125,7 @@ def extract_csv_attachment_from_email(raw_email: bytes):
             return part.get_payload(decode=True)
     else:
         raise FileNotFoundError("asidLookup.csv not found in email")
+
 
 def compress_csv(csv: bytes):
     output = BytesIO()
@@ -127,14 +136,17 @@ def compress_csv(csv: bytes):
 
     return output
 
+
 def store_file_in_destination_s3(file: BytesIO):
     now = datetime.now(timezone.utc)
     file_key = f"{now.year}/{now.month}/{asid_lookup_filename}.gz"
     s3_client.put_object(Bucket=destination_s3_bucket, Key=file_key, Body=file.read())
     print(f"Successfully uploaded compressed file at {destination_s3_bucket}/{file_key}")
 
+
 def get_ssm_param(name):
     return ssm_client.get_parameter(Name=name, WithDecryption=True)['Parameter']['Value']
+
 
 class EmailValidationError(Exception):
     pass
