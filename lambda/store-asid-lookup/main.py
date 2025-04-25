@@ -87,9 +87,9 @@ def validate_event_receipt(ses_receipt: dict):
     if not all([
         ses_receipt['spamVerdict']['status'] == 'PASS',
         ses_receipt['virusVerdict']['status'] == 'PASS',
-        ses_receipt['spfVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
-        ses_receipt['dkimVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
-        ses_receipt['dmarcVerdict']['status'] == 'PASS',  # TODO PRM-131 Is this expected?
+        ses_receipt['spfVerdict']['status'] == 'PASS',
+        ses_receipt['dkimVerdict']['status'] == 'PASS',
+        ses_receipt['dmarcVerdict']['status'] == 'PASS',
     ]):
         raise EmailValidationError("Email validation failed due to incorrect receipt")
 
