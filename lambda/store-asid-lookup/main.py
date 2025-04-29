@@ -11,10 +11,11 @@ ssm_client = boto3.client('ssm')
 
 # Constants
 environment = os.environ["ENVIRONMENT"]
-expected_destination = f"asidlookup@mail{environment}.gp-registrations-data.nhs.uk"
+expected_email_destination = f"asidlookup@mail{environment}.gp-registrations-data.nhs.uk"
 permitted_emails_ssm_location = f"/registrations/{environment}/data-pipeline/gp2gp-dashboard/permitted-emails"
 source_s3_bucket_ssm_location = f'/registrations/{environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name'
 asid_lookup_filename = "asidLookup.csv"
+asid_lookup_s3_filekey_prefix = "asid_lookup"
 destination_s3_bucket = f"prm-gp2gp-asid-lookup-{environment}"
 
 
@@ -43,7 +44,7 @@ def validate_email_event(email_event: dict):
 
         print("Email event validated successfully")
     except Exception as e:
-        remove_email_from_s3(email_event)
+        remove_email_from_s3(ses_mail['messageId'])
         raise e
 
 
@@ -62,7 +63,7 @@ def validate_event_source(ses_mail: dict):
 def validate_event_destination(ses_mail: dict):
     destination = ses_mail['destination']
 
-    if expected_destination not in destination:
+    if expected_email_destination not in destination:
         raise EmailValidationError(f"Unexpected destination: {destination}")
 
     print('Destination validation passed')
@@ -96,26 +97,26 @@ def validate_event_receipt(ses_receipt: dict):
     print('Receipt validation passed')
 
 
-def remove_email_from_s3(email_event: dict):
+def remove_email_from_s3(message_id: str):
     source_s3_bucket = get_ssm_param(source_s3_bucket_ssm_location)
-    file_key = email_event['ses']['mail']['messageId']
+    s3_file_key = f"{asid_lookup_s3_filekey_prefix}/{message_id}"
 
     try:
-        s3_client.delete_object(Bucket=source_s3_bucket, Key=file_key)
-        print(f"Deleted email from S3: bucket={source_s3_bucket}, key={file_key}")
+        s3_client.delete_object(Bucket=source_s3_bucket, Key=s3_file_key)
+        print(f"Deleted email from S3: bucket={source_s3_bucket}, key={s3_file_key}")
     except ClientError as e:
-        print(f"Failed to delete email from S3: bucket={source_s3_bucket}, key={file_key}, error={e}")
+        print(f"Failed to delete email from S3: bucket={source_s3_bucket}, key={s3_file_key}, error={e}")
 
 
-def get_raw_email_from_source_s3(email_event: dict):
+def get_raw_email_from_source_s3(message_id: str):
     source_s3_bucket = get_ssm_param(source_s3_bucket_ssm_location)
-    file_key = email_event['ses']['mail']['messageId']
+    s3_file_key = f"{asid_lookup_s3_filekey_prefix}/{message_id}"
 
     try:
-        response = s3_client.get_object(Bucket=source_s3_bucket, Key=file_key)
+        response = s3_client.get_object(Bucket=source_s3_bucket, Key=s3_file_key)
         return response['Body'].read()
     except ClientError as e:
-        raise RuntimeError(f"Failed to retrieve email from S3: bucket={source_s3_bucket}, key={file_key}, error={e}")
+        raise RuntimeError(f"Failed to retrieve email from S3: bucket={source_s3_bucket}, key={s3_file_key}, error={e}")
 
 
 def extract_csv_attachment_from_email(raw_email: bytes):
