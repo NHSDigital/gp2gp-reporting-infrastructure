@@ -1,0 +1,42 @@
+name: Email and Alerting Pipeline
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'stacks/email-and-alerting/**'
+      - 'stacks/gp2gp-dashboard/**'
+      - '.github/workflows/email-and-alerting.yml'
+      
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'stacks/email-and-alerting/**'
+      - 'stacks/gp2gp-dashboard/**'
+      - '.github/workflows/email-and-alerting.yml'
+
+jobs:
+  email-and-alerting:
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      terraform_stack: email-and-alerting
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
+
+  gp2gp-dashboard:
+    needs: email-and-alerting
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      terraform_stack: gp2gp-dashboard
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
