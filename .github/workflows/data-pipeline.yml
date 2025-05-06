@@ -1,0 +1,117 @@
+name: Data Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'stacks/step-function/**'
+      - 'stacks/transfer-classifier/**'
+      - 'stacks/validate-metrics/**'
+      - 'stacks/ods-downloader/**'
+      - 'stacks/reports-generator/**'
+      - 'stacks/spine-exporter/**'
+      - 'stacks/metrics-calculator/**'
+      - '.github/workflows/data-pipeline.yml'
+      
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'stacks/step-function/**'
+      - 'stacks/transfer-classifier/**'
+      - 'stacks/validate-metrics/**'
+      - 'stacks/ods-downloader/**'
+      - 'stacks/reports-generator/**'
+      - 'stacks/spine-exporter/**'
+      - 'stacks/metrics-calculator/**'
+      - '.github/workflows/data-pipeline.yml'
+
+jobs:
+  step-function:
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: step-function
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
+
+  transfer-classifier:
+    needs: step-function
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: transfer-classifier
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+
+  validate-metrics:
+    needs: transfer-classifier
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: validate-metrics
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+
+  ods-downloader:
+    needs: validate-metrics
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: ods-downloader
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+
+  reports-generator:
+    needs: ods-downloader
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: reports-generator
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+
+  spine-exporter:
+    needs: reports-generator
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: spine-exporter
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+
+  metrics-calculator:
+    needs: spine-exporter
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: metrics-calculator
+    secrets:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
+      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
+      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
