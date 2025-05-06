@@ -2,14 +2,14 @@ name: Email and Alerting Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
       - '.github/workflows/email-and-alerting.yml'
       
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: email-and-alerting
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp-dashboard
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}

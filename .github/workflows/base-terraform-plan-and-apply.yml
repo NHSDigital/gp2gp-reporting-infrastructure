@@ -147,7 +147,7 @@ jobs:
             });
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/master' && inputs.is_deployment
+        if: github.ref == 'refs/heads/main' && inputs.is_deployment
         run: |
           for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
             cd $stack

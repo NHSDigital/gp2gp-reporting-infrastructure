@@ -2,7 +2,7 @@ name: Data Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/step-function/**'
       - 'stacks/transfer-classifier/**'
@@ -14,7 +14,7 @@ on:
       - '.github/workflows/data-pipeline.yml'
       
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/step-function/**'
       - 'stacks/transfer-classifier/**'
@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: step-function
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: transfer-classifier
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -56,7 +56,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: validate-metrics
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -69,7 +69,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods-downloader
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -82,7 +82,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: reports-generator
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -95,7 +95,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: spine-exporter
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -108,7 +108,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: metrics-calculator
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}

@@ -2,13 +2,13 @@ name: Build and Deploy Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/**'
       - '.github/workflows/**'
       - 'tasks_github_actions.sh'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/**'
       - '.github/workflows/**'

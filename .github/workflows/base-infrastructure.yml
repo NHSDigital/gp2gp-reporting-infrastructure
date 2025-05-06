@@ -2,12 +2,12 @@ name: Base Infrastructure Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/base-*/**'
       - '.github/workflows/base-infrastructure.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'stacks/base-*/**'
       - '.github/workflows/base-infrastructure.yml'
@@ -48,7 +48,7 @@ jobs:
     uses: .github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: base-networking
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -61,7 +61,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: base-support
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -74,7 +74,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ecs-cluster
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
@@ -87,7 +87,7 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
-      is_deployment: ${{ github.ref == 'refs/heads/master' }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: container-repositories
     secrets:
       AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
