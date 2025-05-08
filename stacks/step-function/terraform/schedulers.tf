@@ -5,7 +5,7 @@ resource "aws_cloudwatch_event_rule" "run_daily_5am_cron_expression" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-eventbridge-event-rule"
+      Name            = "${var.environment}-eventbridge-event-rule"
       ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_cloudwatch_event_rule" "run_daily_7am_cron_expression" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-eventbridge-event-rule"
+      Name            = "${var.environment}-eventbridge-event-rule"
       ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
@@ -32,7 +32,7 @@ resource "aws_cloudwatch_event_rule" "run_once_a_month_on_15th_cron_expression" 
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-eventbridge-event-rule"
+      Name            = "${var.environment}-eventbridge-event-rule"
       ApplicationRole = "AwsCloudwatchEventRule"
     }
   )
@@ -46,7 +46,7 @@ resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression"
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-eventbridge-event-rule"
+      Name            = "${var.environment}-eventbridge-event-rule"
       ApplicationRole = "AwsCloudwatchEventRule"
     }
   )

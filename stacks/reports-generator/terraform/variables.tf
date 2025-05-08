@@ -31,8 +31,8 @@ variable "reports_generator_image_tag" {
 }
 
 variable "log_group_param_name" {
-type        = string
-description = "Cloudwatch log group for data pipeline"
+  type        = string
+  description = "Cloudwatch log group for data pipeline"
 }
 
 variable "transfers_input_bucket_param_name" {

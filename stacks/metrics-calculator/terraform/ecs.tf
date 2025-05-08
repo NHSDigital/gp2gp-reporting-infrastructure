@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator"
+      Name            = "${var.environment}-metrics-calculator"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )

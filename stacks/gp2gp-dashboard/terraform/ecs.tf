@@ -20,8 +20,8 @@ resource "aws_ecs_task_definition" "gp2gp_dashboard" {
       essential = true
       environment = [
         { "name" : "DEPLOYMENT_BUCKET", "value" : aws_s3_bucket.dashboard_website.bucket },
-        { "name" : "GATSBY_ENV", value: var.environment},
-        { "name" : "DEPLOYMENT_ENV", value: var.environment},
+        { "name" : "GATSBY_ENV", value : var.environment },
+        { "name" : "DEPLOYMENT_ENV", value : var.environment },
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "gp2gp_dashboard" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-gp2gp-dashboard"
+      Name            = "${var.environment}-gp2gp-dashboard"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )

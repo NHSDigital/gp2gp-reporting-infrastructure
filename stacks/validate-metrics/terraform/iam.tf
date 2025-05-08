@@ -8,7 +8,7 @@ resource "aws_iam_role" "validate_metrics_lambda_role" {
   ]
 }
 
-data aws_ssm_parameter "metrics_input_bucket_name"{
+data "aws_ssm_parameter" "metrics_input_bucket_name" {
   name = var.metrics_calculator_bucket_param_name
 }
 
@@ -89,7 +89,7 @@ resource "aws_cloudwatch_log_group" "validate_metrics_logs_group" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-${var.validate_metrics_lambda_name}"
+      Name            = "${var.environment}-${var.validate_metrics_lambda_name}"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )

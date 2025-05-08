@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "spine_exporter_output_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter-output-bucket-name"
+      Name            = "${var.environment}-spine-exporter-output-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "spine_exporter_task_definition_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter-task-definition-arn"
+      Name            = "${var.environment}-spine-exporter-task-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "spine_exporter_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter-iam-role-arn"
+      Name            = "${var.environment}-spine-exporter-iam-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )

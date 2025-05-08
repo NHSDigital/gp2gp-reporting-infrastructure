@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "spine_exporter" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter"
+      Name            = "${var.environment}-spine-exporter"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )

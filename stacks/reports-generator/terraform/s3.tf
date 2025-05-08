@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-output-reports"
+      Name            = "${var.environment}-output-reports"
       ApplicationRole = "AwsS3Bucket"
     }
   )
