@@ -1,4 +1,4 @@
-name: Data Pipeline
+name: Data Pipeline Plan and Apply
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - 'stacks/reports-generator/**'
       - 'stacks/spine-exporter/**'
       - 'stacks/metrics-calculator/**'
-      - '.github/workflows/data-pipeline.yml'
+      - '.github/workflows/data-pipeline-plan-and-apply.yml'
       
   pull_request:
     branches: [ main ]
@@ -23,7 +23,7 @@ on:
       - 'stacks/reports-generator/**'
       - 'stacks/spine-exporter/**'
       - 'stacks/metrics-calculator/**'
-      - '.github/workflows/data-pipeline.yml'
+      - '.github/workflows/data-pipeline-plan-and-apply.yml'
 
 jobs:
   step-function:

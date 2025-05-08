@@ -1,4 +1,4 @@
-name: Email and Alerting Pipeline
+name: Email and  Alerting Plan and Apply
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting.yml'
+      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
       
   pull_request:
     branches: [ main ]
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting.yml'
+      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
 
 jobs:
   email-and-alerting:
