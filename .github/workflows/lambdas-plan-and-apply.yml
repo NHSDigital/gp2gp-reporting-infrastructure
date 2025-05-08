@@ -21,16 +21,6 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-
-          - name: Configure AWS Credentials
-            uses: aws-actions/configure-aws-credentials@v4
-            with:
-                role-to-assume:  ${{ (inputs.is_deployment && secrets.AWS_ASSUME_ROLE) || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
-                role-skip-session-tagging: true
-                aws-region: ${{ vars.AWS_REGION }}
-                mask-aws-account-id: true
-
-
           - name: Build Lambda Functions
             run: |
                 chmod +x ./tasks_github_actions.sh
