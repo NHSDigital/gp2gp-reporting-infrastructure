@@ -24,6 +24,10 @@ on:
       - 'stacks/spine-exporter/**'
       - 'stacks/metrics-calculator/**'
       - '.github/workflows/data-pipeline-plan-and-apply.yml'
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
 
 jobs:
   step-function:
@@ -32,11 +36,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: step-function
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
+
 
   transfer-classifier:
     needs: step-function
@@ -45,11 +46,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: transfer-classifier
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
+
 
   validate-metrics:
     needs: transfer-classifier
@@ -58,11 +56,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: validate-metrics
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
 
   ods-downloader:
     needs: validate-metrics
@@ -71,11 +65,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods-downloader
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
+
 
   reports-generator:
     needs: ods-downloader
@@ -83,12 +74,9 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: reports-generator
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+      terraform_stack: reports-generator    
+    secrets: inherit
+
 
   spine-exporter:
     needs: reports-generator
@@ -97,11 +85,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: spine-exporter
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
+
 
   metrics-calculator:
     needs: spine-exporter
@@ -110,8 +95,4 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: metrics-calculator
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: p${{ secrets.STATE_LOCK_TABLE }}
+    secrets: inherit
