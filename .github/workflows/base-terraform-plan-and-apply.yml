@@ -84,7 +84,7 @@ jobs:
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
 
-      - name: Setup Terraform variables
+      - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
@@ -93,18 +93,26 @@ jobs:
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
-      - name: Setup Terraform variables
+      - name: Setup Terraform variables for Build Lambda
         id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
+            image_key="${{ inputs.image_tag }}"
+            aws_env="${{ vars.AWS_ENVIRONMENT }}"
+            image_tag="$IMAGE_TAG"
             cat > pipeline.auto.tfvars <<EOF
-            environment = "${{ vars.AWS_ENVIRONMENT }}"
-            log_alerts_pipeline_error_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-pipeline-error.zip"
-            log_alerts_technical_failures_above_threshold_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-technical-failures-above-threshold.zip"
-            gp2gp_dashboard_alert_lambda_zip = "${{ github.workspace }}/lambda/build/gp2gp-dashboard-alert.zip"
-            email_report_lambda_zip = "${{ github.workspace }}/lambda/build/email-report.zip"
-            validate_metrics = "${{ github.workspace }}/lambda/build/validate-metrics.zip"
+                environment = "$aws_env"
+                log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
+                log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
+                gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
+                email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
+                validate_metrics = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
             EOF
+            if [[ -n "$image_key" ]]; then
+              echo "${image_key}_image_tag = \"$image_tag\"" >> pipeline.auto.tfvars
+            fi
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
 
       - name: Terraform Plan
         id: plan
