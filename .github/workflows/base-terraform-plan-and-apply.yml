@@ -15,6 +15,10 @@ on:
         description: "Which terraform stack directory to run"
         type: string
         required: true
+      needs_lambda:
+        description: "Does the workflow need a lambda build"
+        type: boolean
+        default: false
 
 jobs:
   terraform_process:
@@ -35,7 +39,8 @@ jobs:
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
-      - name: Build Lambda Functions
+      - name: Build Lambdas
+        if: inputs.needs_lambda
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
