@@ -1,9 +1,9 @@
 resource "aws_lambda_function" "validate_metrics_lambda" {
-  filename         = "${path.cwd}/${var.validate_metrics_lambda_zip}"
+  filename         = "${var.validate_metrics_lambda_zip}"
   function_name    = "${var.environment}-${var.validate_metrics_lambda_name}"
   role             = aws_iam_role.validate_metrics_lambda_role.arn
   handler          = "main.lambda_handler"
-  source_code_hash = filebase64sha256("${path.cwd}/${var.validate_metrics_lambda_zip}")
+  source_code_hash = filebase64sha256("${var.validate_metrics_lambda_zip}")
   runtime          = "python3.9"
   timeout          = 15
   tags = merge(
