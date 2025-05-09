@@ -76,9 +76,9 @@ jobs:
         id: vars-dev
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.image_tag }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
-          ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
+          ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
         working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
