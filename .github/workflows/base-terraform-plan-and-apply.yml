@@ -40,12 +40,17 @@ jobs:
           mask-aws-account-id: true
 
       - name: Build Lambdas
-        if: inputs.needs_lambda
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
             ./tasks_github_actions.sh build-lambdas
 
+      - name: Make virtual environment
+        if: github.ref == 'refs/heads/master' && inputs.is_deployment
+        run: |
+            python3 -m venv ./venv
+            ./venv/bin/pip3 install --upgrade pip urllib3
+            
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -62,6 +67,17 @@ jobs:
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
+      
+      - name: Setup Terraform variables
+        id: vars-dev
+        if: inputs.environment != 'prod' && inputs.needs_lambda
+        run: |-
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          cat > pipeline.auto.tfvars <<EOF
+          ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
+          environment = "${{ vars.AWS_ENVIRONMENT }}"
+          EOF
+        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
 
       - name: Terraform Validate
         id: validate
@@ -69,6 +85,7 @@ jobs:
 
       - name: Setup Terraform variables
         id: vars
+        if: inputs.environment != 'prod' && !inputs.needs_lambda
         run: |-
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
