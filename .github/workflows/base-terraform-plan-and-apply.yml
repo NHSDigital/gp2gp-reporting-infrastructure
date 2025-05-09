@@ -98,11 +98,13 @@ jobs:
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
             ls
+            echo /
             cd ../
+            echo ../
             ls
             cd ../
+            echo ../../
             ls
-            EOF
       - name: Terraform Plan
         id: plan
         run: |
