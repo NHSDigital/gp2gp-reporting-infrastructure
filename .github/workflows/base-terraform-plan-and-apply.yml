@@ -108,6 +108,10 @@ jobs:
             cd ../
             echo ../../../
             ls
+            cd lambda
+            cd build
+            echo lambda/build/*
+            ls
       - name: Terraform Plan
         id: plan
         run: |
