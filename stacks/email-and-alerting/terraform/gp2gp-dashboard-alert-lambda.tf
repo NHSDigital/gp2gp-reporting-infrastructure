@@ -3,7 +3,7 @@ variable "gp2gp_dashboard_alert_lambda_name" {
 }
 
 resource "aws_lambda_function" "gp2gp_dashboard_alert_lambda" {
-  filename         = "${var.gp2gp_dashboard_alert_lambda_zip}"
+  filename         = var.gp2gp_dashboard_alert_lambda_zip
   function_name    = "${var.environment}-${var.gp2gp_dashboard_alert_lambda_name}"
   role             = aws_iam_role.log_alerts_lambda_role.arn
   handler          = "main.lambda_handler"

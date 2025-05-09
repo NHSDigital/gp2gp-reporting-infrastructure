@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "validate_metrics_lambda" {
-  filename         = "${var.validate_metrics_lambda_zip}"
+  filename         = var.validate_metrics_lambda_zip
   function_name    = "${var.environment}-${var.validate_metrics_lambda_name}"
   role             = aws_iam_role.validate_metrics_lambda_role.arn
   handler          = "main.lambda_handler"

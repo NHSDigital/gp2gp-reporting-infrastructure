@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "email_report_lambda" {
-  filename         = "${var.email_report_lambda_zip}"
+  filename         = var.email_report_lambda_zip
   function_name    = "${var.environment}-${var.email_report_lambda_name}"
   role             = aws_iam_role.email_report_lambda_role.arn
   handler          = "main.lambda_handler"
