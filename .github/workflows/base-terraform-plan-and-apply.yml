@@ -105,6 +105,9 @@ jobs:
             cd ../
             echo ../../
             ls
+            cd ../
+            echo ../../../
+            ls
       - name: Terraform Plan
         id: plan
         run: |
