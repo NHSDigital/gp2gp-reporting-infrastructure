@@ -93,7 +93,16 @@ jobs:
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
-
+      - name: Setup Terraform variables
+        id: check-build-location
+        if: inputs.environment != 'prod' && inputs.build_lambda
+        run: |-
+            ls
+            cd ../
+            ls
+            cd ../
+            ls
+            EOF
       - name: Terraform Plan
         id: plan
         run: |
