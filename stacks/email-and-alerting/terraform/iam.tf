@@ -21,13 +21,27 @@ data "aws_iam_policy_document" "email_report_cloudwatch_log_access" {
 resource "aws_iam_role" "email_report_lambda_role" {
   name               = "${var.environment}-email-report-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.email_report_lambda_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.email_report_lambda_ssm_access.arn,
-    aws_iam_policy.email_report_cloudwatch_log_access.arn,
-    aws_iam_policy.reports_generator_bucket_read_access.arn,
-    aws_iam_policy.email_report_lambda_send_raw_email.arn
-  ]
 }
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_ssm_access" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.email_report_lambda_ssm_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_log_access" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.email_report_cloudwatch_log_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_bucket_read_access" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.reports_generator_bucket_read_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_send_raw_email" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.email_report_lambda_send_raw_email.arn
+}
+
 
 data "aws_iam_policy_document" "email_report_lambda_assume_role" {
   statement {
@@ -155,11 +169,18 @@ data "aws_iam_policy_document" "log_alerts_cloudwatch_log_access" {
 resource "aws_iam_role" "log_alerts_lambda_role" {
   name               = "${var.environment}-log-alerts-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.log_alerts_lambda_assume_role.json
-  managed_policy_arns = [
-    aws_iam_policy.log_alerts_ssm_access.arn,
-    aws_iam_policy.log_alerts_cloudwatch_log_access.arn,
-  ]
 }
+
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_ssm_access" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.log_alerts_ssm_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach__log_access" {
+  role       = aws_iam_role.email_report_lambda_role.name
+  policy_arn = aws_iam_policy.log_alerts_cloudwatch_log_access.arn
+}
+
 
 data "aws_iam_policy_document" "log_alerts_lambda_assume_role" {
   statement {
