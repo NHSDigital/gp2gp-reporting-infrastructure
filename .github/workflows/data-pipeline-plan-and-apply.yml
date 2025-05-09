@@ -77,7 +77,8 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: reports-generator    
+      terraform_stack: reports-generator
+      image_tag: reports_generator
     secrets: inherit
 
 
