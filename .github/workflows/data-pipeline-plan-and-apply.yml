@@ -46,6 +46,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: transfer-classifier
+      image_tag: transfer-classifier
     secrets: inherit
 
 
