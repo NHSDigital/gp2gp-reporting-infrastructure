@@ -101,7 +101,7 @@ jobs:
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             log_alerts_pipeline_error_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-pipeline-error.zip"
             log_alerts_technical_failures_above_threshold_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-technical-failures-above-threshold.zip"
-            gp2gp_dashboard_alert_lambda_zip = "${{ github.workspace }}/lambda/build/gp2gp_dashboard_alert.zip"
+            gp2gp_dashboard_alert_lambda_zip = "${{ github.workspace }}/lambda/build/gp2gp-dashboard-alert.zip"
             email_report_lambda_zip = "${{ github.workspace }}/lambda/build/email-report.zip"
             validate_metrics = "${{ github.workspace }}/lambda/build/validate-metrics.zip"
             EOF
