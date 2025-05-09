@@ -89,6 +89,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: spine-exporter
+      image_tag: spine_exporter
     secrets: inherit
 
 
@@ -99,4 +100,5 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: metrics-calculator
+      image_tag: metrics_calculator
     secrets: inherit
