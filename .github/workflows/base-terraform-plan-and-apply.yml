@@ -103,7 +103,7 @@ jobs:
             log_alerts_technical_failures_above_threshold_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-technical-failures-above-threshold.zip"
             gp2gp_dashboard_alert_lambda_zip = "${{ github.workspace }}/lambda/build/gp2gp_dashboard_alert.zip"
             email_report_lambda_zip = "${{ github.workspace }}/lambda/build/email-report.zip"
-            log_alerts_pipeline_error_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-pipeline-error.zip"
+            validate_metrics = "${{ github.workspace }}/lambda/build/validate-metrics.zip"
             EOF
 
       - name: Terraform Plan
