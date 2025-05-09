@@ -67,6 +67,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods-downloader
+      image_tag: ods_downloader
     secrets: inherit
 
 
