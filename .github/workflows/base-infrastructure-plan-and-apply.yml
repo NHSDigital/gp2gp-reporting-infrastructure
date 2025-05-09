@@ -1,4 +1,4 @@
-name: "Base Infrastructure Plan and Apply"
+name: Base Infrastructure Plan and Apply
 on:
   push:
       branches: [ main ]
