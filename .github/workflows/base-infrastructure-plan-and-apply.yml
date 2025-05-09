@@ -1,4 +1,4 @@
-name: "PR-terraform-plan"
+name: "Base Infrastructure Plan and Apply"
 on:
   push:
       branches: [ main ]
