@@ -171,7 +171,7 @@ resource "aws_iam_role" "log_alerts_lambda_role" {
   assume_role_policy = data.aws_iam_policy_document.log_alerts_lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_ssm_access" {
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_log_alerts_access" {
   role       = aws_iam_role.email_report_lambda_role.name
   policy_arn = aws_iam_policy.log_alerts_ssm_access.arn
 }
