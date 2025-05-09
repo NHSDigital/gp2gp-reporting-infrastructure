@@ -71,17 +71,6 @@ jobs:
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
-      
-      - name: Setup Terraform variables
-        id: vars-dev
-        if: inputs.environment != 'prod' && inputs.image_tag
-        run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
-          cat > pipeline.auto.tfvars <<EOF
-          ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
-          environment = "${{ vars.AWS_ENVIRONMENT }}"
-          EOF
-        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
 
       - name: Terraform Validate
         id: validate
@@ -89,11 +78,21 @@ jobs:
 
       - name: Setup Terraform variables
         id: vars
-        if: inputs.environment != 'prod' && !inputs.build_lambda
+        if: inputs.environment != 'prod'
         run: |-
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
+          - name: Setup Terraform variables
+          id: vars-dev
+
+      - name: Setup Terraform variables
+        if: inputs.environment != 'prod' && inputs.image_tag
+        run: |-
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            cat > pipeline.auto.tfvars <<EOF
+            ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
+            EOF
 
       - name: Terraform Plan
         id: plan
