@@ -37,8 +37,9 @@ jobs:
 
       - name: Build Lambda Functions
         run: |
-            chmod +x ../../../tasks_github_actions.sh
-            ../../../tasks_github_actions.sh build-lambdas
+            cd $GITHUB_WORKSPACE
+            chmod +x ./tasks_github_actions.sh
+            ./tasks_github_actions.sh build-lambdas
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
