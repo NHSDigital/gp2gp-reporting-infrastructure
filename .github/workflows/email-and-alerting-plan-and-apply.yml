@@ -27,7 +27,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: email-and-alerting    
-      needs_lambda: true
+      build_lambda: true
+      
     secrets: inherit
 
   gp2gp-dashboard:
@@ -37,5 +38,5 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp-dashboard
-      needs_lambda: true
+      build_lambda: true
     secrets: inherit

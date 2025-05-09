@@ -15,10 +15,13 @@ on:
         description: "Which terraform stack directory to run"
         type: string
         required: true
-      needs_lambda:
+      build_lambda:
         description: "Does the workflow need a lambda build"
         type: boolean
         default: false
+      image_tag:
+        description: "Does the workflow need and image_tag"
+        type: string
 
 jobs:
   terraform_process:
@@ -40,6 +43,7 @@ jobs:
           mask-aws-account-id: true
 
       - name: Build Lambdas
+        if: inputs.build_lambda
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
@@ -70,9 +74,9 @@ jobs:
       
       - name: Setup Terraform variables
         id: vars-dev
-        if: inputs.environment != 'prod' && inputs.needs_lambda
+        if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.image_tag }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
           ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
@@ -85,7 +89,7 @@ jobs:
 
       - name: Setup Terraform variables
         id: vars
-        if: inputs.environment != 'prod' && !inputs.needs_lambda
+        if: inputs.environment != 'prod' && !inputs.build_lambda
         run: |-
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
