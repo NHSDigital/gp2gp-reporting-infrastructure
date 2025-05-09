@@ -57,7 +57,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: validate-metrics
-      needs_lambda: true
+      build_lambda: true
     secrets: inherit
 
   ods-downloader:
