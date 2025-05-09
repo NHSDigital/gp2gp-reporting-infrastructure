@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Lambda Functions
         run: |
-            chmod +x ./tasks_github_actions.sh
+            chmod +x ../../../tasks_github_actions.sh
             ../../../tasks_github_actions.sh build-lambdas
 
       - name: Setup Terraform
