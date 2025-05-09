@@ -21,18 +21,6 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  build-lambdas:
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build Lambda Functions
-        run: |
-            chmod +x ./tasks_github_actions.sh
-            ./tasks_github_actions.sh build-lambdas
-            
   email-and-alerting:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
