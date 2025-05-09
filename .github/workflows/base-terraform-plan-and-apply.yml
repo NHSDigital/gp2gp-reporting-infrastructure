@@ -94,24 +94,18 @@ jobs:
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
       - name: Setup Terraform variables
-        id: check-build-location
+        id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
-            ls
-            echo /
-            cd ../
-            echo ../
-            ls
-            cd ../
-            echo ../../
-            ls
-            cd ../
-            echo ../../../
-            ls
-            cd lambda
-            cd build
-            echo lambda/build/*
-            ls
+            cat > pipeline.auto.tfvars <<EOF
+            environment = "${{ vars.AWS_ENVIRONMENT }}"
+            log_alerts_pipeline_error_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-pipeline-error.zip"
+            log_alerts_technical_failures_above_threshold_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-technical-failures-above-threshold.zip"
+            gp2gp_dashboard_alert_lambda_zip = "${{ github.workspace }}/lambda/build/gp2gp_dashboard_alert.zip"
+            email_report_lambda_zip = "${{ github.workspace }}/lambda/build/email-report.zip"
+            log_alerts_pipeline_error_lambda_zip = "${{ github.workspace }}/lambda/build/log-alerts-pipeline-error.zip"
+            EOF
+
       - name: Terraform Plan
         id: plan
         run: |
