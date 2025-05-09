@@ -83,10 +83,9 @@ jobs:
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
-          - name: Setup Terraform variables
-          id: vars-dev
 
       - name: Setup Terraform variables
+        id: vars-image-tag
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
             IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
