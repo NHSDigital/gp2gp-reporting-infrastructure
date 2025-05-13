@@ -176,7 +176,7 @@ resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_log_alerts
   policy_arn = aws_iam_policy.log_alerts_ssm_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "email_report_lambda_attach__log_access" {
+resource "aws_iam_role_policy_attachment" "email_report_lambda_attach_log_access" {
   role       = aws_iam_role.email_report_lambda_role.name
   policy_arn = aws_iam_policy.log_alerts_cloudwatch_log_access.arn
 }

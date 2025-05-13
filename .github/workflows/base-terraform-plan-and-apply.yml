@@ -20,7 +20,7 @@ on:
         type: boolean
         default: false
       image_tag:
-        description: "Does the workflow need and image_tag"
+        description: "Does the workflow need an image tag"
         type: string
 
 jobs:
@@ -48,12 +48,6 @@ jobs:
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
             ./tasks_github_actions.sh build-lambdas
-
-      - name: Make virtual environment
-        if: github.ref == 'refs/heads/master' && inputs.is_deployment
-        run: |
-            python3 -m venv ./venv
-            ./venv/bin/pip3 install --upgrade pip urllib3
             
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -61,11 +55,9 @@ jobs:
           terraform_version: latest
 
       - name: Terraform Format
-        id: fmt
         run: terraform fmt -check
 
       - name: Terraform Init
-        id: init
         run: | 
           terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
@@ -73,11 +65,9 @@ jobs:
         shell: bash
 
       - name: Terraform Validate
-        id: validate
         run: terraform validate -no-color
 
       - name: Setup Terraform variables
-        id: vars
         if: inputs.environment != 'prod'
         run: |-
           cat > pipeline.auto.tfvars <<EOF
@@ -85,7 +75,6 @@ jobs:
           EOF
 
       - name: Setup Terraform variables for Image Tag
-        id: vars-image-tag
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
             IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
@@ -94,12 +83,10 @@ jobs:
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
       - name: Setup Terraform variables for Build Lambda
-        id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
             image_key="${{ inputs.image_tag }}"
             aws_env="${{ vars.AWS_ENVIRONMENT }}"
-            image_tag="$IMAGE_TAG"
             cat > pipeline.auto.tfvars <<EOF
                 environment = "$aws_env"
                 log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
@@ -109,13 +96,14 @@ jobs:
                 validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
             EOF
             if [[ -n "$image_key" ]]; then
+              IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+              image_tag="$IMAGE_TAG"
               echo "${image_key}_image_tag = \"$image_tag\"" >> pipeline.auto.tfvars
             fi
         env:
           IMAGE_TAG: ${{ inputs.image_tag }}
 
       - name: Terraform Plan
-        id: plan
         run: |
           terraform plan -no-color -input=false -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
           terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
