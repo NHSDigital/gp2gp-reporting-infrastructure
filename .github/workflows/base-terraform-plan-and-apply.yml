@@ -98,7 +98,7 @@ jobs:
             if [[ -n "$image_key" ]]; then
               IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
               image_tag=$IMAGE_TAG
-              echo "${image_key}_image_tag = \"$image_tag\"" >> pipeline.auto.tfvars
+              echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
             fi
         env:
           IMAGE_TAG: ${{ inputs.image_tag }}
