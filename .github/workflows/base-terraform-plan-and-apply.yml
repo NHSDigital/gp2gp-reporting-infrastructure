@@ -127,26 +127,50 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-            });
+            })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}')
-            });
+              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}')
+            })
 
             // 2. Prepare format of the comment
-            const output = `### Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}
-
+            const output = `### Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}
+            
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            <details><summary>Format Output</summary>
 
+            \`\`\`\n
+            ${{ steps.fmt.outputs.stdout }}
+            \`\`\`
 
+            </details>
+            
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            <details><summary>Initialization Output</summary>
 
+            \`\`\`\n
+            ${{ steps.init.outputs.stdout }}
+            \`\`\`
+
+            </details>
 
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
 
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
 
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            Plan results: ${{ steps.plan.outputs.summary }}`;
+            <details><summary>Show Plan (${{ steps.plan.outputs.summary }})</summary>
+
+            \`\`\`\n
+            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+
+            </details>`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
@@ -154,14 +178,16 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
+                body: output
               })
             }
+            
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
-            });
+            })
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && inputs.is_deployment
