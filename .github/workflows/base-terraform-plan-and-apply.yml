@@ -99,9 +99,13 @@ jobs:
               IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
               image_tag=$IMAGE_TAG
               echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
+              cat pipeline.auto.tfvars
             fi
-        env:
-          IMAGE_TAG: ${{ inputs.image_tag }}
+            
+      - name: Check tfvar file
+        if: inputs.environment != 'prod' && inputs.build_lambda
+        run: |-
+            cat pipeline.auto.tfvars
 
       - name: Terraform Plan
         run: |
