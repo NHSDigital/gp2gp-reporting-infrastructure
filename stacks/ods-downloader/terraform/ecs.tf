@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "ods_downloader" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader"
+      Name            = "${var.environment}-ods-downloader"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )

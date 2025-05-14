@@ -1,4 +1,4 @@
-name: Email and Alerting Pipeline
+name: Email and Alerting Plan and Apply
 
 on:
   push:
@@ -6,14 +6,19 @@ on:
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting.yml'
+      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
       
   pull_request:
     branches: [ main ]
     paths:
       - 'stacks/email-and-alerting/**'
       - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting.yml'
+      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
+   
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
 
 jobs:
   email-and-alerting:
@@ -21,12 +26,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: email-and-alerting
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
+      terraform_stack: email-and-alerting    
+      build_lambda: true
+      
+    secrets: inherit
 
   gp2gp-dashboard:
     needs: email-and-alerting
@@ -35,8 +38,6 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp-dashboard
-    secrets:
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-      AWS_ROLE_ARN_READ_ONLY: ${{ secrets.AWS_ROLE_ARN_READ_ONLY }}
-      STATE_BUCKET: ${{ secrets.STATE_BUCKET }}
-      STATE_LOCK_TABLE: ${{ secrets.STATE_LOCK_TABLE }}
+      image_tag: gp2gp_dashboard
+      build_lambda: true
+    secrets: inherit

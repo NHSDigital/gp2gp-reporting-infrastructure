@@ -55,9 +55,9 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-GP2GP-service-dashboard"
+      Name            = "${var.environment}-GP2GP-service-dashboard"
       ApplicationRole = "AwsCloudfrontDistribution"
-      PublicFacing        = "Y"
+      PublicFacing    = "Y"
     }
   )
 

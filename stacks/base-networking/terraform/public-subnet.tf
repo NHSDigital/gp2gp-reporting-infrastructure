@@ -6,7 +6,7 @@ resource "aws_subnet" "public" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-public"
+      Name            = "${var.environment}-data-pipeline-public"
       ApplicationRole = "AwsSubnet"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_route_table" "public" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-public"
+      Name            = "${var.environment}-data-pipeline-public"
       ApplicationRole = "AwsRouteTable"
     }
   )
@@ -43,7 +43,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline"
+      Name            = "${var.environment}-data-pipeline"
       ApplicationRole = "AwsNatGateway"
     }
   )
@@ -55,7 +55,7 @@ resource "aws_eip" "nat" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-nat"
+      Name            = "${var.environment}-data-pipeline-nat"
       ApplicationRole = "AwsRouteTable"
     }
   )

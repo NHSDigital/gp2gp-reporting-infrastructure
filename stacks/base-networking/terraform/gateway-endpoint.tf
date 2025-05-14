@@ -5,7 +5,7 @@ resource "aws_vpc_endpoint" "s3" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-s3"
+      Name            = "${var.environment}-s3"
       ApplicationRole = "AwsVpcEndpoint"
     }
   )

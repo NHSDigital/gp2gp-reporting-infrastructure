@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "transfer_classifier_task_definition_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier-task-definition-arn"
+      Name            = "${var.environment}-transfer-classifier-task-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "transfer_classifier_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier-iam-role"
+      Name            = "${var.environment}-transfer-classifier-iam-role"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "transfer_classifier_output_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier-output-bucket-name"
+      Name            = "${var.environment}-transfer-classifier-output-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -44,7 +44,7 @@ resource "aws_ssm_parameter" "transfer_classifier_output_bucket_read_access_arn"
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier-output-bucket-read-access-arn"
+      Name            = "${var.environment}-transfer-classifier-output-bucket-read-access-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )

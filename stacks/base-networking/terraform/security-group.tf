@@ -5,7 +5,7 @@ resource "aws_security_group" "outbound_only" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-outbound-only"
+      Name            = "${var.environment}-data-pipeline-outbound-only"
       ApplicationRole = "AwsSecurityGroup"
     }
   )

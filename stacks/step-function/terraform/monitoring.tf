@@ -38,7 +38,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'spine-exporter') and event='UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "bar",
         }
-      },      {
+        }, {
         "type" : "log",
         "width" : 12,
         "height" : 6,
@@ -49,7 +49,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'transfer-classifier') and event='SUCCESSFULLY_UPLOADED_PARQUET_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "bar",
         }
-      },      {
+        }, {
         "type" : "log",
         "width" : 12,
         "height" : 6,
@@ -60,7 +60,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'metrics-calculator') and event='UPLOADED_JSON_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "bar",
         }
-      },      {
+        }, {
         "type" : "log",
         "width" : 12,
         "height" : 6,
@@ -71,7 +71,7 @@ resource "aws_cloudwatch_dashboard" "data_pipeline" {
           "query" : "SOURCE '${data.aws_ssm_parameter.cloud_watch_log_group.value}' |  fields strcontains(@logStream, 'reports-generator') and event='SUCCESSFULLY_UPLOADED_CSV_TO_S3' as has_event | stats sum(has_event) by bin(1d) | sort @timestamp",
           "view" : "bar",
         }
-      },      {
+        }, {
         "type" : "log",
         "width" : 12,
         "height" : 6,

@@ -5,9 +5,9 @@ resource "aws_s3_bucket" "dashboard_website" {
   tags = merge(
     local.common_tags,
     {
-      Name = "GP2GP-service-dashboard-s3-bucket"
+      Name            = "GP2GP-service-dashboard-s3-bucket"
       ApplicationRole = "AwsS3Bucket"
-      PublicFacing        = "Y"
+      PublicFacing    = "Y"
     }
   )
 

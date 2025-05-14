@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator"
+      Name            = "${var.environment}-reports-generator"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )

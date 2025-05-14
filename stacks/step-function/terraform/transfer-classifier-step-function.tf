@@ -4,7 +4,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier-step-function-manual-run"
+      Name            = "${var.environment}-transfer-classifier-step-function-manual-run"
       ApplicationRole = "AwsSfnStateMachine"
     }
   )
@@ -37,7 +37,7 @@ resource "aws_sfn_state_machine" "transfer_classifier" {
                 data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
               ],
               "SecurityGroups" : [
-                data.aws_ssm_parameter.outbound_only_security_group_id.value],
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
           "Overrides" : {

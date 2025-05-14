@@ -15,21 +15,16 @@ on:
         description: "Which terraform stack directory to run"
         type: string
         required: true
+      build_lambda:
+        description: "Does the workflow need a lambda build"
+        type: boolean
+        default: false
+      image_tag:
+        description: "Does the workflow need an image tag"
+        type: string
 
 jobs:
-  build-lambdas:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build Lambda Functions
-        run: |
-          chmod +x ./tasks_github_actions.sh
-          ./tasks_github_actions.sh build-lambdas
-
   terraform_process:
-    needs: build-lambdas
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     defaults:
@@ -43,10 +38,17 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ inputs.is_deployment && secrets.AWS_ROLE_ARN || secrets.AWS_ROLE_ARN_READ_ONLY }}
+          role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
+      - name: Build Lambdas
+        if: inputs.build_lambda
+        run: |
+            cd $GITHUB_WORKSPACE
+            chmod +x ./tasks_github_actions.sh
+            ./tasks_github_actions.sh build-lambdas
+            
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -54,55 +56,64 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        run: |
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
-            terraform fmt -check
-            cd -
-          done
+        run: terraform fmt -check
 
       - name: Terraform Init
         id: init
         run: | 
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
-            terraform init -no-color -backend-config="key=${{ inputs.terraform_stack }}/$(basename $stack)/terraform.tfstate" \
-              -backend-config="bucket=${{ secrets.STATE_BUCKET }}" \
-              -backend-config="dynamodb_table=${{ secrets.STATE_LOCK_TABLE }}"
-            cd -
-          done
+          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
+          -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
+          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
 
       - name: Terraform Validate
         id: validate
-        run: |
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
-            terraform validate -no-color
-            cd -
-          done
+        run: terraform validate -no-color
 
       - name: Setup Terraform variables
         id: vars
+        if: inputs.environment != 'prod'
         run: |-
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
+          cat > pipeline.auto.tfvars <<EOF
+          environment = "${{ vars.AWS_ENVIRONMENT }}"
+          EOF
+
+      - name: Setup Terraform variables for Image Tag
+        id: vars-image-tag
+        if: inputs.environment != 'prod' && inputs.image_tag
+        run: |-
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             cat > pipeline.auto.tfvars <<EOF
+            ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
-            cd -
-          done
+      - name: Setup Terraform variables for Build Lambda
+        id: update-lambda-build-references
+        if: inputs.environment != 'prod' && inputs.build_lambda
+        run: |-
+            image_key="${{ inputs.image_tag }}"
+            aws_env="${{ vars.AWS_ENVIRONMENT }}"
+            cat > pipeline.auto.tfvars <<EOF
+                environment = "$aws_env"
+                log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
+                log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
+                gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
+                email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
+                validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
+            EOF
+            if [[ -n "$image_key" ]]; then
+              IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+              image_tag=$IMAGE_TAG
+              echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
+              cat pipeline.auto.tfvars
+            fi
 
       - name: Terraform Plan
         id: plan
         run: |
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
-            terraform plan -no-color -input=false -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
-            terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
-            echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
-            cd -
-          done
+          terraform plan -no-color -input=false -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
+          terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
+          echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Add PR comment
@@ -111,46 +122,73 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-            });
+            })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}')
-            });
+              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}')
+            })
 
-            const output = `### Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}
-
+            // 2. Prepare format of the comment
+            const output = `### Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}
+            
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            <details><summary>Format Output</summary>
 
+            \`\`\`\n
+            ${{ steps.fmt.outputs.stdout }}
+            \`\`\`
+
+            </details>
+            
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            <details><summary>Initialization Output</summary>
+
+            \`\`\`\n
+            ${{ steps.init.outputs.stdout }}
+            \`\`\`
+
+            </details>
 
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
 
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            Plan results: ${{ steps.plan.outputs.summary }}`;
+            <details><summary>Show Plan (${{ steps.plan.outputs.summary }})</summary>
 
+            \`\`\`\n
+            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+
+            </details>`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
               github.rest.issues.deleteComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
+                body: output
               })
             }
+            
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
-            });
+            })
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && inputs.is_deployment
-        run: |
-          for stack in $(find . -name "*.tf" -exec dirname {} \; | sort -u); do
-            cd $stack
-            terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
-            cd -
-          done 
+        run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan

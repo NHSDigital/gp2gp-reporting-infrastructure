@@ -16,7 +16,7 @@ data "aws_ssm_parameter" "ods_metadata_input_bucket_name" {
 
 data "aws_region" "current" {}
 
-resource "aws_ecs_task_definition" transfer_classifier {
+resource "aws_ecs_task_definition" "transfer_classifier" {
   family = "${var.environment}-transfer-classifier"
 
   container_definitions = jsonencode([
@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" transfer_classifier {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier"
+      Name            = "${var.environment}-transfer-classifier"
       ApplicationRole = "AwsEcsTaskDefinition"
     }
   )
