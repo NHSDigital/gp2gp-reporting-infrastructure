@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "validate_metrics_lambda_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-validate-metrics-lambda-definition-arn"
+      Name            = "${var.environment}-validate-metrics-lambda-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )

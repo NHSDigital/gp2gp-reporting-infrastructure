@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "reports_generator_task_definition_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator-task-definition-arn"
+      Name            = "${var.environment}-reports-generator-task-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "reports_generator_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator-iam-role-arn"
+      Name            = "${var.environment}-reports-generator-iam-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "reports_generator_output_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator-output-bucket-name"
+      Name            = "${var.environment}-reports-generator-output-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )

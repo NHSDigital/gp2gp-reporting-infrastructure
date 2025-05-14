@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "ods_downloader_task_definition_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader-task-definition-arn"
+      Name            = "${var.environment}-ods-downloader-task-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "ods_downloader_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader-iam-role-arn"
+      Name            = "${var.environment}-ods-downloader-iam-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "ods_downloader_output_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader-output-bucket-name"
+      Name            = "${var.environment}-ods-downloader-output-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -44,7 +44,7 @@ resource "aws_ssm_parameter" "ods_downloader_input_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader-input-bucket-name"
+      Name            = "${var.environment}-ods-downloader-input-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -57,7 +57,7 @@ resource "aws_ssm_parameter" "ods_downloader_output_bucket_read_access_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader-output-bucket-read-access-arn"
+      Name            = "${var.environment}-ods-downloader-output-bucket-read-access-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )

@@ -1,7 +1,7 @@
 resource "aws_iam_role" "dashboard_pipeline_step_function" {
-  name                = "${var.environment}-dashboard-pipeline-step-function"
-  description         = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
-  assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
+  name               = "${var.environment}-dashboard-pipeline-step-function"
+  description        = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
+  assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
   managed_policy_arns = [
     aws_iam_policy.dashboard_pipeline_step_function.arn,
     aws_iam_policy.metrics_calculator_step_function.arn
@@ -22,7 +22,7 @@ resource "aws_iam_policy" "metrics_calculator_step_function" {
 
 data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   statement {
-    sid     = "GetEcrAuthToken"
+    sid = "GetEcrAuthToken"
     actions = [
       "ecr:GetAuthorizationToken"
     ]
@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "RunEcsTask"
+    sid = "RunEcsTask"
     actions = [
       "ecs:RunTask"
     ]
@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "InvokeValidateMetricsLambdaFunction"
+    sid = "InvokeValidateMetricsLambdaFunction"
     actions = [
       "lambda:InvokeFunction"
     ]
@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "InvokeGP2GPDashboardAlertLambdaFunction"
+    sid = "InvokeGP2GPDashboardAlertLambdaFunction"
     actions = [
       "lambda:InvokeFunction"
     ]
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "StopEcsTask"
+    sid = "StopEcsTask"
     actions = [
       "ecs:StopTask",
       "ecs:DescribeTasks"
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "StepFunctionRule"
+    sid = "StepFunctionRule"
     actions = [
       "events:PutTargets",
       "events:PutRule",
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
   }
 
   statement {
-    sid     = "PassIamRole"
+    sid = "PassIamRole"
     actions = [
       "iam:PassRole"
     ]
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
 
 data "aws_iam_policy_document" "metrics_calculator_step_function" {
   statement {
-    sid     = "GetEcrAuthToken"
+    sid = "GetEcrAuthToken"
     actions = [
       "ecr:GetAuthorizationToken"
     ]
@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
   }
 
   statement {
-    sid     = "RunEcsTask"
+    sid = "RunEcsTask"
     actions = [
       "ecs:RunTask"
     ]
@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
   }
 
   statement {
-    sid     = "StopEcsTask"
+    sid = "StopEcsTask"
     actions = [
       "ecs:StopTask",
       "ecs:DescribeTasks"
@@ -129,7 +129,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
   }
 
   statement {
-    sid     = "StepFunctionRule"
+    sid = "StepFunctionRule"
     actions = [
       "events:PutTargets",
       "events:PutRule",
@@ -141,7 +141,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
   }
 
   statement {
-    sid     = "PassIamRole"
+    sid = "PassIamRole"
     actions = [
       "iam:PassRole"
     ]
@@ -167,7 +167,7 @@ resource "aws_iam_policy" "dashboard_pipeline_trigger" {
 
 data "aws_iam_policy_document" "dashboard_pipeline_trigger" {
   statement {
-    sid     = "TriggerStepFunction"
+    sid = "TriggerStepFunction"
     actions = [
       "states:StartExecution"
     ]

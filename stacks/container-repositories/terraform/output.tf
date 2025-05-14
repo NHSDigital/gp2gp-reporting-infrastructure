@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "ods_downloader" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-downloader"
+      Name            = "${var.environment}-ods-downloader"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator"
+      Name            = "${var.environment}-metrics-calculator"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier"
+      Name            = "${var.environment}-transfer-classifier"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -44,7 +44,7 @@ resource "aws_ssm_parameter" "spine_exporter" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter"
+      Name            = "${var.environment}-spine-exporter"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -57,7 +57,7 @@ resource "aws_ssm_parameter" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator"
+      Name            = "${var.environment}-reports-generator"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -70,7 +70,7 @@ resource "aws_ssm_parameter" "gp2gp_dashboard" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-gp2gp-dashboard"
+      Name            = "${var.environment}-gp2gp-dashboard"
       ApplicationRole = "AwsSsmParameter"
     }
   )

@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "metrics_calculator_task_definition_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator-task-definition-arn"
+      Name            = "${var.environment}-metrics-calculator-task-definition-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "metrics_calculator_iam_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator-iam-role-arn"
+      Name            = "${var.environment}-metrics-calculator-iam-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -31,7 +31,7 @@ resource "aws_ssm_parameter" "metrics_calculator_output_bucket_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator-output-bucket-name"
+      Name            = "${var.environment}-metrics-calculator-output-bucket-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )

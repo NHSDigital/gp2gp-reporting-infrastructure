@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "private_subnet_id" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-private-subnet-id"
+      Name            = "${var.environment}-private-subnet-id"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -19,7 +19,7 @@ resource "aws_ssm_parameter" "outbound_only_security_group_id" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-outbound-only-security-group-id"
+      Name            = "${var.environment}-outbound-only-security-group-id"
       ApplicationRole = "AwsSsmParameter"
     }
   )

@@ -112,3 +112,9 @@ variable "asid_lookup_inbox_prefix_param_name" {
   type        = string
   description = "SSM parameter containing the gp2gp inbox address prefix for asid lookup"
 }
+
+variable "validate_metrics" {
+  description = "Placeholder for shared lambda path"
+  type        = string
+  default     = ""
+}
