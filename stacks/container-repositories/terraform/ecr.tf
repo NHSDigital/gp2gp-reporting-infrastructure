@@ -4,7 +4,7 @@ resource "aws_ecr_repository" "ods_downloader" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-ods-data-downloader"
+      Name            = "${var.environment}-ods-data-downloader"
       ApplicationRole = "AwsEcrRepository"
     }
   )
@@ -16,7 +16,7 @@ resource "aws_ecr_repository" "metrics_calculator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-metrics-calculator"
+      Name            = "${var.environment}-metrics-calculator"
       ApplicationRole = "AwsEcrRepository"
     }
   )
@@ -28,7 +28,7 @@ resource "aws_ecr_repository" "transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-transfer-classifier"
+      Name            = "${var.environment}-transfer-classifier"
       ApplicationRole = "AwsEcrRepository"
     }
   )
@@ -40,7 +40,7 @@ resource "aws_ecr_repository" "spine_exporter" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter"
+      Name            = "${var.environment}-spine-exporter"
       ApplicationRole = "AwsEcrRepository"
     }
   )
@@ -52,7 +52,7 @@ resource "aws_ecr_repository" "reports_generator" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-reports-generator"
+      Name            = "${var.environment}-reports-generator"
       ApplicationRole = "AwsEcrRepository"
     }
   )
@@ -64,7 +64,7 @@ resource "aws_ecr_repository" "gp2gp_dashboard" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-gp2gp-dashboard"
+      Name            = "${var.environment}-gp2gp-dashboard"
       ApplicationRole = "AwsEcrRepository"
     }
   )

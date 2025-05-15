@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "terraform_state" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-terraform-states-of-gp2gp-infrastructure"
+      Name            = "${var.environment}-terraform-states-of-gp2gp-infrastructure"
       ApplicationRole = "AwsS3Bucket"
     }
   )

@@ -14,7 +14,7 @@ resource "aws_dynamodb_table" "terraform_lock" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-terraform-lock-table"
+      Name            = "${var.environment}-data-pipeline-terraform-lock-table"
       ApplicationRole = "AwsDynamodbTable"
     }
   )

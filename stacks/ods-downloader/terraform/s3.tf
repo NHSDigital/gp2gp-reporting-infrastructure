@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "ods_input" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-asid-lookup-used-to-supplement-ods-data"
+      Name            = "${var.environment}-asid-lookup-used-to-supplement-ods-data"
       ApplicationRole = "AwsS3Bucket"
     }
   )
@@ -36,7 +36,7 @@ resource "aws_s3_bucket" "ods_output" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-organisational-metadata"
+      Name            = "${var.environment}-organisational-metadata"
       ApplicationRole = "AwsS3Bucket"
     }
   )

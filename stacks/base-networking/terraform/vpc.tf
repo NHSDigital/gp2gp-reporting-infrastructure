@@ -1,10 +1,10 @@
 resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr
+  cidr_block = var.vpc_cidr
 
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-vpc"
+      Name            = "${var.environment}-data-pipeline-vpc"
       ApplicationRole = "AwsVpc"
     }
   )
@@ -16,7 +16,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-internet-gateway"
+      Name            = "${var.environment}-data-pipeline-internet-gateway"
       ApplicationRole = "AwsInternetGateway"
     }
   )

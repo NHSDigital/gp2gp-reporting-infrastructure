@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "spine_exporter" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter-raw-spine-data"
+      Name            = "${var.environment}-spine-exporter-raw-spine-data"
       ApplicationRole = "AwsS3Bucket"
     }
   )

@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "data_pipeline_cluster" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-gp2gp-dashboard-pipeline-cluster"
+      Name            = "${var.environment}-gp2gp-dashboard-pipeline-cluster"
       ApplicationRole = "AwsEcsCluster"
     }
   )
@@ -20,7 +20,7 @@ resource "aws_cloudwatch_log_group" "data_pipeline" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline"
+      Name            = "${var.environment}-data-pipeline"
       ApplicationRole = "AwsCloudwatchLogGroup"
     }
   )

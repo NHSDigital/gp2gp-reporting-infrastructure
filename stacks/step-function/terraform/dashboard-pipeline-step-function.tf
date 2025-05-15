@@ -4,13 +4,13 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-dashboard-pipeline-step-function"
+      Name            = "${var.environment}-dashboard-pipeline-step-function"
       ApplicationRole = "AwsSfnStateMachine"
     }
   )
   definition = jsonencode({
     "StartAt" : "Skip MetricsCalculator?",
-    "Comment": "Add option to skip generating the metrics - useful for code only changes that don't require the data to be updated"
+    "Comment" : "Add option to skip generating the metrics - useful for code only changes that don't require the data to be updated"
     "States" : {
       "Skip MetricsCalculator?" : {
         "Type" : "Choice",
@@ -38,32 +38,32 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
                 data.aws_ssm_parameter.data_pipeline_private_subnet_id.value
               ],
               "SecurityGroups" : [
-                data.aws_ssm_parameter.outbound_only_security_group_id.value],
+              data.aws_ssm_parameter.outbound_only_security_group_id.value],
             }
           },
         },
-        "Catch": [
+        "Catch" : [
           {
-            "ErrorEquals": [
+            "ErrorEquals" : [
               "States.ALL"
             ],
-            "Next": "GP2GP Dashboard Alert - FAILED",
-            "ResultPath": "$.metricsFailed"
+            "Next" : "GP2GP Dashboard Alert - FAILED",
+            "ResultPath" : "$.metricsFailed"
           }
         ],
         "Next" : "ValidateMetrics"
       },
       "ValidateMetrics" : {
         "Comment" : "Validate Metrics - responsible for reading practice and national metrics and validating them",
-        "Type": "Task",
+        "Type" : "Task",
         "Resource" : data.aws_ssm_parameter.validate_metrics_lambda_arn.value,
-        "Catch": [
+        "Catch" : [
           {
-            "ErrorEquals": [
+            "ErrorEquals" : [
               "States.ALL"
             ],
-            "Next": "GP2GP Dashboard Alert - FAILED",
-            "ResultPath": "$.validationError"
+            "Next" : "GP2GP Dashboard Alert - FAILED",
+            "ResultPath" : "$.validationError"
           }
         ],
         "Next" : "GP2GP Dashboard Build And Deploy"
@@ -86,31 +86,31 @@ resource "aws_sfn_state_machine" "dashboard_pipeline" {
             }
           },
         },
-        "Catch": [
+        "Catch" : [
           {
-            "ErrorEquals": [
+            "ErrorEquals" : [
               "States.ALL"
             ],
-            "Next": "GP2GP Dashboard Alert - FAILED",
-            "ResultPath": "$.dashboardError"
+            "Next" : "GP2GP Dashboard Alert - FAILED",
+            "ResultPath" : "$.dashboardError"
           }
         ],
         "Next" : "GP2GP Dashboard Alert - SUCCESS"
       },
       "GP2GP Dashboard Alert - SUCCESS" : {
         "Comment" : "GP2GP Dashboard Alert - runs a lambda to send a success alert to teams",
-        "Type": "Task",
+        "Type" : "Task",
         "Resource" : data.aws_ssm_parameter.gp2gp_dashboard_alert_lambda_arn.value,
         "End" : true
       },
       "GP2GP Dashboard Alert - FAILED" : {
         "Comment" : "GP2GP Dashboard Alert - runs a lambda to send a success alert to teams",
-        "Type": "Task",
+        "Type" : "Task",
         "Resource" : data.aws_ssm_parameter.gp2gp_dashboard_alert_lambda_arn.value,
         "Next" : "Fail"
       },
-      "Fail": {
-        "Type": "Fail"
+      "Fail" : {
+        "Type" : "Fail"
       }
     }
   })

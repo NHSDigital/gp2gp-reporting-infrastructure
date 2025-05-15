@@ -4,7 +4,7 @@ resource "aws_sfn_state_machine" "spine_exporter_and_transfer_classifier" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
+      Name            = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
       ApplicationRole = "AwsSfnStateMachine"
     }
   )

@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "cloudwatch_log_group_name" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-dashboard-pipeline-gocd-cloudwatch-log-group-name"
+      Name            = "${var.environment}-dashboard-pipeline-gocd-cloudwatch-log-group-name"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -19,7 +19,7 @@ resource "aws_ssm_parameter" "execution_role_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-dashboard-pipeline-gocd-execution-role-arn"
+      Name            = "${var.environment}-dashboard-pipeline-gocd-execution-role-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )
@@ -32,7 +32,7 @@ resource "aws_ssm_parameter" "ecs_cluster_arn" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-dashboard-pipeline-gocd-data-pipeline-ecs-cluster-arn"
+      Name            = "${var.environment}-dashboard-pipeline-gocd-data-pipeline-ecs-cluster-arn"
       ApplicationRole = "AwsSsmParameter"
     }
   )

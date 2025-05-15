@@ -1,0 +1,104 @@
+name: Data Pipeline Plan and Apply
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'stacks/step-function/**'
+      - 'stacks/transfer-classifier/**'
+      - 'stacks/validate-metrics/**'
+      - 'stacks/ods-downloader/**'
+      - 'stacks/reports-generator/**'
+      - 'stacks/spine-exporter/**'
+      - 'stacks/metrics-calculator/**'
+      - '.github/workflows/data-pipeline-plan-and-apply.yml'
+      
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'stacks/step-function/**'
+      - 'stacks/transfer-classifier/**'
+      - 'stacks/validate-metrics/**'
+      - 'stacks/ods-downloader/**'
+      - 'stacks/reports-generator/**'
+      - 'stacks/spine-exporter/**'
+      - 'stacks/metrics-calculator/**'
+      - '.github/workflows/data-pipeline-plan-and-apply.yml'
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  step-function:
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: step-function
+    secrets: inherit
+
+
+  transfer-classifier:
+    needs: step-function
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: transfer-classifier
+      image_tag: transfer_classifier
+    secrets: inherit
+
+
+  validate-metrics:
+    needs: transfer-classifier
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: validate-metrics
+      build_lambda: true
+    secrets: inherit
+
+  ods-downloader:
+    needs: validate-metrics
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: ods-downloader
+      image_tag: ods_downloader
+    secrets: inherit
+
+
+  reports-generator:
+    needs: ods-downloader
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: reports-generator
+      image_tag: reports_generator
+    secrets: inherit
+
+
+  spine-exporter:
+    needs: reports-generator
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: spine-exporter
+      image_tag: spine_exporter
+    secrets: inherit
+
+
+  metrics-calculator:
+    needs: spine-exporter
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: metrics-calculator
+      image_tag: metrics_calculator
+    secrets: inherit

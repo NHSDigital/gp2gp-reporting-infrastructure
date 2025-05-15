@@ -6,7 +6,7 @@ resource "aws_subnet" "private" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-private"
+      Name            = "${var.environment}-data-pipeline-private"
       ApplicationRole = "AwsSubnet"
     }
   )
@@ -23,7 +23,7 @@ resource "aws_route_table" "private" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.environment}-data-pipeline-private"
+      Name            = "${var.environment}-data-pipeline-private"
       ApplicationRole = "AwsRouteTable"
     }
   )
