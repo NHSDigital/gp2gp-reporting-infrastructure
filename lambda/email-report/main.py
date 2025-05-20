@@ -118,7 +118,7 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
 
 
 def _should_send_email_notification(transfer_report_meta_data):
-    return transfer_report_meta_data['send-email-notification']
+    return transfer_report_meta_data['send-email-notification'].lower() == "true"
 
 
 def _format_start_datetime(iso_datetime):
