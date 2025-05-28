@@ -1,0 +1,17 @@
+name: Deploy Degrades
+
+on:
+  workflow_dispatch:
+
+
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: echo Hello World

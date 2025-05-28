@@ -61,26 +61,25 @@ def lambda_handler(event, context):
     msg.attach(msg_body)
     msg.attach(att)
 
-    if _is_manually_generated_report(transfer_report_meta_data):
-        print("Report was manually generated. Skipping sending email to: " + RECIPIENT + " and " + RECIPIENT + " with the following metadata: ", transfer_report_meta_data)
-        return
+    if _should_send_email_notification(transfer_report_meta_data):
+        try:
+            server = smtplib.SMTP("smtp.office365.com", 587)
+            server.starttls()
+            server.login(SENDER, SENDER_KEY)
 
-    try:
-        server = smtplib.SMTP("smtp.office365.com", 587)
-        server.starttls()
-        server.login(SENDER, SENDER_KEY)
+            msg['To'] = RECIPIENT_INTERNAL
+            server.sendmail(SENDER, RECIPIENT_INTERNAL, msg.as_string())
+            print('Email successfully sent to: ', RECIPIENT_INTERNAL)
 
-        msg['To'] = RECIPIENT_INTERNAL
-        server.sendmail(SENDER, RECIPIENT_INTERNAL, msg.as_string())
-        print('Email successfully sent to: ', RECIPIENT_INTERNAL)
-
-        msg['To'] = RECIPIENT
-        server.sendmail(SENDER, RECIPIENT, msg.as_string())
-        print('Email successfully sent to: ', RECIPIENT)
-    except Exception as e:
-        print("Failed to send email")
-        print("Exception: ", e)
-        return
+            msg['To'] = RECIPIENT
+            server.sendmail(SENDER, RECIPIENT, msg.as_string())
+            print('Email successfully sent to: ', RECIPIENT)
+        except Exception as e:
+            print("Failed to send email")
+            print("Exception: ", e)
+            return
+    else:
+        print(f"Skipping sending email to: {RECIPIENT} with the following metadata: {transfer_report_meta_data}")
 
 
 def _construct_email_subject(transfer_report_meta_data):
@@ -118,11 +117,8 @@ def _construct_email_body(body_heading, transfer_report_meta_data):
     """
 
 
-def _is_manually_generated_report(transfer_report_meta_data):
-    if transfer_report_meta_data['config-start-datetime'] != 'None':
-        return True
-
-    return False
+def _should_send_email_notification(transfer_report_meta_data):
+    return transfer_report_meta_data['send-email-notification'].lower() == "true"
 
 
 def _format_start_datetime(iso_datetime):
