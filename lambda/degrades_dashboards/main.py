@@ -14,4 +14,12 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
     return total
 
 def lambda_handler(event, context):
+
+    """
+    Get objs from bucket with date
+    Read objs
+    Calculate number of degrades, split degrades by type
+    Return number of degrades
+
+    """
     return 'Hello World!'

@@ -1,5 +1,5 @@
 import os
-from calculate_degrades_lambda import calculate_number_of_degrades
+from main import calculate_number_of_degrades
 
 
 def test_calculate_number_of_degrades():
