@@ -1,7 +1,7 @@
-variable "degrades_lambda_zip_file" {
+variable "degrades_dashboards_lambda_zip" {
   type        = string
   description = "File path for Degrades Lambda zip"
-  default     = "lambda/build/degrades_dashboards.zip"
+  default     = "lambda/build/degrades-dashboards.zip"
 }
 
 variable "environment" {
@@ -10,5 +10,5 @@ variable "environment" {
 }
 
 variable "degrades_lambda_name" {
-  default = "calculate_degrades_lambda"
+  default = "degrades_dashboards_lambda"
 }

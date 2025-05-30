@@ -6,15 +6,15 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'lambda/degrades_dashboards/**'
-      - 'stacks/degrades_dashboards/**'
+      - '../../lambda/degrades-dashboards/**'
+      - 'stacks/degrades-dashboards/**'
       - '.github/workflows/deploy-degrades.yml'
 
   pull_request:
     branches: [ main ]
     paths:
-      - 'lambda/degrades_dashboards/**'
-      - 'stacks/degrades_dashboards/**'
+      - '../../lambda/degrades-dashboards/**'
+      - 'stacks/degrades-dashboards/**'
       - '.github/workflows/deploy-degrades.yml'
 
 
@@ -35,6 +35,6 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: degrades_dashboards
+      terraform_stack: degrades-dashboards
       build_lambda: true
     secrets: inherit
