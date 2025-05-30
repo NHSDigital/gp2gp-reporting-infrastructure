@@ -10,6 +10,7 @@ resource "aws_api_gateway_deployment" "degrades_api_deploy" {
 resource "aws_api_gateway_stage" "degrades" {
   deployment_id = aws_api_gateway_deployment.degrades_api_deploy.id
   stage_name    = "dev"
+  rest_api_id = aws_api_gateway_rest_api.degrades_api.id
 }
 
 
