@@ -5,3 +5,5 @@ lambda/build
 *.zip
 **/**/.terraform
 **/**/.terraform.*
+venv/
+__pycache__
