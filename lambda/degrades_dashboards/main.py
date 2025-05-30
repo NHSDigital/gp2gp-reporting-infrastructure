@@ -15,9 +15,21 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
 
 def lambda_handler(event, context):
 
-    params = event.get("queryStringParameters", None)
-    if not params:
-        return {"statusCode": 400}
+    try:
+        params = event.get("queryStringParameters", None)
+        if not params:
+            return {"statusCode": 400}
+
+        string_date = params.get("date", None)
+        if not string_date:
+            return {"statusCode": 400}
+
+        date = da
+
+    except:
+        pass
+
+
 
     return 'Hello World!'
 

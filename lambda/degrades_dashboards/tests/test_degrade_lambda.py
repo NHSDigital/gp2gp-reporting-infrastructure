@@ -9,9 +9,20 @@ def test_calculate_number_of_degrades():
     result = calculate_number_of_degrades(path=folder_path, files=json_files)
     assert result == 5
 
-def test_lambda_handler_throws_400_no_query_string(mock_invalid_call_without_date, context):
+def test_lambda_handler_throws_400_no_query_string(mock_invalid_event_empty_query_string, context):
     expected = {'statusCode': 400}
 
-    result = lambda_handler(mock_invalid_call_without_date, context)
+    result = lambda_handler(mock_invalid_event_empty_query_string, context)
     assert result == expected
 
+def test_lamda_handler_throws_400_no_date_in_query_string(mock_invalid_event_without_date, context):
+    expected = {'statusCode': 400}
+
+    result = lambda_handler(mock_invalid_event_without_date, context)
+    assert result == expected
+
+def test_lamda_handler_throws_400_invalid_date_format_in_query_string(mock_invalid_event_invalid_date_format, context):
+    expected = {'statusCode': 400}
+
+    result = lambda_handler(mock_invalid_event_invalid_date_format, context)
+    assert result == expected
