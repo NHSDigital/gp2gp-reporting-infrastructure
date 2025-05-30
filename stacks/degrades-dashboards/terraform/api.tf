@@ -23,15 +23,16 @@ resource "aws_api_gateway_resource" "degrades" {
 
 resource "aws_api_gateway_method" "degrades_get" {
   authorization = "NONE"
-  http_method   = "ANY"
+  http_method   = "GET"
   resource_id   = aws_api_gateway_resource.degrades.id
   rest_api_id   = aws_api_gateway_rest_api.degrades_api.id
 }
 
 resource "aws_api_gateway_integration" "degrades_get" {
-  http_method = aws_api_gateway_method.degrades_get.http_method
-  resource_id = aws_api_gateway_resource.degrades.id
-  rest_api_id = aws_api_gateway_rest_api.degrades_api.id
-  type        = "AWS_PROXY"
-  uri         = aws_lambda_function.degrades_lambda.invoke_arn
+  http_method             = aws_api_gateway_method.degrades_get.http_method
+  resource_id             = aws_api_gateway_resource.degrades.id
+  rest_api_id             = aws_api_gateway_rest_api.degrades_api.id
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.degrades_lambda.invoke_arn
 }
