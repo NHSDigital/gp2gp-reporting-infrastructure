@@ -31,7 +31,7 @@ build-lambdas)
   build_lambda email-report
   build_lambda validate-metrics
   build_lambda gp2gp-dashboard-alert
-  build_lambda degrades_dashboard
+  build_lambda degrades_dashboards
 ;;
 *)
   echo "Invalid task: '${task}'"
