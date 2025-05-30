@@ -5,6 +5,7 @@ resource "aws_api_gateway_rest_api" "degrades_api" {
 
 resource "aws_api_gateway_deployment" "degrades_api_deploy" {
   rest_api_id = aws_api_gateway_rest_api.degrades_api.id
+  depends_on  = [aws_api_gateway_rest_api.degrades_api, aws_api_gateway_resource.degrades]
 }
 
 resource "aws_api_gateway_stage" "degrades" {
@@ -22,7 +23,7 @@ resource "aws_api_gateway_resource" "degrades" {
 
 resource "aws_api_gateway_method" "degrades_get" {
   authorization = "NONE"
-  http_method   = "GET"
+  http_method   = "ANY"
   resource_id   = aws_api_gateway_resource.degrades.id
   rest_api_id   = aws_api_gateway_rest_api.degrades_api.id
 }
