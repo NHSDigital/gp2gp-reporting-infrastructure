@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import pytest
 
 MOCK_INTERACTION_ID = "88888888-4444-4444-4444-121212121212"
+REGION_NAME = "us-east-1"
+MOCK_BUCKET = "test-s3-bucket"
 
 @pytest.fixture
 def mock_invalid_event_empty_query_string():

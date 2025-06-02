@@ -15,6 +15,8 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
                 total += 1
     return total
 
+def get_files_from_S3():
+    pass
 
 @validate_date_input
 def lambda_handler(event, context):
