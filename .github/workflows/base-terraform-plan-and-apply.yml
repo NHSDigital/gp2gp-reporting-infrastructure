@@ -42,6 +42,14 @@ jobs:
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
+      - name: Validate Terraform Directory
+        run: |
+          dir="stacks/${{ inputs.terraform_stack }}/terraform"
+          if [ ! -d "$dir" ]; then
+            echo "❌ Directory $dir not found"
+            exit 1
+          fi
+          
       - name: Build Lambdas
         if: inputs.build_lambda
         run: |
