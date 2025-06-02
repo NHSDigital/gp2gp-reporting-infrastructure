@@ -4,12 +4,6 @@ from moto import mock_aws
 
 from main import calculate_number_of_degrades, lambda_handler, get_files_from_S3
 from tests.conftest import REGION_NAME, MOCK_BUCKET
-import pytest
-
-@pytest.fixture
-def mock_S3_file_call(mocker):
-    mock = mocker.patch('main.get_files_from_S3')
-    yield mock
 
 def test_calculate_number_of_degrades():
     folder_path = 'tests/mocks/mixed_messages'
@@ -57,4 +51,4 @@ def test_lambda_handler_calls_S3_with_file_path(mock_valid_event_valid_date, con
 
     lambda_handler(mock_valid_event_valid_date, context)
 
-    mock_function_call.assert_called_once()
+    mock_function_call.assert_called_with(key="2024/01/01")
