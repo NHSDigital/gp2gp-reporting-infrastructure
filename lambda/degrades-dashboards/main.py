@@ -27,6 +27,8 @@ def lambda_handler(event, context):
 
         date = datetime.strptime(string_date, "%Y-%m-%d").date()
 
+        return {"statusCode": 200}
+
     except ValueError:
         return {"statusCode": 400}
 
@@ -34,8 +36,3 @@ def lambda_handler(event, context):
 
 
     return 'Hello World!'
-
-"""
-TODO: create tests with event that contains a date query string for handler,
-    mock out events with and without querystring
-"""

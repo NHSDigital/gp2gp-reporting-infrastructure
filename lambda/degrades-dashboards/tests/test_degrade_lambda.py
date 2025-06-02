@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from main import calculate_number_of_degrades, lambda_handler
 
 
@@ -25,4 +26,11 @@ def test_lamda_handler_throws_400_invalid_date_format_in_query_string(mock_inval
     expected = {'statusCode': 400}
 
     result = lambda_handler(mock_invalid_event_invalid_date_format, context)
+    assert result == expected
+
+
+def test_lambda_handler_returns_200(mock_valid_event_valid_date, context):
+    expected = {'statusCode': 200}
+
+    result = lambda_handler(mock_valid_event_valid_date, context)
     assert result == expected

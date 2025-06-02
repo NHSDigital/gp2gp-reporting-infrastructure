@@ -35,6 +35,15 @@ def mock_invalid_event_invalid_date_format():
     return api_gateway_event
 
 @pytest.fixture
+def mock_valid_event_valid_date():
+    api_gateway_event = {
+        "httpMethod": "GET",
+        "queryStringParameters": {"date": "2024-01-01"},
+        "headers": {},
+    }
+    return api_gateway_event
+
+@pytest.fixture
 def context():
     @dataclass
     class LambdaContext:
