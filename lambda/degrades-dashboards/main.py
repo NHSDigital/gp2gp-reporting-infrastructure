@@ -2,24 +2,18 @@ import os
 import json
 from datetime import datetime
 from utils.decorators import validate_date_input
+from utils.utils import  get_key_from_date
 
-def calculate_number_of_degrades(path: str, files: list[str]) -> int:
-    total = 0
 
-    for file_name in files:
-        file_path = os.path.join(path, file_name)
-        with open(file_path, "r") as json_file:
-            data = json.load(json_file)
-            eventType = data.get("eventType", None)
-            if eventType is not None and eventType == "DEGRADES":
-                total += 1
-    return total
-
-def get_files_from_S3():
-    pass
+def get_files_from_S3(key):
+    print(key)
 
 @validate_date_input
 def lambda_handler(event, context):
+
+
+    file_key = get_key_from_date(event["queryStringParameters"]["date"])
+    get_files_from_S3(file_key)
 
     return {"statusCode": 200}
 
