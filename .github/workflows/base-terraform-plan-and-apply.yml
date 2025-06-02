@@ -125,7 +125,7 @@ jobs:
         with:
           name: ${{ vars.AWS_ENVIRONMENT }}.tfplan
           if-no-files-found: error
-          path: ./${{ vars.AWS_ENVIRONMENT }}.tfplan
+          path: .
 
 
       - name: Add PR comment
