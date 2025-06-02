@@ -27,11 +27,15 @@ jobs:
   terraform_process:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: nhsconnect/prm-gp2gp-data-pipeline-infra
+
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -40,11 +44,6 @@ jobs:
           role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
           role-skip-session-tagging: true
           mask-aws-account-id: true
-
-      - name: Debug workspace structure
-        run: |
-          echo "Contents of workspace after checkout:"
-          find . -type d | sort
 
       - name: Build Lambdas
         if: inputs.build_lambda
@@ -60,14 +59,11 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        run: |
-          cd stacks/${{ inputs.terraform_stack }}/terraform
-          terraform fmt -check
+        run: terraform fmt -check
 
       - name: Terraform Init
         id: init
         run: | 
-          cd stacks/${{ inputs.terraform_stack }}/terraform
           terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
@@ -75,15 +71,12 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: |
-          cd stacks/${{ inputs.terraform_stack }}/terraform
-          terraform validate -no-color
+        run: terraform validate -no-color
 
       - name: Setup Terraform variables
         id: vars
         if: inputs.environment != 'prod'
         run: |-
-          cd stacks/${{ inputs.terraform_stack }}/terraform
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
@@ -92,7 +85,6 @@ jobs:
         id: vars-image-tag
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
-            cd stacks/${{ inputs.terraform_stack }}/terraform
             IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             cat > pipeline.auto.tfvars <<EOF
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
@@ -102,7 +94,6 @@ jobs:
         id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
-            cd stacks/${{ inputs.terraform_stack }}/terraform
             image_key="${{ inputs.image_tag }}"
             aws_env="${{ vars.AWS_ENVIRONMENT }}"
             cat > pipeline.auto.tfvars <<EOF
@@ -124,7 +115,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          cd stacks/${{ inputs.terraform_stack }}/terraform
           terraform plan -no-color -input=false -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
           terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
           echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
@@ -205,6 +195,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && inputs.is_deployment
-        run: |
-          cd stacks/${{ inputs.terraform_stack }}/terraform
-          terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
+        run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
