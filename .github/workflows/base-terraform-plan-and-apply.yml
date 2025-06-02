@@ -46,10 +46,10 @@ jobs:
         run: |
           dir="stacks/${{ inputs.terraform_stack }}/terraform"
           if [ ! -d "$dir" ]; then
-            echo "❌ Directory $dir not found"
+            echo "Stack not found: $dir"
             exit 1
           fi
-          
+
       - name: Build Lambdas
         if: inputs.build_lambda
         run: |
