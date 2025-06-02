@@ -38,14 +38,11 @@ jobs:
           role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
           role-skip-session-tagging: true
           mask-aws-account-id: true
-          
-      - name: Validate Terraform path
+
+      - name: Debug workspace structure
         run: |
-          dir="stacks/${{ inputs.terraform_stack }}/terraform"
-          if [ ! -d "$dir" ]; then
-            echo "❌ Directory $dir not found"
-            exit 1
-          fi
+          echo "Contents of workspace after checkout:"
+          find . -type d | sort
 
       - name: Build Lambdas
         if: inputs.build_lambda
