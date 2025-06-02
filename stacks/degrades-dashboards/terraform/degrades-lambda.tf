@@ -7,3 +7,10 @@ resource "aws_lambda_function" "degrades_lambda" {
   source_code_hash = filebase64sha256("${var.degrades_dashboards_lambda_zip}")
   timeout          = 15
 }
+
+resource "aws_lambda_permission" "lambda_permission" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.degrades_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = aws_api_gateway_rest_api.degrades_api.execution_arn
+}
