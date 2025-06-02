@@ -1,6 +1,7 @@
 import os
 import json
-from _datetime import datetime
+from datetime import datetime
+from utils.decorators import validate_date_input
 
 def calculate_number_of_degrades(path: str, files: list[str]) -> int:
     total = 0
@@ -14,25 +15,11 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
                 total += 1
     return total
 
+
+@validate_date_input
 def lambda_handler(event, context):
 
-    try:
-        params = event.get("queryStringParameters", None)
-        if not params:
-            return {"statusCode": 400}
-
-        string_date = params.get("date", None)
-        if not string_date:
-            return {"statusCode": 400}
-
-        date = datetime.strptime(string_date, "%Y-%m-%d").date()
-
-        return {"statusCode": 200}
-
-    except ValueError:
-        return {"statusCode": 400}
+    return {"statusCode": 200}
 
 
 
-
-    return 'Hello World!'
