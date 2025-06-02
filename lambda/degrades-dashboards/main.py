@@ -1,5 +1,6 @@
 import os
 import json
+from _datetime import datetime
 
 def calculate_number_of_degrades(path: str, files: list[str]) -> int:
     total = 0
@@ -24,10 +25,11 @@ def lambda_handler(event, context):
         if not string_date:
             return {"statusCode": 400}
 
-        date = da
+        date = datetime.strptime(string_date, "%Y-%m-%d").date()
 
-    except:
-        pass
+    except ValueError:
+        return {"statusCode": 400}
+
 
 
 
