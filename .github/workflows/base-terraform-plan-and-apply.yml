@@ -76,6 +76,7 @@ jobs:
         id: vars
         if: inputs.environment != 'prod'
         run: |-
+          cd stacks/${{ inputs.terraform_stack }}/terraform
           cat > pipeline.auto.tfvars <<EOF
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
@@ -84,6 +85,7 @@ jobs:
         id: vars-image-tag
         if: inputs.environment != 'prod' && inputs.image_tag
         run: |-
+            cd stacks/${{ inputs.terraform_stack }}/terraform
             IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             cat > pipeline.auto.tfvars <<EOF
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
@@ -93,6 +95,7 @@ jobs:
         id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
         run: |-
+            cd stacks/${{ inputs.terraform_stack }}/terraform
             image_key="${{ inputs.image_tag }}"
             aws_env="${{ vars.AWS_ENVIRONMENT }}"
             cat > pipeline.auto.tfvars <<EOF
