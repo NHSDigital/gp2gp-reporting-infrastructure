@@ -123,7 +123,7 @@ jobs:
       - name: Save tfplan file
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ vars.AWS_ENVIRONMENT }}.tfplan
+          name: ${{ vars.AWS_ENVIRONMENT }}-${{inputs.terraform_stack}}.tfplan
           if-no-files-found: error
           path: .
 
@@ -218,8 +218,8 @@ jobs:
       - name: Download the tfplan file
         uses: actions/download-artifact@v4
         with:
-          name: ${{ vars.AWS_ENVIRONMENT }}.tfplan
-          path: ./${{ vars.AWS_ENVIRONMENT }}.tfplan
+          name: ${{ vars.AWS_ENVIRONMENT }}-${{inputs.terraform_stack}}.tfplan
+          path: .
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -250,4 +250,4 @@ jobs:
         shell: bash
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
+        run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}-${{inputs.terraform_stack}}.tfplan
