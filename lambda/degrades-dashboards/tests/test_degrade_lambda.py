@@ -53,7 +53,7 @@ def test_get_files_from_S3():
     for file in json_files:
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
-    files = get_files_from_S3("2024/01/01/")
+    files = get_files_from_S3(key="2024/01/01/", bucket_name=MOCK_BUCKET)
     assert len(files) == len(json_files)
 
     for index in range(len(files)):

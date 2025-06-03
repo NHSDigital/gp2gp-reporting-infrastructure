@@ -6,9 +6,14 @@ from utils.decorators import validate_date_input
 from utils.utils import  get_key_from_date
 
 
-def get_files_from_S3(key):
-    print(key)
-    return [1,2,3,4,5,6,7]
+def get_files_from_S3(bucket_name, key):
+    s3_resource = boto3.resource("s3")
+
+    with open("tmp", "wb") as data:
+        s3_resource.Bucket(bucket_name).download_fileobj(key, data)
+
+
+
 
 @validate_date_input
 def lambda_handler(event, context):
