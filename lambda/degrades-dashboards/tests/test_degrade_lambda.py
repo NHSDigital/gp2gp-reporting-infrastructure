@@ -25,21 +25,24 @@ def test_lamda_handler_throws_400_invalid_date_format_in_query_string(mock_inval
     result = lambda_handler(mock_invalid_event_invalid_date_format, context)
     assert result == expected
 
+@mock_aws
+def test_lambda_handler_returns_200(mock_valid_event_valid_date, context, set_env):
+    conn = boto3.resource('s3', region_name=REGION_NAME)
+    conn.create_bucket(Bucket=MOCK_BUCKET)
 
-def test_lambda_handler_returns_200(mock_valid_event_valid_date, context):
     expected = {'statusCode': 200}
 
     result = lambda_handler(mock_valid_event_valid_date, context)
     assert result == expected
 
 
-def test_lambda_handler_calls_S3_with_file_path(mock_valid_event_valid_date, context, mocker):
-    mock_function_call = mocker.patch('main.get_files_from_S3')
+def test_lambda_handler_calls_S3_with_date_prefix(mock_valid_event_valid_date, context, mocker, set_env):
+    mock_function_call = mocker.patch('main.list_files_from_S3')
 
 
     lambda_handler(mock_valid_event_valid_date, context)
 
-    mock_function_call.assert_called_with(key="2024/01/01")
+    mock_function_call.assert_called_with(prefix="2024/01/01", bucket_name=MOCK_BUCKET)
 
 
 @mock_aws

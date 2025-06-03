@@ -1,6 +1,9 @@
 import os
 import json
+from sys import prefix
+
 import boto3
+import os
 from datetime import datetime
 from utils.decorators import validate_date_input
 from utils.utils import  get_key_from_date
@@ -14,21 +17,24 @@ def get_files_from_S3(key):
     #     s3_resource.Bucket(bucket_name).download_fileobj(key, data)
 
 
-def list_files_from_S3(bucket_name, key):
+def list_files_from_S3(bucket_name, prefix):
     client = boto3.client("s3")
-    response = client.list_objects_v2(Bucket=bucket_name, Prefix=key)
+    response = client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
     file_keys = []
-    for obj in response["Contents"]:
-        file_keys.append(obj["Key"])
+    response_objects = response.get("Contents", [])
+
+    if response_objects:
+        for obj in response_objects:
+            file_keys.append(obj["Key"])
 
     return file_keys
 
 @validate_date_input
 def lambda_handler(event, context):
 
+    prefix = get_key_from_date(event["queryStringParameters"]["date"])
 
-    file_key = get_key_from_date(event["queryStringParameters"]["date"])
-    get_files_from_S3(key=file_key)
+    list_files_from_S3(prefix=prefix, bucket_name=os.getenv("BUCKET_NAME"))
 
     return {"statusCode": 200}
 

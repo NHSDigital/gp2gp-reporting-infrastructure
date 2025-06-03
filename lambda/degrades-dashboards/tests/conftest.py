@@ -56,3 +56,9 @@ def context():
         )
 
     return LambdaContext()
+
+
+@pytest.fixture
+def set_env(monkeypatch):
+    monkeypatch.setenv("AWS_REGION", REGION_NAME)
+    monkeypatch.setenv("BUCKET_NAME", MOCK_BUCKET)
