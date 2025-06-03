@@ -24,7 +24,7 @@ on:
         type: string
 
 jobs:
-  terraform_process:
+  terraform_plan_and_apply:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     defaults:
@@ -33,12 +33,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          repository: nhsconnect/prm-gp2gp-data-pipeline-infra
+
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
+          role-to-assume:  ${{ inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
@@ -87,6 +90,7 @@ jobs:
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
             environment = "${{ vars.AWS_ENVIRONMENT }}"
             EOF
+
       - name: Setup Terraform variables for Build Lambda
         id: update-lambda-build-references
         if: inputs.environment != 'prod' && inputs.build_lambda
@@ -191,5 +195,5 @@ jobs:
             })
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && inputs.is_deployment
+        if: github.ref == 'refs/heads/main' && inputs.is_deployment && inputs.environment != 'prod'
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
