@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 import pytest
-import tempfile
 
 MOCK_INTERACTION_ID = "88888888-4444-4444-4444-121212121212"
 REGION_NAME = "us-east-1"
