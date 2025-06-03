@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import pytest
+import tempfile
 
 MOCK_INTERACTION_ID = "88888888-4444-4444-4444-121212121212"
 REGION_NAME = "us-east-1"
@@ -57,6 +58,12 @@ def context():
 
     return LambdaContext()
 
+
+@pytest.fixture
+def mock_temp_folder(mocker):
+    temp_folder = tempfile.mkdtemp()
+    mocker.patch.object(tempfile, "mkdtemp", return_value=temp_folder)
+    yield temp_folder
 
 @pytest.fixture
 def set_env(monkeypatch):
