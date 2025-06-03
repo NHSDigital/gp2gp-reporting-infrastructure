@@ -1,17 +1,9 @@
 import os
-import tempfile
-
 import boto3
 from moto import mock_aws
 
 from main import lambda_handler, get_files_from_S3, list_files_from_S3
 from tests.conftest import REGION_NAME, MOCK_BUCKET
-
-def readfile(filename: str) -> str:
-    filepath = os.path.join(os.path.dirname(__file__), filename)
-    with open(filepath, "r") as file:
-        file_content = file.read()
-    return file_content
 
 
 def test_lambda_handler_throws_400_no_query_string(mock_invalid_event_empty_query_string, context):
@@ -70,19 +62,11 @@ def test_list_all_files_from_S3():
     for index in range(len(files)):
         assert f"2024/01/01/{json_files[index]}" in files
 
-# @mock_aws
+
 def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_valid_date, context, mocker):
     mock_get_files_from_S3 = mocker.patch('main.get_files_from_S3')
     mock_list_files_from_S3 = mocker.patch('main.list_files_from_S3')
     mock_list_files_from_S3.return_value = ["2024/01/01/01-DEGRADES-01.json"]
-    # folder_path = 'tests/mocks/mixed_messages'
-    # json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
-    #
-    # conn = boto3.resource('s3', region_name=REGION_NAME)
-    # bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
-    #
-    # for file in json_files:
-    #     bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
     lambda_handler(mock_valid_event_valid_date, context)
 
@@ -90,7 +74,7 @@ def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_v
 
 
 @mock_aws
-def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid_date, context, mock_temp_folder):
+def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid_date, context):
     folder_path = 'tests/mocks/mixed_messages'
     json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
 

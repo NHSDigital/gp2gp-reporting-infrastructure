@@ -60,12 +60,6 @@ def context():
 
 
 @pytest.fixture
-def mock_temp_folder(mocker):
-    temp_folder = tempfile.mkdtemp()
-    mocker.patch.object(tempfile, "mkdtemp", return_value=temp_folder)
-    yield temp_folder
-
-@pytest.fixture
 def set_env(monkeypatch):
     monkeypatch.setenv("AWS_REGION", REGION_NAME)
     monkeypatch.setenv("BUCKET_NAME", MOCK_BUCKET)
