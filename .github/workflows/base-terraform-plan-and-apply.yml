@@ -24,7 +24,7 @@ on:
         type: string
 
 jobs:
-  terraform_plan:
+  terraform_plan_and_apply:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     defaults:
