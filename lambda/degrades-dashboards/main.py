@@ -1,10 +1,12 @@
+import json
+
 import boto3
 import os
 from utils.decorators import validate_date_input
-from utils.utils import  get_key_from_date
+from utils.utils import  get_key_from_date, is_degrade
 
 
-def get_files_from_S3(key):
+def get_file_from_S3(key):
     s3_client = boto3.client("s3")
     response = s3_client.get_object(Bucket=os.getenv("BUCKET_NAME"), Key=key)
     return response["Body"].read()
@@ -22,16 +24,28 @@ def list_files_from_S3(bucket_name, prefix):
 
     return file_keys
 
+
+def calculate_number_of_degrades(date):
+
+    number_of_degrades_from_date = 0
+    file_names = list_files_from_S3(prefix=date, bucket_name=os.getenv("BUCKET_NAME"))
+    for file_name in file_names:
+        file = get_file_from_S3(key=file_name)
+        if is_degrade(file):
+            number_of_degrades_from_date += 1
+
+    return number_of_degrades_from_date
+
+
+
 @validate_date_input
 def lambda_handler(event, context):
 
     prefix = get_key_from_date(event["queryStringParameters"]["date"])
 
-    file_names = list_files_from_S3(prefix=prefix, bucket_name=os.getenv("BUCKET_NAME"))
-    for file_name in file_names:
-        get_files_from_S3(key=file_name)
+    number_of_degrades = calculate_number_of_degrades(date=prefix)
 
-    return {"statusCode": 200}
+    return {"statusCode": 200, "body": {"numberOfDegrades": number_of_degrades}}
 
 
 
