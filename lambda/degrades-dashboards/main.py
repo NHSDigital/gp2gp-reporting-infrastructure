@@ -15,11 +15,13 @@ def get_files_from_S3(key):
 
 
 def list_files_from_S3(bucket_name, key):
-    pass
     client = boto3.client("s3")
     response = client.list_objects_v2(Bucket=bucket_name, Prefix=key)
+    file_keys = []
+    for obj in response["Contents"]:
+        file_keys.append(obj["Key"])
 
-    return response["Contents"]
+    return file_keys
 
 @validate_date_input
 def lambda_handler(event, context):

@@ -53,9 +53,11 @@ def test_list_all_files_from_S3():
     for file in json_files:
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
-
     files = list_files_from_S3(MOCK_BUCKET, "2024/01/01/")
+
     assert len(files) == len(json_files)
+    for index in range(len(files)):
+        assert f"2024/01/01/{json_files[index]}" in files
 
 # @mock_aws
 # def test_get_files_from_S3():
