@@ -26,6 +26,9 @@ permissions:
 jobs:
   destroy_stack:
     if: inputs.environment == 'dev'
+    defaults:
+      run:
+        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -45,13 +48,11 @@ jobs:
           terraform_version: 'latest'
 
       - name: Terraform Init
-        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
         run: |
           terraform init -no-color -backend-config="key="data-pipeline/${{ inputs.stack }}/terrafrom.tfstate"
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
 
       - name: Terraform Destroy
-        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
         run: |
           terraform destroy -auto-approve -var-file="vars/${{ inputs.terraform_vars }}"
