@@ -55,7 +55,3 @@ jobs:
         working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
         run: |
           terraform destroy -auto-approve -var-file="vars/${{ inputs.terraform_vars }}"
-
-
-# locate state and state lock for desired stack - we are currently using both dynamo and s3
-
