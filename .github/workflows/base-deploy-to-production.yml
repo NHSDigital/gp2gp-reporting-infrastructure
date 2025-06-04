@@ -31,30 +31,19 @@ jobs:
     if: ${{ inputs.image_tag && inputs.is_deployment }}
     runs-on: ubuntu-latest
     steps:
-      - name: Configure AWS Credentials for Dev
+      - name: Configure AWS Credentials for Prod
         id: creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_DEV_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      # Replace this with the method shown here https://github.com/nhsconnect/prm-repo-ehr-repository/pull/100/files#diff-63f33a3bc996a200d4f85caed7b0da9c960ad12bd61648d27a33e3e02406afe8
       - name: Get ECR Holding Account ID
         id: ecr-holding-account
         run: |
           accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
           echo "accountid=$accountid" >> $GITHUB_OUTPUT
           
-      - name: Login to ECR Prod
-        run: |
-          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
-
-      - name: Configure AWS Credentials for Prod
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
-          aws-region: ${{ vars.AWS_REGION }}
-
       # Needs the AmazonEC2ContainerRegistryPowerUser role
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
