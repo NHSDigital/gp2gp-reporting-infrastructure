@@ -28,7 +28,7 @@ jobs:
     if: inputs.environment == 'dev'
     defaults:
       run:
-        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
+        working-directory: ./stacks/${{ inputs.stack }}/terraform
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
