@@ -1,4 +1,5 @@
-name: base-terraform-plan-and-apply
+name: Promote Docker Images to Prod
+
 on:
   workflow_call:
     inputs:
@@ -24,12 +25,66 @@ on:
         type: string
 
 jobs:
-  terraform_plan_and_apply:
+  promote-images-to-prod:
+    environment: ${{ inputs.environment }}-deploy
+    name: Promote images to Production
+    if: ${{ inputs.image_tag && inputs.is_deployment }}
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    steps:
+      - name: Configure AWS Credentials for Dev
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEV_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Replace this with the method shown here https://github.com/nhsconnect/prm-repo-ehr-repository/pull/100/files#diff-63f33a3bc996a200d4f85caed7b0da9c960ad12bd61648d27a33e3e02406afe8
+      - name: Login to ECR Dev
+        run: |
+          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_DEV_REPOSITORY }}
+
+      - name: Pull image from Dev ECR
+        run: |
+          source_repo="${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
+          docker pull $source_repo
+
+      - name: Tag image for Prod ECR
+        run: |
+          destination_repo="${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
+          docker tag $source_repo $destination_repo
+
+      - name: Configure AWS Credentials for Prod
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to ECR Prod
+        run: |
+          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
+
+      - name: Push to Prod ECR
+        run: |
+          destination_repo="${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
+          docker push $destination_repo
+
+  plan-infra-with-images:
+    name: Plan Infrastructure with new images
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:     
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.environment }}
+      terraform_stack: ${{ inputs.environment }}
+      image_tag: ${{ inputs.environment }}
+      build_lambda: ${{ inputs.environment }}
+    secrets: inherit
+
+  deploy-infra-with-images:
+    environment: ${{ inputs.environment }}-deploy
+    name: Deploy Infrastructure with new images
+    runs-on: ubuntu-latest
     defaults:
-      run:
-        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
+        run:
+            working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,13 +128,6 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Setup Terraform variables
-        id: vars
-        run: |-
-          cat > pipeline.auto.tfvars <<EOF
-          environment = "${{ vars.AWS_ENVIRONMENT }}"
-          EOF
-
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
         if: inputs.image_tag
@@ -119,80 +167,3 @@ jobs:
           terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
           echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
         shell: bash
-
-      - name: Add PR comment
-        uses: actions/github-script@v7
-        if: github.event_name == 'pull_request' && (success() || failure())
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // 1. Retrieve existing bot comments for the PR
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            })
-            const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}')
-            })
-
-            // 2. Prepare format of the comment
-            const output = `### Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}
-            
-            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            <details><summary>Format Output</summary>
-
-            \`\`\`\n
-            ${{ steps.fmt.outputs.stdout }}
-            \`\`\`
-
-            </details>
-            
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            <details><summary>Initialization Output</summary>
-
-            \`\`\`\n
-            ${{ steps.init.outputs.stdout }}
-            \`\`\`
-
-            </details>
-
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            <details><summary>Validation Output</summary>
-
-            \`\`\`\n
-            ${{ steps.validate.outputs.stdout }}
-            \`\`\`
-
-            </details>
-
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-            <details><summary>Show Plan (${{ steps.plan.outputs.summary }})</summary>
-
-            \`\`\`\n
-            ${{ steps.plan.outputs.stdout }}
-            \`\`\`
-
-            </details>`;
-
-            // 3. If we have a comment, update it, otherwise create a new one
-            if (botComment) {
-              github.rest.issues.deleteComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: output
-              })
-            }
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && inputs.is_deployment && inputs.environment != 'prod'
-        run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan

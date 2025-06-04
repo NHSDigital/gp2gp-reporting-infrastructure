@@ -1,0 +1,117 @@
+name: Deploy Production release
+on:
+  workflow_dispatch:
+   inputs:
+      environment:
+        description: "Which Environment settings to use"
+        required: true
+        type: string
+        default: "dev"
+      is_deployment:
+        description: "Is workflow run on deployment"
+        type: boolean
+        default: false
+
+jobs:
+  infra_terraform_plan_and_apply:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        terraform_stack: [container-repositories, base-support, base-networking, ecs-cluster]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      is_deployment: ${{ inputs.is_deployment }}
+      environment: ${{ inputs.environment }}
+      terraform_stack: ${{ matrix.terraform_stack }}
+    secrets: inherit
+
+  transfer-classifier:
+    needs: [ infra_terraform_plan_and_apply ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: transfer-classifier
+      image_tag: transfer_classifier
+    secrets: inherit
+
+  validate-metrics:
+    needs: [ transfer-classifier ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: validate-metrics
+      build_lambda: true
+    secrets: inherit
+
+  ods-downloader:
+    needs: [ validate-metrics ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: ods-downloader
+      image_tag: ods_downloader
+    secrets: inherit
+
+  reports-generator:
+    needs: [ ods-downloader ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: reports-generator
+      image_tag: reports_generator
+    secrets: inherit
+
+  spine-exporter:
+    needs: [ reports-generator ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: spine-exporter
+      image_tag: spine_exporter
+    secrets: inherit
+
+  metrics-calculator:
+    needs: [ spine-exporter ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: metrics-calculator
+      image_tag: metrics_calculator
+    secrets: inherit
+
+  email-and-alerting:
+    needs: [ metrics-calculator ]
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: email-and-alerting    
+      build_lambda: true
+    secrets: inherit
+
+  gp2gp-dashboard:
+    needs: [ email-and-alerting ]
+    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: gp2gp-dashboard
+      image_tag: gp2gp_dashboard
+      build_lambda: true
+    secrets: inherit
+
+  step-function:
+    needs: [ gp2gp-dashboard ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
+    with:
+      environment: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: step-function
+    secrets: inherit
