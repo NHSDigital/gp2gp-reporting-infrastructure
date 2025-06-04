@@ -32,25 +32,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials for Dev
+        id: creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_DEV_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
       # Replace this with the method shown here https://github.com/nhsconnect/prm-repo-ehr-repository/pull/100/files#diff-63f33a3bc996a200d4f85caed7b0da9c960ad12bd61648d27a33e3e02406afe8
-      - name: Login to ECR Dev
+      - name: Get ECR Holding Account ID
+        id: ecr-holding-account
         run: |
-          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_DEV_REPOSITORY }}
-
-      - name: Pull image from Dev ECR
+          accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
+          echo "accountid=$accountid" >> $GITHUB_OUTPUT
+          
+      - name: Login to ECR Prod
         run: |
-          source_repo="${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
-          docker pull $source_repo
-
-      - name: Tag image for Prod ECR
-        run: |
-          destination_repo="${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
-          docker tag $source_repo $destination_repo
+          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
 
       - name: Configure AWS Credentials for Prod
         uses: aws-actions/configure-aws-credentials@v4
@@ -58,15 +55,21 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Login to ECR Prod
-        run: |
-          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
+      # Needs the AmazonEC2ContainerRegistryPowerUser role
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registries: "${{ steps.creds.outputs.aws-account-id }},${{ steps.ecr-holding-account.outputs.accountid }}"
 
-      - name: Push to Prod ECR
+      - name: ECR Copy
+        id: ecr-copy
         run: |
-          destination_repo="${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest"
+          source_repo=${{ steps.ecr-holding-account.outputs.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          docker pull $source_repo
+          docker tag $source_repo $destination_repo
           docker push $destination_repo
-
+          
   plan-infra-with-images:
     name: Plan Infrastructure with new images
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
