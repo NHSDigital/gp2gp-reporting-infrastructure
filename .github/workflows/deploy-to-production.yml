@@ -12,6 +12,11 @@ on:
         type: boolean
         default: false
 
+permissions:
+  pull-requests: write
+  id-token: write 
+  contents: read 
+
 jobs:
   infra_terraform_plan_and_apply:
     strategy:
