@@ -37,6 +37,14 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
+          role-skip-session-tagging: true
+          mask-aws-account-id: true
+
+      - name: Get ECR Prod Account ID
+        id: extract-prod-registry
+        run: |
+          prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed -E 's|^arn:aws:ecr-public:[^:]+:([0-9]+):.*$|\1|')
+          echo "prodaccountid=$prodaccountid" >> $GITHUB_OUTPUT" >> $GITHUB_ENV
 
       - name: Get ECR Holding Account ID
         id: ecr-holding-account
@@ -48,13 +56,13 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          registries: "${{ steps.creds.outputs.aws-account-id }},${{ steps.ecr-holding-account.outputs.accountid }}"
+          registries: "${{ env.prodaccountid }},${{ env.accountid }}"
 
       - name: ECR Copy
         id: ecr-copy
         run: |
-          source_repo=${{ steps.ecr-holding-account.outputs.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
-          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          source_repo=${{ env.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          destination_repo=${{ env.prodaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
           docker pull $source_repo
           docker tag $source_repo $destination_repo
           docker push $destination_repo
