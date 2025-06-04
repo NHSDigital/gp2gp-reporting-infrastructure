@@ -7,7 +7,7 @@ on:
         description: "Which Environment settings to use"
         required: true
         type: string
-        default: "dev"
+        default: "prod"
       is_deployment:
         description: "Is workflow run on deployment"
         type: boolean
