@@ -1,0 +1,57 @@
+name: Destroy select infrastructure stack
+
+on:
+  workflow_dispatch:
+    inputs:
+      stack:
+        type: choice
+        description: Stack to destroy
+        options:
+          - degrades-dashboards
+        required: true
+      environment:
+        description: Environment of stack to destroy
+        default: "dev"
+        required: true
+      terraform_vars:
+        default: 'dev.tfvars'
+        description: 'Terraform vars file to use.'
+        required: true
+
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
+
+jobs:
+  destroy_stack:
+    if: inputs.environment == 'dev'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          mask-aws-account-id: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 'latest'
+
+      - name: Terraform Init
+        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
+        run: |
+          terraform init -no-color -backend-config="key="data-pipeline/${{ inputs.stack }}/terrafrom.tfstate"
+          -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
+          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
+
+      - name: Terraform Destroy
+        working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
+        run: |
+          terraform destroy -auto-approve -var-file="vars/${{ inputs.terraform_vars }}"
