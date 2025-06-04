@@ -1,4 +1,4 @@
-name: Promote Docker Images to Prod
+name: Base Deploy to Production
 
 on:
   workflow_call:
@@ -25,47 +25,47 @@ on:
         type: string
 
 jobs:
-  promote-images-to-prod:
-    environment: ${{ inputs.environment }}-deploy
-    name: Promote images to Production
-    if: ${{ inputs.image_tag && inputs.is_deployment }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure AWS Credentials for Prod
-        id: creds
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
-          aws-region: ${{ vars.AWS_REGION }}
-          role-skip-session-tagging: true
-          mask-aws-account-id: true
+  # promote-images-to-prod:
+  #   environment: ${{ inputs.environment }}-deploy
+  #   name: Promote images to Production
+  #   if: ${{ inputs.image_tag && inputs.is_deployment }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Configure AWS Credentials for Prod
+  #       id: creds
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+  #         aws-region: ${{ vars.AWS_REGION }}
+  #         role-skip-session-tagging: true
+  #         mask-aws-account-id: true
 
-      - name: Get ECR Prod Account ID
-        id: extract-prod-registry
-        run: |
-          prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed -E 's|^arn:aws:ecr-public:[^:]+:([0-9]+):.*$|\1|')
-          echo "prodaccountid=$prodaccountid" >> $GITHUB_ENV
+  #     - name: Get ECR Prod Account ID
+  #       id: extract-prod-registry
+  #       run: |
+  #         prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed -E 's|^arn:aws:ecr-public:[^:]+:([0-9]+):.*$|\1|')
+  #         echo "prodaccountid=$prodaccountid" >> $GITHUB_ENV
 
-      - name: Get ECR Holding Account ID
-        id: ecr-holding-account
-        run: |
-          accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
-          echo "accountid=$accountid" >> $GITHUB_ENV
+  #     - name: Get ECR Holding Account ID
+  #       id: ecr-holding-account
+  #       run: |
+  #         accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
+  #         echo "accountid=$accountid" >> $GITHUB_ENV
           
-      # Needs the AmazonEC2ContainerRegistryPowerUser role
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registries: "${{ env.prodaccountid }},${{ env.accountid }}"
+  #     # Needs the AmazonEC2ContainerRegistryPowerUser role
+  #     - name: Login to ECR
+  #       uses: aws-actions/amazon-ecr-login@v2
+  #       with:
+  #         registries: "${{ env.prodaccountid }},${{ env.accountid }}"
 
-      - name: ECR Copy
-        id: ecr-copy
-        run: |
-          source_repo=${{ env.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
-          destination_repo=${{ env.prodaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
-          docker pull $source_repo
-          docker tag $source_repo $destination_repo
-          docker push $destination_repo
+  #     - name: ECR Copy
+  #       id: ecr-copy
+  #       run: |
+  #         source_repo=${{ env.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+  #         destination_repo=${{ env.prodaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+  #         docker pull $source_repo
+  #         docker tag $source_repo $destination_repo
+  #         docker push $destination_repo
           
   plan-infra-with-images:
     name: Plan Infrastructure with new images
@@ -79,8 +79,10 @@ jobs:
     secrets: inherit
 
   deploy-infra-with-images:
+    if: inputs.is_deployment
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure with new images
+    needs: [ plan-infra-with-images ] 
     runs-on: ubuntu-latest
     defaults:
         run:
