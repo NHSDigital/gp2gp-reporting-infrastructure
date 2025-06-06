@@ -55,4 +55,4 @@ jobs:
 
       - name: Terraform Destroy
         run: |
-          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}"
+          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}" -var "environment=dev"
