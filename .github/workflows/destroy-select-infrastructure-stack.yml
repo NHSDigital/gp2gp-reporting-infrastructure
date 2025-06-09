@@ -11,10 +11,10 @@ on:
         required: true
       environment:
         description: Environment of stack to destroy
-        default: "dev"
+        default: dev
         required: true
       terraform_vars:
-        default: 'dev.tfvars'
+        default: dev.tfvars
         description: 'Terraform vars file to use.'
         required: true
 
@@ -71,7 +71,7 @@ jobs:
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"  
 
       - name: Setup Terraform Variables
-        run: |
+        run: |- 
           cat > pipeline.auto.tfvars <<EOF
               environment = "${{ inputs.environment }}"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
