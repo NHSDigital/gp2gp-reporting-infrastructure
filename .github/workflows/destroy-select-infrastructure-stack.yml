@@ -43,14 +43,14 @@ jobs:
 
       - name: Build Lambda Zip
         run: |
-          cd $GITHUB_WORKSPACE \
-          rm -rf lambda/build/${{ inputs.stack }} \
-          mkdir lambda/build/${{ inputs.stack }} \
-          pip install -r lambda/${{ inputs.stack }}/requirements.txt -t lambda/build/${{ inputs.stack }} \
-          cp lambda/${{ inputs.stack }}/*.py lambda/build/${{ inputs.stack }} \
+          cd $GITHUB_WORKSPACE 
+          rm -rf lambda/build/${{ inputs.stack }} 
+          mkdir lambda/build/${{ inputs.stack }} 
+          pip install -r lambda/${{ inputs.stack }}/requirements.txt -t lambda/build/${{ inputs.stack }} 
+          cp lambda/${{ inputs.stack }}/*.py lambda/build/${{ inputs.stack }} 
           
-          pushd lambda/build/${{ inputs.stack }} \
-          zip -r -X ../${{ inputs.stack }}.zip . \
+          pushd lambda/build/${{ inputs.stack }} 
+          zip -r -X ../${{ inputs.stack }}.zip . 
           popd
 
       - name: Configure AWS Credentials
