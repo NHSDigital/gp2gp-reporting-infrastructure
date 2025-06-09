@@ -22,4 +22,7 @@ def lambda_handler(event, context):
     Return number of degrades
 
     """
-    return 'Hello World!'
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
