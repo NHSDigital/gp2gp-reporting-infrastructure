@@ -45,7 +45,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE 
           rm -rf lambda/build/${{ inputs.stack }} 
-          mkdir lambda/build/${{ inputs.stack }} 
+          mkdir -p lambda/build/${{ inputs.stack }} 
           pip install -r lambda/${{ inputs.stack }}/requirements.txt -t lambda/build/${{ inputs.stack }} 
           cp lambda/${{ inputs.stack }}/*.py lambda/build/${{ inputs.stack }} 
           
