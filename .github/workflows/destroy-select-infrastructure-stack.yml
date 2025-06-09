@@ -75,7 +75,7 @@ jobs:
           cat > pipeline.auto.tfvars <<EOF
               environment = "${{ inputs.environment }}"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
-              EOF
+          EOF
 
       - name: Terraform Destroy
         run: |
