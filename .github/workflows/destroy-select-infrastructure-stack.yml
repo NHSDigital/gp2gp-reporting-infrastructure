@@ -35,7 +35,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-# this might not be needed, think the runner has pip built in.
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -69,8 +68,15 @@ jobs:
         run: |
           terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.stack }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
-          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
+          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"  
+
+      - name: Setup Terraform Variables
+        run: |
+          cat > pipeline.auto.tfvars <<EOF
+              environment = "${{ inputs.environment }}"
+              degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+              EOF
 
       - name: Terraform Destroy
         run: |
-          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}" -var "environment=dev"
+          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}"
