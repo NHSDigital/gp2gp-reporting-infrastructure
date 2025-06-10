@@ -24,11 +24,23 @@ permissions:
   contents: read
 
 jobs:
-  placeholder:
+  test_lambda:
     runs-on: ubuntu-latest
     steps:
-      - name: Hello World
-        run: echo Hello World
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Test Lambda
+        working-directory: lambda/degrades-dashboards
+        run: |
+          pip install pytest
+          pytest tests/
+
 
   deploy_degrades_infra:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml

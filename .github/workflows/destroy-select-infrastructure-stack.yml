@@ -35,22 +35,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-
       - name: Build Lambda Zip
-        run: |
-          cd $GITHUB_WORKSPACE 
-          rm -rf lambda/build/${{ inputs.stack }} 
-          mkdir -p lambda/build/${{ inputs.stack }} 
-          pip install -r lambda/${{ inputs.stack }}/requirements.txt -t lambda/build/${{ inputs.stack }} 
-          cp lambda/${{ inputs.stack }}/*.py lambda/build/${{ inputs.stack }} 
-          
-          pushd lambda/build/${{ inputs.stack }} 
-          zip -r -X ../${{ inputs.stack }}.zip . 
-          popd
+        uses: ./.github/workflows/reusable-build-lambda.yml
+        with:
+          lambda: ${{ inputs.stack }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4

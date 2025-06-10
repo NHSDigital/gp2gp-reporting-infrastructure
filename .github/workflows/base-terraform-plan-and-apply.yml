@@ -47,10 +47,9 @@ jobs:
 
       - name: Build Lambdas
         if: inputs.build_lambda
-        run: |
-            cd $GITHUB_WORKSPACE
-            chmod +x ./tasks_github_actions.sh
-            ./tasks_github_actions.sh build-lambdas
+        uses: ./.github/workflows/reusable-build-lambda.yml
+        with:
+          lambda: ${{ inputs.terraform_stack }}
             
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
