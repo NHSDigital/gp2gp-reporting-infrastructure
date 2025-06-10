@@ -1,5 +1,3 @@
-import json
-
 import boto3
 import os
 from utils.decorators import validate_date_input
