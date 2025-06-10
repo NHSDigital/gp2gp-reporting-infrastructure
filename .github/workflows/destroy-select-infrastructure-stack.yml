@@ -11,10 +11,10 @@ on:
         required: true
       environment:
         description: Environment of stack to destroy
-        default: "dev"
+        default: dev
         required: true
       terraform_vars:
-        default: 'dev.tfvars'
+        default: dev.tfvars
         description: 'Terraform vars file to use.'
         required: true
 
@@ -35,6 +35,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Build Lambda Zip
+        run: |
+          cd $GITHUB_WORKSPACE 
+          rm -rf lambda/build/${{ inputs.stack }} 
+          mkdir -p lambda/build/${{ inputs.stack }} 
+          pip install -r lambda/${{ inputs.stack }}/requirements.txt -t lambda/build/${{ inputs.stack }} 
+          cp lambda/${{ inputs.stack }}/*.py lambda/build/${{ inputs.stack }} 
+          
+          pushd lambda/build/${{ inputs.stack }} 
+          zip -r -X ../${{ inputs.stack }}.zip . 
+          popd
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -49,10 +66,17 @@ jobs:
 
       - name: Terraform Init
         run: |
-          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.stack }}/terrafrom.tfstate" \
+          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.stack }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
-          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
+          -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"  
+
+      - name: Setup Terraform Variables
+        run: |- 
+          cat > pipeline.auto.tfvars <<EOF
+              environment = "${{ inputs.environment }}"
+              degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+          EOF
 
       - name: Terraform Destroy
         run: |
-          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}" -var "environment=dev"
+          terraform destroy -auto-approve -var-file="../vars/${{ inputs.terraform_vars }}"
