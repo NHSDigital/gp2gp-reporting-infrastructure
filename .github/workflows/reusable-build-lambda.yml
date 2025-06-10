@@ -7,14 +7,6 @@ on:
         default: ""
         type: string
 
-  workflow_dispatch:
-    inputs:
-      lambda:
-        type: string
-        description: Lambda directory to be built
-        default: ""
-
-
 permissions:
   pull-requests: write
   id-token: write
@@ -25,9 +17,6 @@ jobs:
   build_lambda:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
