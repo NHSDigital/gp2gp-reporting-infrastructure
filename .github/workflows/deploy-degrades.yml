@@ -35,6 +35,11 @@ jobs:
         with:
           python-version: 3.12
 
+      - name: Install requirements
+        working-directory: lambda/degrades-dashboards
+        run: |
+          pip install -r requirements.txt
+
       - name: Test Lambda
         working-directory: lambda/degrades-dashboards
         run: |
