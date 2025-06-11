@@ -22,6 +22,11 @@ on:
       image_tag:
         description: "Does the workflow need an image tag"
         type: string
+      is_build_recursive:
+        description: "Does the lambda use the new recursive build feature"
+        type: boolean
+        default: false
+
 
 jobs:
   terraform_plan_and_apply:
@@ -36,7 +41,6 @@ jobs:
         with:
           repository: nhsconnect/prm-gp2gp-data-pipeline-infra
 
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -45,12 +49,18 @@ jobs:
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
-      - name: Build Lambdas
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+
+      - name: Build Lambda Zip
         if: inputs.build_lambda
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
-            ./tasks_github_actions.sh build-lambdas
+            ./tasks_github_actions.sh build-lambdas    
             
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
