@@ -44,6 +44,3 @@ def lambda_handler(event, context):
     number_of_degrades = calculate_number_of_degrades(date=prefix)
 
     return {"statusCode": 200, "body": {"numberOfDegrades": number_of_degrades}}
-
-
-
