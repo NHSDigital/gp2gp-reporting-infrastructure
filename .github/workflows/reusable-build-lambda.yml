@@ -1,5 +1,11 @@
 name: Reusable Lambda Build
 on:
+  workflow_dispatch:
+    inputs:
+      lambda:
+        default: ""
+        type: string
+        description: Lambda directory needed to be built
   workflow_call:
     inputs:
       lambda:
