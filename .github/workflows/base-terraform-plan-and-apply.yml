@@ -83,7 +83,6 @@ jobs:
         run: |-
           cat > pipeline.auto.tfvars <<EOF
             environment = "${{ vars.AWS_ENVIRONMENT }}"
-            registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
           EOF
 
       - name: Setup Terraform variables for Image Tag
@@ -110,6 +109,7 @@ jobs:
                 email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
                 validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
                 degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+                registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
             EOF
             if [[ -n "$image_key" ]]; then
               IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
