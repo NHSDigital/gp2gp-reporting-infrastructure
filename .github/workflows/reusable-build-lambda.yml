@@ -42,4 +42,3 @@ jobs:
           pushd lambda/build/${{ inputs.lambda }} 
           zip -r -X ../${{ inputs.lambda }}.zip . 
           popd
-          
