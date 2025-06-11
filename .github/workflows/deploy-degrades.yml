@@ -54,5 +54,4 @@ jobs:
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: degrades-dashboards
       build_lambda: true
-      is_build_recursive: true
     secrets: inherit

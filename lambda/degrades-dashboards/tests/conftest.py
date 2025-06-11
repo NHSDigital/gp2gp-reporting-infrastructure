@@ -61,4 +61,4 @@ def context():
 @pytest.fixture
 def set_env(monkeypatch):
     monkeypatch.setenv("AWS_REGION", REGION_NAME)
-    monkeypatch.setenv("BUCKET_NAME", MOCK_BUCKET)
+    monkeypatch.setenv("REGISTRATIONS_MI_EVENT_BUCKET", MOCK_BUCKET)
