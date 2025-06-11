@@ -6,6 +6,11 @@ resource "aws_lambda_function" "degrades_lambda" {
   runtime          = "python3.12"
   source_code_hash = filebase64sha256("${var.degrades_dashboards_lambda_zip}")
   timeout          = 15
+  environment {
+    variables = {
+      BUCKET_NAME = ""
+    }
+  }
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
