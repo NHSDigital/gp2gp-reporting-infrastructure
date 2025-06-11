@@ -18,6 +18,6 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
 
 def is_degrade(file) -> bool:
     data = json.loads(file)
-    eventType = data.get("eventType", None)
+    event_type = data.get("eventType", None)
 
-    return eventType is not None and eventType == "DEGRADES"
+    return event_type is not None and event_type == "DEGRADES"
