@@ -37,7 +37,7 @@ jobs:
           rm -rf lambda/build/${{ inputs.lambda }} 
           mkdir -p lambda/build/${{ inputs.lambda }} 
           pip install -r lambda/${{ inputs.lambda }}/requirements.txt -t lambda/build/${{ inputs.lambda }} 
-          rsync -av --progress lambda/${{ inputs.lambda }} lambda/build/${{ inputs.lambda }} --excludes tests
+          rsync -av --progress lambda/${{ inputs.lambda }} lambda/build/${{ inputs.lambda }} --exclude tests
           
           pushd lambda/build/${{ inputs.lambda }} 
           zip -r -X ../${{ inputs.lambda }}.zip . 
