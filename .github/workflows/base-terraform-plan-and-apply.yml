@@ -22,10 +22,7 @@ on:
       image_tag:
         description: "Does the workflow need an image tag"
         type: string
-      is_build_recursive:
-        description: "Does the lambda use the new recursive build feature"
-        type: boolean
-        default: false
+
 
 jobs:
   terraform_plan_and_apply:
@@ -53,21 +50,8 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Build Lambda Zip - Recursive Packaging
-        if: inputs.build_lambda && inputs.is_build_recursive
-        run: |
-          cd $GITHUB_WORKSPACE 
-          rm -rf lambda/build/${{ inputs.terraform_stack }} 
-          mkdir -p lambda/build/${{ inputs.terraform_stack }} 
-          pip install -r lambda/${{ inputs.terraform_stack }}/requirements.txt -t lambda/build/${{ inputs.terraform_stack }} 
-          rsync -av --progress lambda/${{ inputs.terraform_stack }} lambda/build/${{ inputs.terraform_stack }} --exclude tests
-          
-          pushd lambda/build/${{ inputs.terraform_stack }} 
-          zip -r -X ../${{ inputs.terraform_stack }}.zip . 
-          popd
-
       - name: Build Lambda Zip
-        if: inputs.build_lambda && !inputs.is_build_recursive
+        if: inputs.build_lambda
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
