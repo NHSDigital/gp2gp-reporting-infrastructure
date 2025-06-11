@@ -8,7 +8,7 @@ resource "aws_lambda_function" "degrades_lambda" {
   timeout          = 15
   environment {
     variables = {
-      REGISTRATIONS_MI_EVENT_BUCKET = var.registrations_mi_event_bucket
+      REGISTRATIONS_MI_EVENT_BUCKET = "${var.registrations_mi_event_bucket}-${var.environment}"
     }
   }
 }

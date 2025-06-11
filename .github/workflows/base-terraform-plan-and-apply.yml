@@ -82,7 +82,8 @@ jobs:
         id: vars
         run: |-
           cat > pipeline.auto.tfvars <<EOF
-          environment = "${{ vars.AWS_ENVIRONMENT }}"
+            environment = "${{ vars.AWS_ENVIRONMENT }}"
+            registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
           EOF
 
       - name: Setup Terraform variables for Image Tag
