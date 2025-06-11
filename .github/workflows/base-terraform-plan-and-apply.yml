@@ -22,10 +22,6 @@ on:
       image_tag:
         description: "Does the workflow need an image tag"
         type: string
-      is_build_recursive:
-        description: "Does the lambda use the new recursive build feature"
-        type: boolean
-        default: false
 
 
 jobs:
@@ -53,7 +49,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-
 
       - name: Build Lambda Zip
         if: inputs.build_lambda
