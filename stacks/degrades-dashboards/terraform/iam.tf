@@ -36,6 +36,6 @@ data "aws_iam_policy_document" "read_registrations_mi_events" {
       "s3-object-lambda:List*"
     ]
     resources = [
-    "arn:aws:s3:::${var.registrations_mi_event_bucket}-${var.environment}/*"]
+    "arn:aws:s3:::${var.registrations_mi_event_bucket}/*"]
   }
 }
