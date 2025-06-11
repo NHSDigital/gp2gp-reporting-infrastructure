@@ -1,5 +1,6 @@
 import boto3
 import os
+import json
 from utils.decorators import validate_date_input
 from utils.utils import  get_key_from_date, is_degrade
 
@@ -43,4 +44,4 @@ def lambda_handler(event, context):
 
     number_of_degrades = calculate_number_of_degrades(date=prefix)
 
-    return {"statusCode": 200, "body": {"numberOfDegrades": number_of_degrades}}
+    return {"statusCode": 200, "body": json.dumps({"numberOfDegrades": number_of_degrades})}

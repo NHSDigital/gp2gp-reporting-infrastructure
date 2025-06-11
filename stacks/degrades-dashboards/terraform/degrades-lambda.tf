@@ -5,7 +5,8 @@ resource "aws_lambda_function" "degrades_lambda" {
   handler          = "main.lambda_handler"
   runtime          = "python3.12"
   source_code_hash = filebase64sha256("${var.degrades_dashboards_lambda_zip}")
-  timeout          = 15
+  timeout          = 45
+  memory_size      = 512
   environment {
     variables = {
       REGISTRATIONS_MI_EVENT_BUCKET = "${var.registrations_mi_event_bucket}"
