@@ -8,6 +8,7 @@ function build_lambda {
     lambda_name=$1
 
     build_dir=lambda/build/$lambda_name
+    utils_dir=lambda/$lambda_name/utils
     rm -rf $build_dir
     mkdir -p $build_dir
 
@@ -17,6 +18,12 @@ function build_lambda {
     fi
 
     cp lambda/$lambda_name/*.py $build_dir
+
+
+    if [ -d "$utils_dir" ]; then
+      mkdir -p "$build_dir/utils"
+      cp "$utils_dir"/*.py "$build_dir/utils/"
+    fi
 
     pushd $build_dir
     zip -r -X ../$lambda_name.zip .

@@ -1,3 +1,4 @@
+import json
 import os
 import boto3
 from moto import mock_aws
@@ -97,8 +98,8 @@ def test_lambda_handler_calculates_number_of_degrades(set_env, mock_valid_event_
     for file in json_files:
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
-    expected = {'statusCode': 200, "body": {"numberOfDegrades": 5}}
+    expected = {'statusCode': 200, "body": json.dumps({"numberOfDegrades": 5})}
     actual = lambda_handler(mock_valid_event_valid_date, context)
 
     assert actual == expected
-    assert calculate_number_of_degrades("2024/01/01/") == expected["body"]["numberOfDegrades"]
+    assert calculate_number_of_degrades("2024/01/01/") == json.loads(expected["body"])["numberOfDegrades"]
