@@ -161,19 +161,23 @@ jobs:
         env:
           LENGTH: 64512
         run: |
-          PLAN_FULL=$(grep -v 'Refreshing state...' <<'EOF'
-          ${{ steps.plan.outputs.stdout }}
-          ${{ steps.plan.outputs.stderr }}
-          EOF
-          )
-          # Optionally redact sensitive strings in the PLAN_FULL variable
+          LENGTH=${{ env.LENGTH }}
+          PLAN_FULL="${{ steps.plan.outputs.stdout }}${{ steps.plan.outputs.stderr }}"
+
+          # Remove 'Refreshing state...' lines
+          PLAN_FULL=$(echo "$PLAN_FULL" | grep -v 'Refreshing state...')
+
+          # Redactions
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's/[0-9]{12}/[REDACTED_AWS_ACCOUNT_ID]/g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#https://[a-zA-Z0-9.-]+\.lambda\.amazonaws\.com/[a-zA-Z0-9/._-]+#[REDACTED_LAMBDA_URL]#g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#https://[a-zA-Z0-9.-]+\.execute-api\.[a-zA-Z0-9.-]+\.amazonaws\.com/[a-zA-Z0-9/._-]*#[REDACTED_API_GATEWAY_URL]#g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9_-]+#[REDACTED_IAM_ROLE_ARN]#g')
+
           echo "PLAN<<EOF" >> $GITHUB_ENV
-          echo "${PLAN_FULL::$LENGTH}" >> $GITHUB_ENV
-          [ ${#PLAN_FULL} -gt $LENGTH ] && echo "(truncated - see workflow logs for full output)" >> $GITHUB_ENV
+          echo "${PLAN_FULL:0:$LENGTH}" >> $GITHUB_ENV
+          if (( ${#PLAN_FULL} > LENGTH )); then
+            echo "(truncated - see workflow logs for full output)" >> $GITHUB_ENV
+          fi
           echo "EOF" >> $GITHUB_ENV
         working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
         shell: bash
