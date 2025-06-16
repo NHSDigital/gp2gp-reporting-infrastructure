@@ -48,6 +48,7 @@ jobs:
 
 
   deploy_degrades_infra:
+    needs: [test_lambda]
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: dev
