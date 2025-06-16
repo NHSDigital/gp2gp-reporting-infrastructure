@@ -7,7 +7,7 @@ on:
         type: choice
         description: Stack to destroy
         options:
-          - degrades-dashboards
+          - degrades-api-dashboards
         required: true
       environment:
         description: Environment of stack to destroy

@@ -1,7 +1,7 @@
-variable "degrades_dashboards_lambda_zip" {
+variable "degrades_dashboards_api_lambda_zip" {
   type        = string
   description = "File path for Degrades Lambda zip"
-  default     = "lambda/build/degrades-dashboards.zip"
+  default     = "lambda/build/degrades-api-dashboards.zip"
 }
 
 variable "environment" {
@@ -9,8 +9,8 @@ variable "environment" {
   description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
-variable "degrades_lambda_name" {
-  default = "degrades_dashboards_lambda"
+variable "degrades_api_lambda_name" {
+  default = "degrades_api_dashboards_lambda"
 }
 
 variable "registrations_mi_event_bucket" {
