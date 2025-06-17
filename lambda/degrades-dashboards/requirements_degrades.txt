@@ -1,3 +1,4 @@
+annotated-types==0.7.0
 awscli-local==0.22.0
 boto3==1.38.27
 botocore==1.38.27
@@ -16,6 +17,8 @@ moto==5.1.5
 packaging==25.0
 pluggy==1.6.0
 pycparser==2.22
+pydantic==2.11.7
+pydantic_core==2.33.2
 pytest==8.3.5
 pytest-mock==3.14.1
 python-dateutil==2.9.0.post0
@@ -26,6 +29,8 @@ responses==0.25.7
 s3transfer==0.13.0
 six==1.17.0
 terraform-local==0.23.1
+typing-inspection==0.4.1
+typing_extensions==4.14.0
 urllib3==2.4.0
 Werkzeug==3.1.3
 xmltodict==0.14.2

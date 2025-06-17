@@ -13,7 +13,7 @@ MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES = [
         'AttributeType': 'N'
     },
     {
-        'AttributeName': 'MessageID',
+        'AttributeName': 'MessageId',
         'AttributeType': 'S'
     },
 ]
@@ -24,7 +24,7 @@ MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
         'KeyType': 'HASH'
     },
     {
-        "AttributeName": "MessageID",
+        "AttributeName": "MessageId",
         "KeyType": "RANGE"
     }
 ]
