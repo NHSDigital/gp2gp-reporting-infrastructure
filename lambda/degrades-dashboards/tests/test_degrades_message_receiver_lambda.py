@@ -24,4 +24,6 @@ def test_degrades_message_receiver_puts_item_on_table(set_env, context):
 
     actual = degrades_table.get_item(Key={"Timestamp": timestamp,
                                           "MessageId": MOCK_VALID_DEGRADES_MESSAGE["eventId"]})
-    assert DegradeMessage.model_validate(actual["Item"]) == DegradeMessage.model_validate({"timestamp": timestamp, "message_id": MOCK_VALID_DEGRADES_MESSAGE["eventId"]})
+
+    assert DegradeMessage.model_validate(actual["Item"]) == DegradeMessage.model_validate(
+        {"timestamp": timestamp, "message_id": MOCK_VALID_DEGRADES_MESSAGE["eventId"]})
