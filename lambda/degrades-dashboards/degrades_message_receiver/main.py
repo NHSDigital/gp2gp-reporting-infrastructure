@@ -10,12 +10,16 @@ REGION = os.getenv("AWS_REGION")
 
 
 def lambda_handler(event, context):
-    sqs_message = json.loads(event["Records"][0]["body"])
-
-    timestamp = int(datetime.fromisoformat(sqs_message["eventGeneratedDateTime"]).timestamp())
-
-    message = DegradeMessage(timestamp=timestamp, message_id=sqs_message["eventId"])
-    new_entry = message.model_dump(by_alias=True)
+    messages = event.get("Records", [])
     client = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION"))
     table = client.Table(os.getenv("DEGRADES_MESSAGE_TABLE"))
-    table.put_item(Item=new_entry)
+
+    for message in messages:
+        message = json.loads(message["body"])
+        timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
+
+        degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"])
+        DegradeMessage.model_validate(degrades_message)
+
+
+        table.put_item(Item=degrades_message.model_dump(by_alias=True))

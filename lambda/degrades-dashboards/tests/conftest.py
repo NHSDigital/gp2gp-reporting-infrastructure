@@ -29,7 +29,7 @@ MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
     }
 ]
 
-MOCK_VALID_DEGRADES_MESSAGE = {
+MOCK_FIRST_DEGRADES_MESSAGE = {
     "eventId": "02-DEGRADES-02",
     "eventGeneratedDateTime": "2024-09-20T00:00:00",
     "eventType": "DEGRADES",
@@ -86,6 +86,30 @@ MOCK_VALID_DEGRADES_MESSAGE = {
     }
 }
 
+MOCK_SECOND_DEGRADES_MESSAGE = {
+  "eventId": "01-DEGRADES-01",
+  "eventGeneratedDateTime": "2024-09-20T00:00:00",
+  "eventType": "DEGRADES",
+  "reportingSystemSupplier": "EMIS",
+  "payload": {
+    "degrades": [
+      {
+        "type": "MEDICATION",
+        "reason": "CODE",
+        "coding": [
+          {
+            "code": "02543001",
+            "system": "UNKNOWN"
+          },
+          {
+            "code": "02543001",
+            "system": "UNKNOWN"
+          }
+        ]
+      }
+    ]
+  }
+}
 
 @pytest.fixture
 def mock_invalid_event_empty_query_string():
