@@ -7,7 +7,7 @@ on:
         type: choice
         description: Stack to destroy
         options:
-          - degrades-api-dashboards
+          - degrades_api_dashboards
         required: true
       environment:
         description: Environment of stack to destroy
@@ -62,7 +62,8 @@ jobs:
         run: |- 
           cat > pipeline.auto.tfvars <<EOF
               environment = "${{ inputs.environment }}"
-              degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+              degrades_dashboards_api_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-api-dashboards.zip"
+              degrades_message_receiver_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-message-receiver.zip"
               registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
           EOF
 

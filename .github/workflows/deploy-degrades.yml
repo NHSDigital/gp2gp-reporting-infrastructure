@@ -6,14 +6,16 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '../../lambda/degrades-api-dashboards/**'
+      - '../../lambda/degrades_api_dashboards/**'
+      - '../../lambda/degrades_message_receiver/**'
       - 'stacks/degrades-dashboards/**'
       - '.github/workflows/deploy-degrades.yml'
 
   pull_request:
     branches: [ main ]
     paths:
-      - '../../lambda/degrades-api-dashboards/**'
+      - '../../lambda/degrades_api_dashboards/**'
+      - '../../lambda/degrades_message_receiver/**'
       - 'stacks/degrades-dashboards/**'
       - '.github/workflows/deploy-degrades.yml'
 
@@ -36,12 +38,12 @@ jobs:
           python-version: 3.12
 
       - name: Install requirements
-        working-directory: lambda/degrades-api-dashboards
+        working-directory: lambda/degrades-dashboards
         run: |
           pip install -r requirements.txt
 
       - name: Test API Lambda
-        working-directory: lambda/degrades-api-dashboards
+        working-directory: lambda/degrades-dashboards
         run: |
           pip install pytest
           pytest tests/

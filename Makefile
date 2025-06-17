@@ -1,38 +1,36 @@
 REQUIREMENTS = requirements_degrades.txt
 BUILD_PATH = stacks/degrades-dashboards/terraform/lambda/build
+DEGRADES_LAMBDA_PATH = lambda/degrades-dashboards
 
 degrades-env:
-	rm -rf lambdas/venv || true
-	python3 -m venv ./venv
-	./venv/bin/pip3 install --upgrade pip
-	./venv/bin/pip3 install -r $(REQUIREMENTS) --no-cache-dir
+	cd $(DEGRADES_LAMBDA_PATH) && rm -rf lambdas/venv || true
+	cd $(DEGRADES_LAMBDA_PATH) && python3 -m venv ./venv
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --upgrade pip
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) --no-cache-dir
 
 
 test-degrades:
-	cd lambda/degrades-api-dashboards  && ../../venv/bin/python3 -m pytest tests/
+	cd $(DEGRADES_LAMBDA_PATH)  && venv/bin/python3 -m pytest tests/
 
 deploy-local:  zip-degrades-lambdas
 	localstack start -d
-	./venv/bin/awslocal s3 mb s3://terraform-state
-	cd stacks/degrades-dashboards/terraform && ../../../venv/bin/tflocal init
-	cd stacks/degrades-dashboards/terraform && ../../../venv/bin/tflocal plan
-	cd stacks/degrades-dashboards/terraform && ../../../venv/bin/tflocal apply --auto-approve
+	$(DEGRADES_LAMBDA_PATH)/venv/bin/awslocal s3 mb s3://terraform-state
+	cd stacks/degrades-dashboards/terraform && ../../../$(DEGRADES_LAMBDA_PATH)/venv/bin/tflocal init
+	cd stacks/degrades-dashboards/terraform && ../../../$(DEGRADES_LAMBDA_PATH)/venv/bin/tflocal plan
+	cd stacks/degrades-dashboards/terraform && ../../../$(DEGRADES_LAMBDA_PATH)/venv/bin/tflocal apply --auto-approve
 
 zip-degrades-lambdas:
-	rm -rf $(BUILD_PATH) || true
-	mkdir -p $(BUILD_PATH)
-	./venv/bin/pip3 install -r $(REQUIREMENTS) -t $(BUILD_PATH)/degrades-api
-	./venv/bin/pip3 install -r $(REQUIREMENTS) -t $(BUILD_PATH)/degrades-receiver
+	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH) || true
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-api
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-receiver
 
-	cp ./lambda/degrades-api-dashboards/main.py $(BUILD_PATH)/degrades-api/
-	cp ./lambda/degrades-api-dashboards/main.py $(BUILD_PATH)/degrades-receiver
+	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_api_dashboards/main.py $(BUILD_PATH)/degrades-api/
+	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-receiver
 
-	if [ -d "lambda/degrades-api-dashboards/utils" ]; then \
-		cp -r lambda/degrades-api-dashboards/utils $(BUILD_PATH)/degrades-api/utils; \
-	fi;
-
-	if [ -d "lambda/degrades-message-receiver/utils" ]; then \
-		cp -r lambda/degrades-api-dashboards/utils $(BUILD_PATH)/degrades-receiver/utils/; \
+	if [ -d "lambda/degrades-dashboards/utils" ]; then \
+		cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-api/utils; \
+		cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-receiver/utils/; \
 	fi;
 
 	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../degrades-message-receiver.zip .
