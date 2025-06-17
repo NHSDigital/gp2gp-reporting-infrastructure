@@ -108,7 +108,9 @@ jobs:
                 gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
                 email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
                 validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
-                degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+                degrades_api_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-api-dashboards.zip"
+                degrades_message_receiver_lambda_zip = "$$GITHUB_WORKSPACE/lambda/build/degrades-message-receiver.zip
+                degrades_message_table = 
                 registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
             EOF
             if [[ -n "$image_key" ]]; then

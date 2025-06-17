@@ -5,9 +5,9 @@ variable "degrades_dashboards_api_lambda_zip" {
 }
 
 variable "degrades_message_receiver_lambda_zip" {
-  type = string
+  type        = string
   description = "File path Degrades Message Receiver Lambda"
-  default = "lambda/build/degrades-message-receiver-lambda.zip"
+  default     = "lambda/build/degrades-message-receiver.zip"
 }
 
 variable "environment" {
@@ -16,23 +16,23 @@ variable "environment" {
 }
 
 variable "degrades_api_lambda_name" {
-  type = string
+  type        = string
   description = "Name of Degrades API lambda"
-  default = "degrades_api_dashboards_lambda"
+  default     = "degrades_api_dashboards_lambda"
 }
 
 variable "degrades_message_receiver_lambda_name" {
-  type = string
+  type        = string
   description = "Name of Degrades Message Receiver Lambda"
-  default = "degrades_message_receiver_lambda"
+  default     = "degrades_message_receiver_lambda"
 }
 
 variable "registrations_mi_event_bucket" {
-  type = string
-  description = "Name of terraform state bucket"
+  type        = string
+  description = "Name of GP2GP messages bucket"
 }
 
 variable "degrades_message_table" {
-  type = string
+  type        = string
   description = "Name of Degrades Message DynamoDB table"
 }

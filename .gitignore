@@ -2,6 +2,7 @@
 *.tfplan
 .idea
 lambda/build
+stacks/degrades-dashboards/terraform/lambda/build
 *.zip
 **/**/.terraform
 **/**/.terraform.*

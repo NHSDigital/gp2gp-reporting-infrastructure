@@ -1,10 +1,15 @@
 resource "aws_dynamodb_table" "degrades_message_table" {
-  name = "${var.degrades_message_table}_${var.environment}"
-  hash_key = "Timestamp"
+  name         = "${var.degrades_message_table}_${var.environment}"
+  hash_key     = "Timestamp"
+  range_key    = "MessageID"
   billing_mode = "PAY_PER_REQUEST"
   attribute {
     name = "Timestamp"
     type = "N"
+  }
+  attribute {
+    name = "MessageID"
+    type = "S"
   }
 }
 
