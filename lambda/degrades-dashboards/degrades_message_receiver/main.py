@@ -18,8 +18,8 @@ def lambda_handler(event, context):
         message = json.loads(message["body"])
         timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
 
-        degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"])
+        degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"], event_type=message["eventType"])
         DegradeMessage.model_validate(degrades_message)
 
 
-        table.put_item(Item=degrades_message.model_dump(by_alias=True))
+        table.put_item(Item=degrades_message.model_dump(by_alias=True, exclude={"event_type": degrades_message.event_type}))
