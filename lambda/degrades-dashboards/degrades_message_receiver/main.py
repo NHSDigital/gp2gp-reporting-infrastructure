@@ -3,6 +3,8 @@ import os
 import boto3
 from datetime import datetime
 
+from pydantic_core._pydantic_core import ValidationError
+
 from models.degrade_message import DegradeMessage
 
 DEGRADES_TABLE = os.getenv("DEGRADES_MESSAGE_TABLE")
@@ -15,11 +17,14 @@ def lambda_handler(event, context):
     table = client.Table(os.getenv("DEGRADES_MESSAGE_TABLE"))
 
     for message in messages:
-        message = json.loads(message["body"])
-        timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
+        try:
+            message = json.loads(message["body"])
+            timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
 
-        degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"], event_type=message["eventType"])
-        DegradeMessage.model_validate(degrades_message)
+            degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"], event_type=message["eventType"])
+            DegradeMessage.model_validate(degrades_message)
 
-
-        table.put_item(Item=degrades_message.model_dump(by_alias=True, exclude={"event_type": degrades_message.event_type}))
+            table.put_item(Item=degrades_message.model_dump(by_alias=True, exclude={"event_type": degrades_message.event_type}))
+        except ValidationError as e:
+            print("Validation error: Invalid degrade message")
+            raise ValueError("Invalid degrade message", e.json)
