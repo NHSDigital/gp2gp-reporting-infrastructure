@@ -1,4 +1,8 @@
+from unittest import mock
+
+import boto3
 from dataclasses import dataclass
+from moto import mock_aws
 
 import pytest
 
@@ -165,6 +169,18 @@ def context():
         )
 
     return LambdaContext()
+
+
+@pytest.fixture
+def mock_table():
+    with mock_aws():
+        conn = boto3.resource("dynamodb", region_name=REGION_NAME)
+        degrades_table = conn.create_table(TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
+                                       KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
+                                       AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
+                                       BillingMode="PAY_PER_REQUEST", )
+        yield degrades_table
+
 
 
 @pytest.fixture
