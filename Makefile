@@ -7,6 +7,7 @@ degrades-env:
 	cd $(DEGRADES_LAMBDA_PATH) && python3 -m venv ./venv
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --upgrade pip
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) --no-cache-dir
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r requirements_dev.txt --no-cache-dir
 
 
 test-degrades:
