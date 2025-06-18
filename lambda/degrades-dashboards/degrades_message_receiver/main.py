@@ -2,14 +2,9 @@ import json
 import os
 import boto3
 from datetime import datetime
-
-from pydantic_core._pydantic_core import ValidationError
-
+from pydantic import ValidationError
 from models.degrade_message import DegradeMessage
 from utils.utils import extract_degrades_payload
-
-DEGRADES_TABLE = os.getenv("DEGRADES_MESSAGE_TABLE")
-REGION = os.getenv("AWS_REGION")
 
 
 def lambda_handler(event, context):

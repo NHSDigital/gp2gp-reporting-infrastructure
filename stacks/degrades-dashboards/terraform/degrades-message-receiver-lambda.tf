@@ -9,7 +9,8 @@ resource "aws_lambda_function" "degrades_handler" {
 
   environment {
     variables = {
-      DEGRADES_MESSAGES_TABLE = aws_dynamodb_table.degrades_message_table.name
+      DEGRADES_MESSAGE_TABLE = aws_dynamodb_table.degrades_message_table.name
+      AWS_REGION              = "eu-west-2"
     }
   }
 }
