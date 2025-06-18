@@ -21,3 +21,10 @@ def is_degrade(file) -> bool:
     event_type = data.get("eventType", None)
 
     return event_type is not None and event_type == "DEGRADES"
+
+
+def extract_degrades_payload(payload: dict) -> list[str]:
+    degrades = []
+    for degrade in payload["degrades"]:
+        degrades.append(degrade["type"])
+    return degrades
