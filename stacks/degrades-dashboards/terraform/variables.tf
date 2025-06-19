@@ -15,6 +15,11 @@ variable "environment" {
   description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
+variable "aws_region" {
+  type        = string
+  description = "AWS region to deploy to"
+}
+
 variable "degrades_api_lambda_name" {
   type        = string
   description = "Name of Degrades API lambda"
