@@ -21,7 +21,8 @@ deploy-local:  zip-degrades-lambdas
 
 zip-degrades-lambdas:
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH) || true
-	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-api
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-receiver
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --platform manylinux2014_x86_64 --only-binary=:all: --implementation cp --python-version 3.12 -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-api
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --platform manylinux2014_x86_64 --only-binary=:all: --implementation cp --python-version 3.12 -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-receiver
 
@@ -42,7 +43,8 @@ zip-degrades-lambdas:
 
 zip-degrades-lambdas-github:
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH) || true
-	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-api
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-receiver
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-api
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-receiver
 
