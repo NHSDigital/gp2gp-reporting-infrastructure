@@ -1,5 +1,7 @@
 import os
-from utils.utils import get_key_from_date, calculate_number_of_degrades, is_degrade
+
+from tests.mocks.sqs_messages.degrades import MOCK_FIRST_DEGRADES_MESSAGE, MOCK_COMPLEX_DEGRADES_MESSAGE
+from utils.utils import get_key_from_date, calculate_number_of_degrades, is_degrade, extract_degrades_payload
 
 def test_get_key_from_date():
     date = "2020-01-01"
@@ -22,3 +24,19 @@ def test_is_degrade_with_degrade_message():
 def test_is_degrade_with_file_not_degrades_message():
     with open('tests/mocks/mixed_messages/01-DOCUMENT_RESPONSES-01.json', 'r') as file:
         assert is_degrade(file.read()) == False
+
+
+def test_extract_degrades_payload_simple_message():
+    payload = MOCK_FIRST_DEGRADES_MESSAGE["payload"]
+
+    actual = extract_degrades_payload(payload)
+    expected = ["MEDICATION"]
+    assert actual == expected
+
+
+def test_extract_degrades_payload_complex_message():
+    payload = MOCK_COMPLEX_DEGRADES_MESSAGE["payload"]
+
+    actual = extract_degrades_payload(payload)
+    expected = ["MEDICATION", "RECORD_ENTRY", "NON_DRUG_ALLERGY"]
+    assert actual == expected

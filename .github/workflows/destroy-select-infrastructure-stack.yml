@@ -36,9 +36,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Lambda Zip
-        uses: ./.github/workflows/reusable-build-lambda.yml
-        with:
-          lambda: ${{ inputs.stack }}
+        run: |
+          make zip-degrades-lambdas
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -62,8 +61,10 @@ jobs:
         run: |- 
           cat > pipeline.auto.tfvars <<EOF
               environment = "${{ inputs.environment }}"
-              degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
+              degrades_dashboards_api_lambda_zip = "./lambda/build/degrades-api-dashboards.zip"
+              degrades_message_receiver_lambda_zip = "./lambda/build/degrades-message-receiver.zip"
               registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
+              degrades_message_table = "${{ secrets.AWS_DEGRADES_MESSAGE_TABLE }}
           EOF
 
       - name: Terraform Destroy
