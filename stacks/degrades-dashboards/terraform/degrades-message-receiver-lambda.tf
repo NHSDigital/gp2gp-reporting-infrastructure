@@ -10,7 +10,7 @@ resource "aws_lambda_function" "degrades_message_receiver" {
   environment {
     variables = {
       DEGRADES_MESSAGE_TABLE = aws_dynamodb_table.degrades_message_table.name
-      REGION             = var.region
+      REGION                 = var.region
     }
   }
 }
