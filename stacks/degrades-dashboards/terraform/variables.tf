@@ -15,7 +15,7 @@ variable "environment" {
   description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
-variable "aws_region" {
+variable "region" {
   type        = string
   description = "AWS region to deploy to"
 }
