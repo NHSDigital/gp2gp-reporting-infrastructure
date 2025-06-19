@@ -43,8 +43,8 @@ zip-degrades-lambdas:
 zip-degrades-lambdas-github:
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH) || true
 	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)
-	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --only-binary=:all: --implementation cp --python-version 3.12 -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-api
-	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --only-binary=:all: --implementation cp --python-version 3.12 -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-receiver
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --platform manylinux2014_x86_64 --only-binary=:all: --implementation cp -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-api
+	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --platform manylinux2014_x86_64 --only-binary=:all: --implementation cp -r $(REQUIREMENTS) -t ../../$(BUILD_PATH)/degrades-receiver
 
 	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_api_dashboards/main.py $(BUILD_PATH)/degrades-api/
 	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-receiver
