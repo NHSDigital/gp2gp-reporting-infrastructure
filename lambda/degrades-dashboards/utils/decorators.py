@@ -9,10 +9,12 @@ def validate_date_input(lambda_func: Callable):
         try:
             params = event.get("queryStringParameters", None)
             if not params:
+                print("No query string parameters")
                 return {"statusCode": 400}
 
             string_date = params.get("date", None)
             if not string_date:
+                print("No date parameter")
                 return {"statusCode": 400}
 
             datetime.strptime(string_date, "%Y-%m-%d").date()
@@ -20,6 +22,7 @@ def validate_date_input(lambda_func: Callable):
             return lambda_func(event, context)
 
         except ValueError:
+            print("Invalid date parameter")
             return {"statusCode": 400}
 
     return interceptor
