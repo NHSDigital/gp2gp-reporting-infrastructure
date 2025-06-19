@@ -101,6 +101,6 @@ def mock_table():
 
 @pytest.fixture
 def set_env(monkeypatch):
-    monkeypatch.setenv("AWS_REGION", REGION_NAME)
+    monkeypatch.setenv("REGION", REGION_NAME)
     monkeypatch.setenv("REGISTRATIONS_MI_EVENT_BUCKET", MOCK_BUCKET)
     monkeypatch.setenv("DEGRADES_MESSAGE_TABLE", MOCK_DEGRADES_MESSAGE_TABLE_NAME)

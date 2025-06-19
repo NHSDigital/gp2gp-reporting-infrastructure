@@ -120,7 +120,8 @@ jobs:
                 degrades_message_receiver_lambda_zip = "./lambda/build/degrades-message-receiver.zip"
                 degrades_message_table = "${{ secrets.AWS_DEGRADES_MESSAGE_TABLE }}"
                 registrations_mi_event_bucket = "${{ secrets.AWS_REGISTRATION_MI_EVENT_BUCKET }}"
-                aws_region = "${{ vars.AWS_REGION }}"
+                region = "${{ vars.AWS_REGION }}"
+
             EOF
             if [[ -n "$image_key" ]]; then
               IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
