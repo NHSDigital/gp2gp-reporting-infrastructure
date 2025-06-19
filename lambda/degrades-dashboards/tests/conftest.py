@@ -8,6 +8,7 @@ MOCK_INTERACTION_ID = "88888888-4444-4444-4444-121212121212"
 REGION_NAME = "us-east-1"
 MOCK_BUCKET = "test-s3-bucket"
 MOCK_DEGRADES_MESSAGE_TABLE_NAME = "degrades_messages_table"
+MOCK_DEGRADES_QUEUE_NAME = "degrades_queue"
 
 MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES = [
     {
@@ -104,3 +105,4 @@ def set_env(monkeypatch):
     monkeypatch.setenv("REGION", REGION_NAME)
     monkeypatch.setenv("REGISTRATIONS_MI_EVENT_BUCKET", MOCK_BUCKET)
     monkeypatch.setenv("DEGRADES_MESSAGE_TABLE", MOCK_DEGRADES_MESSAGE_TABLE_NAME)
+    monkeypatch.setenv("DEGRADES_SQS_QUEUE_NAME", MOCK_DEGRADES_QUEUE_NAME)
