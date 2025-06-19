@@ -9,7 +9,7 @@ from utils.utils import extract_degrades_payload
 
 def lambda_handler(event, context):
     messages = event.get("Records", [])
-    client = boto3.resource("dynamodb", region_name=os.getenv("AWS_REGION"))
+    client = boto3.resource("dynamodb", region_name=os.getenv("REGION"))
     table = client.Table(os.getenv("DEGRADES_MESSAGE_TABLE"))
 
     for message in messages:
