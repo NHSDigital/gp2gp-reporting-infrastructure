@@ -56,7 +56,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           python3 -m venv lambda/degrades-dashboards/venv
           lambda/degrades-dashboards/venv/bin/pip3 install --upgrade pip
-          make zip-degrades-lambdas-github
+          make zip-degrades-lambdas
 
       - name: Build Lambda Zip
         if: inputs.build_lambda && inputs.terraform_stack != 'degrades-dashboards'
