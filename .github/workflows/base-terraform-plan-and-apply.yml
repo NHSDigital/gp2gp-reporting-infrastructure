@@ -50,8 +50,13 @@ jobs:
         with:
           python-version: 3.12
 
+      - name: Build Degrades Zip
+        if: inputs.build_lambda && inputs.terraform_stack == 'degrades-dashboards'
+        run: |
+          make zip-degrades-lambdas
+
       - name: Build Lambda Zip
-        if: inputs.build_lambda
+        if: inputs.build_lambda && inputs.terraform_stack != 'degrades-dashboards'
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
