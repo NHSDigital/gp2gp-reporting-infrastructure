@@ -25,7 +25,8 @@ data "aws_iam_policy_document" "degrades_messages_sqs_receive" {
     actions = [
       "sqs:ReceiveMessage",
       "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl"
+      "sqs:GetQueueUrl",
+      "sqs:DeleteMessage"
     ]
     resources = ["${aws_sqs_queue.degrades_messages.arn}", "${aws_sqs_queue.degrades_messages_deadletter.arn}"]
   }
