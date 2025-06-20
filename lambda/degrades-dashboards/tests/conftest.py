@@ -1,4 +1,5 @@
 import boto3
+import os
 from dataclasses import dataclass
 from moto import mock_aws
 
@@ -97,6 +98,21 @@ def mock_table():
                                        AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
                                        BillingMode="PAY_PER_REQUEST", )
         yield degrades_table
+
+
+@pytest.fixture
+def mock_s3_with_files():
+    with mock_aws():
+        folder_path = 'tests/mocks/mixed_messages'
+        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+
+        conn = boto3.resource('s3', region_name=REGION_NAME)
+        bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
+
+        for file in json_files:
+            bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
+
+        yield bucket
 
 
 

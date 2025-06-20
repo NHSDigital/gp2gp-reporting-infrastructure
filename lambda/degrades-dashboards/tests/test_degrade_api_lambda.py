@@ -70,17 +70,8 @@ def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_v
 
 
 @mock_aws
-def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid_date, context):
-    folder_path = './tests/mocks/mixed_messages'
-    json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
-
-    conn = boto3.resource('s3', region_name=REGION_NAME)
-    bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
-
-    for file in json_files:
-        bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
-
-    files_names = list_files_from_S3(MOCK_BUCKET, "2024/01/01/")
+def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid_date, context, mock_s3_with_files):
+    files_names = list_files_from_S3(bucket_name=MOCK_BUCKET, prefix="2024/01/01/")
 
     actual = get_file_from_S3(files_names[0])
     with open("./tests/mocks/mixed_messages/01-DEGRADES-01.json", "rb") as expected:
