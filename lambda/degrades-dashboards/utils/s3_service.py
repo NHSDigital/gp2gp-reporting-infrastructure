@@ -8,21 +8,16 @@ class S3Service:
         self.client = boto3.client("s3", region_name=os.getenv("REGION"))
 
     def list_files_from_S3(self, bucket_name, prefix):
-        try:
-            response = self.client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
-            file_keys = []
-            response_objects = response.get("Contents", [])
 
-            if response_objects:
-                for obj in response_objects:
-                    file_keys.append(obj["Key"])
+        response = self.client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        file_keys = []
+        response_objects = response.get("Contents", [])
 
-            return file_keys
+        if response_objects:
+            for obj in response_objects:
+                file_keys.append(obj["Key"])
 
-        except ClientError as e:
-            print(f"There was an error listing files from S3: {e}")
-            raise Exception("There was an error listing files from S3")
-
+        return file_keys
 
 
     def get_file_from_S3(self, bucket_name, key):
