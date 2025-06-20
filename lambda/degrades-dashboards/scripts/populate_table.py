@@ -1,21 +1,21 @@
 import json
 import os
 import boto3
-
-from degrades_api_dashboards import main
+from utils.s3_service import S3Service
 
 def populate_degrades_table(date):
-    bucket = os.getenv("REGISTRATIONS_MI_EVENT_BUCKET")
-    s3_client = boto3.client("s3")
-
+    bucket_name = os.getenv("REGISTRATIONS_MI_EVENT_BUCKET")
     sqs_client = boto3.client("sqs", region_name=os.getenv("REGION"))
     sqs_queue_url = sqs_client.get_queue_url(QueueName=os.getenv("DEGRADES_SQS_QUEUE_NAME"))
 
-
-    file_keys = main.list_files_from_S3(s3_client, bucket, date)
+    s3_service = S3Service()
+    print("Getting list of files from S3")
+    file_keys = s3_service.list_files_from_S3(bucket_name=bucket_name, prefix=date)
 
     for file_key in file_keys:
-        message = main.get_file_from_S3(s3_client, file_key)
+        print(f"Reading file:{file_key}")
+        message = s3_service.get_file_from_S3(bucket_name=bucket_name, key=file_key)
         message_dict = json.loads(message)
+        print("Sending message to SQS, file key:", file_key)
         sqs_client.send_message(QueueUrl=sqs_queue_url["QueueUrl"], MessageBody=json.dumps(message_dict))
 

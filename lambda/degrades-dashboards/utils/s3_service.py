@@ -4,8 +4,16 @@ from botocore.exceptions import ClientError
 
 
 class S3Service:
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.initialised = False
+        return cls._instance
+
     def __init__(self):
-        self.client = boto3.client("s3", region_name=os.getenv("REGION"))
+        if not self.initialised:
+         self.client = boto3.client("s3", region_name=os.getenv("REGION"))
 
     def list_files_from_S3(self, bucket_name, prefix):
 

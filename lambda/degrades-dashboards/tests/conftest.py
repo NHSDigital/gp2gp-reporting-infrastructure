@@ -2,6 +2,7 @@ import boto3
 import os
 from dataclasses import dataclass
 from moto import mock_aws
+from utils.s3_service import S3Service
 
 import pytest
 
@@ -114,6 +115,22 @@ def mock_s3_with_files():
 
         yield bucket
 
+
+@pytest.fixture
+def mock_s3_service(mocker):
+    with mock_aws():
+        service = S3Service()
+        mocker.patch.object(service, "list_files_from_S3")
+        mocker.patch.object(service, "get_file_from_S3")
+        yield service
+        S3Service._instance = None
+
+@pytest.fixture
+def mock_sqs():
+    with mock_aws():
+        client = boto3.resource("sqs", region_name=REGION_NAME)
+        queue = client.create_queue(QueueName=MOCK_DEGRADES_QUEUE_NAME)
+        yield queue
 
 
 @pytest.fixture

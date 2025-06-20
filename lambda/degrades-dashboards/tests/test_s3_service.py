@@ -1,21 +1,9 @@
-from math import expm1
-
 import pytest
 from moto import mock_aws
 import os
 from botocore.exceptions import ClientError
 from utils.s3_service import S3Service
-
 from tests.conftest import REGION_NAME, MOCK_BUCKET
-
-@pytest.fixture
-def mock_s3_service(mocker):
-    with mock_aws():
-        service = S3Service()
-        mocker.patch.object(service, "list_files_from_S3")
-        mocker.patch.object(service, "get_file_from_S3")
-        return service
-
 
 
 @mock_aws

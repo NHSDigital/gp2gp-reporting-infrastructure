@@ -1,44 +1,38 @@
 import os
-from unittest.mock import Mock, patch
-
 import pytest
-
-import degrades_api_dashboards
 from scripts.populate_table import populate_degrades_table
 from tests.conftest import MOCK_BUCKET, REGION_NAME, MOCK_DEGRADES_QUEUE_NAME
 import degrades_api_dashboards.main
 from moto import mock_aws
 import boto3
 
+from utils.s3_service import S3Service
+
 test_date = "2024/01/01"
 
-@pytest.fixture
-def mock_list_files_from_S3(mocker):
-    return mocker.patch.object(degrades_api_dashboards.main, "list_files_from_S3")
-
-@pytest.fixture()
-def mock_get_file_from_S3(mocker):
-    return mocker.patch.object(degrades_api_dashboards.main, "get_file_from_S3")
+# @pytest.fixture
+# def mock_list_files_from_S3(mocker):
+#     return mocker.patch.object(degrades_api_dashboards.main, "list_files_from_S3")
+#
+# @pytest.fixture()
+# def mock_get_file_from_S3(mocker):
+#     return mocker.patch.object(degrades_api_dashboards.main, "get_file_from_S3")
 
 @pytest.fixture()
 def mock_s3(mocker):
     return mocker.patch("boto3.client")
 
 
-
-def test_populate_table_script_lists_files_from_S3(set_env, mock_list_files_from_S3, mock_s3, mock_get_file_from_S3):
-    client = boto3.client("s3")
-    mock_get_file_from_S3.return_value = {"hello": "world"}
+def test_populate_table_script_lists_files_from_S3(set_env, mock_s3, mock_s3_service):
     populate_degrades_table(test_date)
+    mock_s3_service.list_files_from_S3.assert_called()
 
-    mock_list_files_from_S3.assert_called_with(client, MOCK_BUCKET, test_date)
-
-
-def test_populate_table_script_gets_all_files_from_S3(set_env, mock_list_files_from_S3, mock_get_file_from_S3, mock_s3):
-    mock_list_files_from_S3.return_value = ["testing"]
-    mock_get_file_from_S3.return_value = '{"hello": "world"}'
+@mock_aws
+def test_populate_table_script_gets_all_files_from_S3(set_env, mock_s3_with_files, mock_sqs, mocker, mock_s3_service):
+    mock_s3_service.list_files_from_S3.return_value = ["2024/01/01/01-DEGRADES-01.json"]
+    mock_s3_service.get_file_from_S3.return_value = '{"hello": "world"}'
     populate_degrades_table(test_date)
-    mock_get_file_from_S3.assert_called()
+    mock_s3_service.get_file_from_S3.assert_called()
 
 
 @mock_aws
@@ -56,7 +50,6 @@ def test_populate_table_script_send_file_to_sqs(set_env):
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
     populate_degrades_table(test_date)
-
 
     messages = sqs.receive_message(QueueUrl=queue_url, MaxNumberOfMessages=10)["Messages"]
     assert len(messages) == len(json_files)
