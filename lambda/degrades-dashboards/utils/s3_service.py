@@ -5,10 +5,7 @@ from botocore.exceptions import ClientError
 
 class S3Service:
     def __init__(self):
-        try:
-            self.client = boto3.client("s3", region_name=os.getenv("REGION"))
-        except ClientError as e:
-            raise e
+        self.client = boto3.client("s3", region_name=os.getenv("REGION"))
 
     def list_files_from_S3(self, bucket_name, prefix):
         try:
@@ -29,4 +26,5 @@ class S3Service:
 
 
     def get_file_from_S3(self, bucket_name, key):
-        pass
+        response = self.client.get_object(Bucket=bucket_name, Key=key)
+        return response["Body"].read()

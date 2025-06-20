@@ -33,8 +33,16 @@ def test_list_files_from_S3_raises_error_client_issue(set_env, mock_s3_with_file
     expected_message = "There was an error listing files from S3"
     mock_s3_service.list_files_from_S3.side_effect = ClientError
 
-    with pytest.raises(Exception) as e:
-        print(e)
+    with pytest.raises(Exception):
         mock_s3_service.list_files_from_S3("test", "prefix")
-        print(caplog.records)
         assert expected_message in caplog.records[-1].msg
+
+@mock_aws
+def test_get_file_from_S3(set_env, mock_s3_with_files):
+    service = S3Service()
+    files_names = service.list_files_from_S3(bucket_name=MOCK_BUCKET, prefix="2024/01/01/")
+
+    actual = service.get_file_from_S3(bucket_name=MOCK_BUCKET, key=files_names[0])
+    with open("./tests/mocks/mixed_messages/01-DEGRADES-01.json", "rb") as expected:
+        assert expected.read() == actual
+
