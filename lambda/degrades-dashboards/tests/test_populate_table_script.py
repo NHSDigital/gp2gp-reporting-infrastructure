@@ -5,18 +5,10 @@ from tests.conftest import MOCK_BUCKET, REGION_NAME, MOCK_DEGRADES_QUEUE_NAME
 import degrades_api_dashboards.main
 from moto import mock_aws
 import boto3
-
 from utils.s3_service import S3Service
 
-test_date = "2024/01/01"
 
-# @pytest.fixture
-# def mock_list_files_from_S3(mocker):
-#     return mocker.patch.object(degrades_api_dashboards.main, "list_files_from_S3")
-#
-# @pytest.fixture()
-# def mock_get_file_from_S3(mocker):
-#     return mocker.patch.object(degrades_api_dashboards.main, "get_file_from_S3")
+test_date = "2024/01/01"
 
 @pytest.fixture()
 def mock_s3(mocker):
