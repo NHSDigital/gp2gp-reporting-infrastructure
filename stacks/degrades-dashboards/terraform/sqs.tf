@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "degrades_messages" {
-  name = "degrades_messages_queue"
+  name = "${var.degrades_message_queue}_${var.environment}"
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.degrades_messages_deadletter.arn
