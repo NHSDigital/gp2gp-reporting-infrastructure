@@ -6,7 +6,7 @@ import degrades_api_dashboards.main
 from moto import mock_aws
 import boto3
 from utils.s3_service import S3Service
-
+from utils.utils import calculate_number_of_degrades
 
 test_date = "2024/01/01"
 
@@ -22,7 +22,7 @@ def test_populate_table_script_lists_files_from_S3(set_env, mock_s3, mock_s3_ser
 @mock_aws
 def test_populate_table_script_gets_all_files_from_S3(set_env, mock_s3_with_files, mock_sqs, mocker, mock_s3_service):
     mock_s3_service.list_files_from_S3.return_value = ["2024/01/01/01-DEGRADES-01.json"]
-    mock_s3_service.get_file_from_S3.return_value = '{"hello": "world"}'
+    mock_s3_service.get_file_from_S3.return_value = '{"eventType": "DEGRADES"}'
     populate_degrades_table(test_date)
     mock_s3_service.get_file_from_S3.assert_called()
 
@@ -42,6 +42,8 @@ def test_populate_table_script_send_file_to_sqs(set_env):
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
     populate_degrades_table(test_date)
+    number_of_degrade_messages = calculate_number_of_degrades(path=folder_path, files=json_files)
+
 
     messages = sqs.receive_message(QueueUrl=queue_url, MaxNumberOfMessages=10)["Messages"]
-    assert len(messages) == len(json_files)
+    assert len(messages) == number_of_degrade_messages

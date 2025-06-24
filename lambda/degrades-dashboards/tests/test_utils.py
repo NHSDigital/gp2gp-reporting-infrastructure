@@ -30,7 +30,7 @@ def test_extract_degrades_payload_simple_message():
     payload = MOCK_FIRST_DEGRADES_MESSAGE["payload"]
 
     actual = extract_degrades_payload(payload)
-    expected = ["MEDICATION"]
+    expected = [{"MEDICATION": "CODE"}]
     assert actual == expected
 
 
@@ -38,5 +38,5 @@ def test_extract_degrades_payload_complex_message():
     payload = MOCK_COMPLEX_DEGRADES_MESSAGE["payload"]
 
     actual = extract_degrades_payload(payload)
-    expected = ["MEDICATION", "RECORD_ENTRY", "NON_DRUG_ALLERGY"]
+    expected = [{"MEDICATION": "CODE"}, {"RECORD_ENTRY": "CODE"}, {"NON_DRUG_ALLERGY": "CODE"}]
     assert actual == expected

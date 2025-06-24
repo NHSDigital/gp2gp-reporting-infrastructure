@@ -37,4 +37,5 @@ def lambda_handler(event, context):
             logger.info("Validation error: Invalid degrade message")
             raise ValueError("Invalid degrade message", e.json)
         except Exception as e:
-            logger.info(e)
+            logger.info(f"{e}")
+            raise e
