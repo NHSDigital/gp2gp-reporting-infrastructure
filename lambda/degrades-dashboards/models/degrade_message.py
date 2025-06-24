@@ -11,4 +11,4 @@ class DegradeMessage(BaseModel):
     message_id: str
     timestamp: int
     event_type: EventTypes
-    degrades: list[str]
+    degrades: list[dict]

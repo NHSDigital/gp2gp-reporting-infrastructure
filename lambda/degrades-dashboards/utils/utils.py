@@ -26,5 +26,5 @@ def is_degrade(file) -> bool:
 def extract_degrades_payload(payload: dict) -> list[str]:
     degrades = []
     for degrade in payload["degrades"]:
-        degrades.append(degrade["type"])
+        degrades.append({degrade["type"]: degrade["reason"]})
     return degrades

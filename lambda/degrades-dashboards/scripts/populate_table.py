@@ -12,10 +12,19 @@ def populate_degrades_table(date):
     print("Getting list of files from S3")
     file_keys = s3_service.list_files_from_S3(bucket_name=bucket_name, prefix=date)
 
+    sum = 0
+
     for file_key in file_keys:
         print(f"Reading file:{file_key}")
         message = s3_service.get_file_from_S3(bucket_name=bucket_name, key=file_key)
         message_dict = json.loads(message)
-        print("Sending message to SQS, file key:", file_key)
-        sqs_client.send_message(QueueUrl=sqs_queue_url["QueueUrl"], MessageBody=json.dumps(message_dict))
+        if message_dict["eventType"] == "DEGRADES":
+            sum += 1
+            print("Sending message to SQS, file key:", file_key)
+            sqs_client.send_message(QueueUrl=sqs_queue_url["QueueUrl"], MessageBody=json.dumps(message_dict))
 
+    print(f"{date} has {sum} degrades messages")
+
+if __name__ == "__main__":
+    date = os.getenv("DATE")
+    populate_degrades_table(date)
