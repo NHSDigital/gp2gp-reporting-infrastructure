@@ -41,3 +41,8 @@ variable "degrades_message_table" {
   type        = string
   description = "Name of Degrades Message DynamoDB table"
 }
+
+variable "degrades_message_queue" {
+  type        = string
+  description = "Name of Degrades Message SQS queue"
+}
