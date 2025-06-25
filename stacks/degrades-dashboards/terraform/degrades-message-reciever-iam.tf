@@ -21,10 +21,6 @@ resource "aws_iam_role_policy_attachment" "degrades_message_receiver_lambda_dyna
   role       = aws_iam_role.degrades_message_receiver_lambda.name
 }
 
-resource "aws_iam_policy" "degrades_message_table_access" {
-  name   = "degrades_table_access_policy"
-  policy = data.aws_iam_policy_document.degrades_message_table_access.json
-}
 
 resource "aws_iam_role_policy_attachment" "degrades_lambda_sqs_invoke" {
   policy_arn = aws_iam_policy.degrades_lambda_sqs_invoke.arn

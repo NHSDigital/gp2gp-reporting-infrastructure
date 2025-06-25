@@ -17,24 +17,38 @@ resource "aws_iam_role" "degrades_api_lambda_role" {
   assume_role_policy = data.aws_iam_policy_document.degrades_api_lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "degrades_api_lambda_s3_read" {
+resource "aws_iam_role_policy_attachment" "degrades_api_lambda_s3_access" {
   role       = aws_iam_role.degrades_api_lambda_role.name
-  policy_arn = aws_iam_policy.read_registrations_mi_events.arn
+  policy_arn = aws_iam_policy.registrations_mi_events_access.arn
 }
 
-resource "aws_iam_policy" "read_registrations_mi_events" {
-  name   = "${var.environment}-${var.degrades_api_lambda_name}"
-  policy = data.aws_iam_policy_document.read_registrations_mi_events.json
+resource "aws_iam_policy" "registrations_mi_events_access" {
+  name   = "regristrations_mi_events_read_policy"
+  policy = data.aws_iam_policy_document.registrations_mi_events_access.json
 }
 
-data "aws_iam_policy_document" "read_registrations_mi_events" {
+data "aws_iam_policy_document" "registrations_mi_events_access" {
   statement {
+    effect = "Allow"
+
     actions = [
-      "s3:Get*",
-      "s3:List*",
-      "s3:Describe*",
-      "s3-object-lambda:Get*",
-      "s3-object-lambda:List*"
+      "s3:GetObject",
+      "s3:ListBucketMultipartUploads",
+      "s3:ListBucketVersions",
+      "s3:ListBucket",
+      "s3:GetObjectRetention",
+      "s3:DeleteObjectVersion",
+      "s3:GetObjectVersionTagging",
+      "s3:GetObjectAttributes",
+      "s3:RestoreObject",
+      "s3:PutObjectVersionTagging",
+      "s3:DeleteObjectVersionTagging",
+      "s3:GetObjectVersionAttributes",
+      "s3:GetObjectAcl",
+      "s3:AbortMultipartUpload",
+      "s3:GetObjectVersionAcl",
+      "s3:GetObjectTagging",
+      "s3:GetObjectVersion",
     ]
     resources = [
     "arn:aws:s3:::${var.registrations_mi_event_bucket}/*", "arn:aws:s3:::${var.registrations_mi_event_bucket}"]
