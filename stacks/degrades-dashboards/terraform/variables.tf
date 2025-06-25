@@ -10,6 +10,12 @@ variable "degrades_message_receiver_lambda_zip" {
   default     = "lambda/build/degrades-message-receiver.zip"
 }
 
+variable "degrades_daily_summary_lambda_zip" {
+  type        = string
+  description = "File path to Degrades Daily Summary Lambda"
+  default     = "lambda/build/degrades-daily-summary.zip"
+}
+
 variable "environment" {
   type        = string
   description = "Uniquely identities each deployment, i.e. dev, prod."
@@ -30,6 +36,12 @@ variable "degrades_message_receiver_lambda_name" {
   type        = string
   description = "Name of Degrades Message Receiver Lambda"
   default     = "degrades_message_receiver_lambda"
+}
+
+variable "degrades_daily_summary_lambda_name" {
+  type        = string
+  description = "Name of degrades daily summary lambda"
+  default     = "degrades_daily_summary_lambda"
 }
 
 variable "registrations_mi_event_bucket" {
