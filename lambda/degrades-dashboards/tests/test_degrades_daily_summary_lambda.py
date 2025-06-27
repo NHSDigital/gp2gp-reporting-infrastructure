@@ -41,11 +41,12 @@ def test_generate_report_from_dynamo_query_result(set_env, context, mock_dynamo_
         mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
 
     degrades_from_table = mock_table.query(KeyConditionExpression=Key("Timestamp").eq(simple_message_timestamp))["Items"]
-    generate_report_from_dynamo_query(degrades_from_table)
+    generate_report_from_dynamo_query(degrades_from_table, "2024-09-20")
     # TODO remember to add "tests/" back into file path for pytest to work from terminal.
-    expected = readfile("reports/2024-09-20.csv")
+    expected = readfile("tests/reports/2024-09-20.csv")
     with open(f"{os.getcwd()}/tmp/2024-09-20.csv", "r") as file:
         actual = file.read()
+        print(actual)
         assert actual == expected
     os.remove(f"{os.getcwd()}/tmp/2024-09-20.csv")
 

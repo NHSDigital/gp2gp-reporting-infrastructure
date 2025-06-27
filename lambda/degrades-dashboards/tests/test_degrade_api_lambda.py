@@ -7,7 +7,7 @@ from degrades_api_dashboards.main import lambda_handler, get_file_from_S3, list_
 from tests.conftest import REGION_NAME, MOCK_BUCKET
 
 def readfile(filename: str) -> str:
-    with open(filename, "rb") as file:
+    with open(filename, "r") as file:
         file_content = file.read()
     return file_content
 
