@@ -1,7 +1,12 @@
 import os
-from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp
+
+from models.degrade_message import DegradeMessage
+from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp, FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE, \
+    SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE, COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE
 from tests.mocks.sqs_messages.degrades import MOCK_FIRST_DEGRADES_MESSAGE, MOCK_COMPLEX_DEGRADES_MESSAGE
-from utils.utils import get_key_from_date, calculate_number_of_degrades, is_degrade, extract_degrades_payload, extract_query_timpstamp_from_scheduled_event_trigger
+from utils.utils import get_key_from_date, calculate_number_of_degrades, is_degrade, extract_degrades_payload, \
+    extract_query_timestamp_from_scheduled_event_trigger, get_degrade_totals_from_degrades
+
 
 def test_get_key_from_date():
     date = "2020-01-01"
@@ -43,7 +48,16 @@ def test_extract_degrades_payload_complex_message():
 
 
 def test_extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_event):
-    actual = extract_query_timpstamp_from_scheduled_event_trigger(mock_scheduled_event)
+    actual = extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_event)
     expected = simple_message_timestamp
+
+    assert actual == expected
+
+
+def test_get_degrade_totals_from_degrades():
+    degrades = [DegradeMessage(**FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE), DegradeMessage(**SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE), DegradeMessage(**COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE)]
+    expected = {"MEDICATION": 3, "RECORD_ENTRY": 1, "NON_DRUG_ALLERGY": 1, "TOTAL": 5}
+
+    actual = get_degrade_totals_from_degrades(degrades)
 
     assert actual == expected

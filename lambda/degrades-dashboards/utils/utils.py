@@ -2,6 +2,9 @@ import json
 import os
 from datetime import datetime, timedelta
 
+from models.degrade_message import DegradeMessage
+
+
 def get_key_from_date(date: str):
     return date.replace("-", "/")
 
@@ -30,7 +33,7 @@ def extract_degrades_payload(payload: dict) -> list[str]:
         degrades.append(degrade["type"])
     return degrades
 
-def extract_query_timpstamp_from_scheduled_event_trigger(event: dict) -> int:
+def extract_query_timestamp_from_scheduled_event_trigger(event: dict) -> int:
     event_trigger_time = event.get("time", '')
 
     if event_trigger_time:
@@ -39,3 +42,18 @@ def extract_query_timpstamp_from_scheduled_event_trigger(event: dict) -> int:
         midnight = datetime.combine(query_date, datetime.min.time())
         return int(midnight.timestamp())
 
+def get_degrade_totals_from_degrades(degrades: list[DegradeMessage]) -> dict:
+
+    degrade_totals = {"TOTAL": 0}
+
+    for degrade in degrades:
+        for degrade_type in degrade.degrades:
+            if degrade_totals.get(degrade_type):
+                degrade_totals[degrade_type] += 1
+            else:
+                degrade_totals[degrade_type] = 1
+
+    for type, count in degrade_totals.items():
+        degrade_totals["TOTAL"] += count
+
+    return degrade_totals

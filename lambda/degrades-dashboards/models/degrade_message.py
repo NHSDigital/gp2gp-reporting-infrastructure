@@ -10,5 +10,5 @@ class DegradeMessage(BaseModel):
     model_config = ConfigDict(alias_generator=to_pascal, populate_by_name=True, use_enum_values=True)
     message_id: str
     timestamp: int
-    event_type: EventTypes
+    event_type: EventTypes = EventTypes.DEGRADES
     degrades: list[str]
