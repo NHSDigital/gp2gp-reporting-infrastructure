@@ -38,4 +38,4 @@ def extract_query_timpstamp_from_scheduled_event_trigger(event: dict) -> int:
         query_date = dt - timedelta(days=1)
         midnight = datetime.combine(query_date, datetime.min.time())
         return int(midnight.timestamp())
-#         TODO get day from trigger time, make timestamp from day - 1 midnight
+

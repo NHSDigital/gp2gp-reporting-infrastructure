@@ -14,9 +14,9 @@ class DynamoService:
     def __init__(self):
         self.client = boto3.resource('dynamodb', region_name=os.getenv("REGION"))
 
-    def query(self, key, condition, table_name):
+    def query(self, key, condition, table):
         try:
-            table = self.client.Table(table_name)
+            table = self.client.Table(table)
             results =table.query(KeyConditionExpression=Key(key).eq(condition))
             return results["Items"]
         except ClientError as e:
