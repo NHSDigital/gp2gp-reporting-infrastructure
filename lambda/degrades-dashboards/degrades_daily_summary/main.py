@@ -2,10 +2,9 @@ import os
 import boto3
 from boto3.dynamodb.conditions import Key
 
+from utils.dynamo_service import DynamoService
+
 
 def lambda_handler(event, context):
-    client = boto3.resource("dynamodb", region_name=os.getenv("REGION"))
-    table = client.Table(os.getenv("DEGRADES_MESSAGE_TABLE"))
-
-    results = table.query(KeyConditionExpression=Key("Timestamp").eq(1))
-    return results["Items"]
+    dynamo_service = DynamoService()
+    dynamo_service.query("Timestamp", 1, os.getenv("DEGRADES_MESSAGE_TABLE"))

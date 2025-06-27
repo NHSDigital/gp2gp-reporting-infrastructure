@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from moto import mock_aws
 from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, \
     MOCK_SIMPLE_DEGRADES_MESSAGE
+from utils.dynamo_service import DynamoService
 from utils.utils import extract_degrades_payload
 from models.degrade_message import DegradeMessage
 
@@ -124,6 +125,15 @@ def mock_table_with_files():
             degrades_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
 
             yield degrades_table
+
+@pytest.fixture
+def mock_dynamo_service(mocker):
+    service = DynamoService()
+    mocker.patch.object(service, "query")
+
+    yield service
+    service._instance = None
+
 
 
 

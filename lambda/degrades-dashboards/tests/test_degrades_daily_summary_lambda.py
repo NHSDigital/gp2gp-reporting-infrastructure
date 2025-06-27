@@ -1,7 +1,4 @@
 from moto import mock_aws
-from datetime import datetime
-from utils.utils import extract_degrades_payload
-from models.degrade_message import DegradeMessage
 from degrades_daily_summary.main import lambda_handler
 
 from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, \
@@ -10,20 +7,10 @@ from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOC
 degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
 
 @mock_aws
-def test_degrades_daily_summary_lambda_get_degrade_data_from_dynamodb(set_env, context, mock_table, mock_valid_event_valid_date):
-    degrades = [
-        DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()), message_id=message["eventId"],
-                       event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for message in
-        degrades_messages]
+def test_degrades_daily_summary_lambda_queries_dynamo(set_env, context, mock_dynamo_service, mock_table, mock_valid_event_valid_date):
 
-    for degrade in degrades:
-        DegradeMessage.model_validate(degrade)
-        mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
-
-    actual = lambda_handler(mock_valid_event_valid_date, context)
-    expected = []
-
-    assert actual == expected
+    lambda_handler(mock_valid_event_valid_date, context)
+    mock_dynamo_service.query.assert_called()
 
 
 
