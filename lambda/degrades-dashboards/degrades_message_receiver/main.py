@@ -34,8 +34,8 @@ def lambda_handler(event, context):
             table.put_item(Item=degrades_message.model_dump(by_alias=True, exclude={"event_type"}))
             logger.info("Degrade successfully added to table.")
         except ValidationError as e:
-            logger.info("Validation error: Invalid degrade message")
+            logger.error("Validation error: Invalid degrade message")
             raise ValueError("Invalid degrade message", e.json)
         except Exception as e:
-            logger.info(f"{e}")
+            logger.error(f"{e}")
             raise e
