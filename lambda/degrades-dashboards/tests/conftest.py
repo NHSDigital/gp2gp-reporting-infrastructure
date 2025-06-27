@@ -1,6 +1,11 @@
 import boto3
+from datetime import datetime
 from dataclasses import dataclass
 from moto import mock_aws
+from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, \
+    MOCK_SIMPLE_DEGRADES_MESSAGE
+from utils.utils import extract_degrades_payload
+from models.degrade_message import DegradeMessage
 
 import pytest
 
@@ -96,6 +101,29 @@ def mock_table():
                                        AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
                                        BillingMode="PAY_PER_REQUEST", )
         yield degrades_table
+
+
+# This fixture doesn't work, throws a teardown error, fixture calls yield multiple times....
+@pytest.fixture
+def mock_table_with_files():
+    with mock_aws():
+        conn = boto3.resource("dynamodb", region_name=REGION_NAME)
+        degrades_table = conn.create_table(TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
+                                           KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
+                                           AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
+                                           BillingMode="PAY_PER_REQUEST", )
+
+        degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
+        degrades = [
+            DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()), message_id=message["eventId"],
+                       event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for message in
+            degrades_messages]
+
+        for degrade in degrades:
+            DegradeMessage.model_validate(degrade)
+            degrades_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
+
+            yield degrades_table
 
 
 
