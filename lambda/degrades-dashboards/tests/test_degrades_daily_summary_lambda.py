@@ -10,10 +10,9 @@ from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOC
 
 degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
 
-
 @mock_aws
-def test_degrades_daily_summary_lambda_get_degrade_data_from_dynamodb(set_env, context, mock_table, mocker):
-    mock_query = mocker.patch.object(mock_table, "query")
+def test_degrades_daily_summary_lambda_get_degrade_data_from_dynamodb(set_env, context, mock_table, mocker, mock_valid_event_valid_date):
+
 
     degrade_lines = [
         DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()), message_id=message["eventId"],
@@ -24,8 +23,10 @@ def test_degrades_daily_summary_lambda_get_degrade_data_from_dynamodb(set_env, c
         DegradeMessage.model_validate(degrade)
         mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
 
-    lambda_handler(event={}, context=context)
+    actual = lambda_handler(mock_valid_event_valid_date, context)
+    expected = []
 
-    mock_query.assert_called()
+    assert actual == expected
+
 
 
