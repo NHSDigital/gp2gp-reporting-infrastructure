@@ -37,6 +37,7 @@ MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
     }
 ]
 
+
 @pytest.fixture
 def mock_invalid_event_empty_query_string():
     api_gateway_event = {
@@ -79,6 +80,22 @@ def mock_valid_event_valid_date():
     }
     return api_gateway_event
 
+@pytest.fixture
+def mock_scheduled_event():
+    event = {
+        "id": "cdc73f9d-aea9-11e3-9d5a-835b769c0d9c",
+        "detail-type": "Scheduled Event",
+        "source": "aws.events",
+        "account": "123456789012",
+        "time": "2024-09-21T06:00:00Z",
+        "region": "us-east-1",
+        "resources": [
+            "arn:aws:events:us-east-1:123456789012:rule/ExampleRule"
+        ],
+        "detail": {}
+    }
+    return event
+
 
 @pytest.fixture
 def context():
@@ -98,9 +115,9 @@ def mock_table():
     with mock_aws():
         conn = boto3.resource("dynamodb", region_name=REGION_NAME)
         degrades_table = conn.create_table(TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
-                                       KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
-                                       AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
-                                       BillingMode="PAY_PER_REQUEST", )
+                                           KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
+                                           AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
+                                           BillingMode="PAY_PER_REQUEST", )
         yield degrades_table
 
 
@@ -116,8 +133,10 @@ def mock_table_with_files():
 
         degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
         degrades = [
-            DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()), message_id=message["eventId"],
-                       event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for message in
+            DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()),
+                           message_id=message["eventId"],
+                           event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for
+            message in
             degrades_messages]
 
         for degrade in degrades:
@@ -126,6 +145,7 @@ def mock_table_with_files():
 
             yield degrades_table
 
+
 @pytest.fixture
 def mock_dynamo_service(mocker):
     service = DynamoService()
@@ -133,8 +153,6 @@ def mock_dynamo_service(mocker):
 
     yield service
     service._instance = None
-
-
 
 
 @pytest.fixture

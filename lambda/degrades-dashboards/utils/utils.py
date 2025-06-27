@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timedelta
 
 def get_key_from_date(date: str):
     return date.replace("-", "/")
@@ -28,3 +29,13 @@ def extract_degrades_payload(payload: dict) -> list[str]:
     for degrade in payload["degrades"]:
         degrades.append(degrade["type"])
     return degrades
+
+def extract_query_timpstamp_from_scheduled_event_trigger(event: dict) -> int:
+    event_trigger_time = event.get("time", '')
+
+    if event_trigger_time:
+        dt = datetime.fromisoformat(event_trigger_time)
+        query_date = dt - timedelta(days=1)
+        midnight = datetime.combine(query_date, datetime.min.time())
+        return int(midnight.timestamp())
+#         TODO get day from trigger time, make timestamp from day - 1 midnight
