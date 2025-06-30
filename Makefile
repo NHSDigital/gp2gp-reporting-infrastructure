@@ -10,6 +10,7 @@ degrades-env:
 
 
 test-degrades:
+	cd ${DEGRADES_LAMBDA_PATH} && mkdir tmp
 	cd $(DEGRADES_LAMBDA_PATH)  && venv/bin/python3 -m pytest tests/
 
 deploy-local:  zip-degrades-lambdas

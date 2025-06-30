@@ -11,6 +11,7 @@ def test_degrades_daily_summary_lambda_queries_dynamo(set_env, context, mock_dyn
 
     lambda_handler(mock_scheduled_event, context)
     mock_dynamo_service.query.assert_called()
+    os.remove(f"{os.getcwd()}/tmp/{TEST_DEGRADES_DATE}.csv")
 
 
 @mock_aws
@@ -18,6 +19,8 @@ def test_degrades_daily_summary_uses_trigger_date_to_query_dynamo(set_env, conte
 
     lambda_handler(mock_scheduled_event, context)
     mock_dynamo_service.query.assert_called_with(key="Timestamp", condition=simple_message_timestamp, table=mock_table.table_name)
+    os.remove(f"{os.getcwd()}/tmp/{TEST_DEGRADES_DATE}.csv")
+
 
 
 @mock_aws
@@ -33,8 +36,6 @@ def test_generate_report_from_dynamo_query_result(mock_table_with_files):
     os.remove(f"{os.getcwd()}/tmp/{TEST_DEGRADES_DATE}.csv")
 
 
-
-# TODO add test to ensure lambda calls generate report.
 @mock_aws
 def test_degrades_daily_summary_generates_report(mock_scheduled_event, context, set_env, mocker, mock_table_with_files):
     mock_generate_report = mocker.patch("degrades_daily_summary.main.generate_report_from_dynamo_query")
@@ -44,6 +45,8 @@ def test_degrades_daily_summary_generates_report(mock_scheduled_event, context, 
     lambda_handler(mock_scheduled_event, context)
 
     mock_generate_report.assert_called_with(degrades, TEST_DEGRADES_DATE)
+
+
 
 
 #  TODO PRM-366 test degrades daily summary uploads to S3
