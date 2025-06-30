@@ -7,6 +7,7 @@ resource "aws_lambda_function" "degrades_api_lambda" {
   source_code_hash = filebase64sha256("${var.degrades_dashboards_api_lambda_zip}")
   timeout          = 45
   memory_size      = 512
+  layers           = [aws_lambda_layer_version.degrades_lambda_layer.arn]
   environment {
     variables = {
       REGISTRATIONS_MI_EVENT_BUCKET = "${var.registrations_mi_event_bucket}"
