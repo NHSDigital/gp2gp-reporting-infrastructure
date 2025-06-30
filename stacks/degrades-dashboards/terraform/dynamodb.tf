@@ -32,6 +32,6 @@ data "aws_iam_policy_document" "degrades_message_table_access" {
 }
 
 resource "aws_iam_policy" "degrades_message_table_access" {
-  name = "degrades_message_table_access_policy"
+  name   = "degrades_message_table_access_policy"
   policy = data.aws_iam_policy_document.degrades_message_table_access.json
 }

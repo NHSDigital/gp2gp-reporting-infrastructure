@@ -46,3 +46,4 @@ def test_degrades_daily_summary_generates_report(mock_scheduled_event, context, 
     mock_generate_report.assert_called_with(degrades, TEST_DEGRADES_DATE)
 
 
+#  TODO PRM-366 test degrades daily summary uploads to S3

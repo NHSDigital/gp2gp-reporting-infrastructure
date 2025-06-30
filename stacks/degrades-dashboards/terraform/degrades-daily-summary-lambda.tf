@@ -16,8 +16,8 @@ resource "aws_lambda_permission" "degrades_daily_summary_lambda" {
 }
 
 resource "aws_cloudwatch_event_rule" "degrades_daily_summary_lambda_schedule" {
-  name        = "${var.environment}_${var.degrades_daily_summary_lambda_name}_schedule"
-  description = "Schedule for Degrades Daily Summary Lambda"
+  name                = "${var.environment}_${var.degrades_daily_summary_lambda_name}_schedule"
+  description         = "Schedule for Degrades Daily Summary Lambda"
   schedule_expression = "cron(0 6 * * ? *)"
 }
 
