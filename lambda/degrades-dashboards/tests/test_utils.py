@@ -1,6 +1,7 @@
 import os
 
 from models.degrade_message import DegradeMessage
+from tests.conftest import TEST_DEGRADES_DATE
 from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp, FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE, \
     SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE, COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE
 from tests.mocks.sqs_messages.degrades import MOCK_FIRST_DEGRADES_MESSAGE, MOCK_COMPLEX_DEGRADES_MESSAGE
@@ -49,7 +50,7 @@ def test_extract_degrades_payload_complex_message():
 
 def test_extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_event):
     actual = extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_event)
-    expected = simple_message_timestamp
+    expected = (simple_message_timestamp, TEST_DEGRADES_DATE)
 
     assert actual == expected
 

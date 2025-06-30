@@ -33,14 +33,14 @@ def extract_degrades_payload(payload: dict) -> list[str]:
         degrades.append(degrade["type"])
     return degrades
 
-def extract_query_timestamp_from_scheduled_event_trigger(event: dict) -> int:
+def extract_query_timestamp_from_scheduled_event_trigger(event: dict) -> tuple[int, str]:
     event_trigger_time = event.get("time", '')
 
     if event_trigger_time:
         dt = datetime.fromisoformat(event_trigger_time)
         query_date = dt - timedelta(days=1)
         midnight = datetime.combine(query_date, datetime.min.time())
-        return int(midnight.timestamp())
+        return int(midnight.timestamp()), query_date.strftime("%Y-%m-%d")
 
 def get_degrade_totals_from_degrades(degrades: list[DegradeMessage]) -> dict:
 
