@@ -36,15 +36,12 @@ jobs:
           python-version: 3.12
 
       - name: Install requirements
-        working-directory: lambda/degrades-dashboards
         run: |
-          pip install -r requirements.txt
-          pip install -r requirements_local.txt
+          make degrades-env
 
-      - name: Test API Lambda
-        working-directory: lambda/degrades-dashboards
+      - name: Test Degrades
         run: |
-          pytest tests/
+          make test-degrades
 
 
   deploy_degrades_infra:
