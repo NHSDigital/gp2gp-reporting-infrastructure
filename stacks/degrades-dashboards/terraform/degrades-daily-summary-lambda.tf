@@ -4,7 +4,7 @@ resource "aws_lambda_function" "degrades_daily_summary_lambda" {
   role             = aws_iam_role.degrades_daily_summary_lambda.arn
   runtime          = "python3.12"
   handler          = "main.lambda_handler"
-  timeout          = 120
+  timeout          = 900
   source_code_hash = filebase64sha256("${var.degrades_daily_summary_lambda_zip}")
 }
 
@@ -12,7 +12,7 @@ resource "aws_lambda_permission" "degrades_daily_summary_lambda" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.degrades_daily_summary_lambda.function_name
   principal     = "eventsa.amazonaws.com"
-  source_arn    = ""
+  source_arn    = aws_cloudwatch_event_rule.degrades_daily_summary_lambda_schedule.arn
 }
 
 resource "aws_cloudwatch_event_rule" "degrades_daily_summary_lambda_schedule" {

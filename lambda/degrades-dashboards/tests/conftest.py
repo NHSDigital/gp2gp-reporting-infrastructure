@@ -121,16 +121,9 @@ def mock_table():
         yield degrades_table
 
 
-# This fixture doesn't work, throws a teardown error, fixture calls yield multiple times....
 @pytest.fixture
-def mock_table_with_files():
+def mock_table_with_files(mock_table):
     with mock_aws():
-        conn = boto3.resource("dynamodb", region_name=REGION_NAME)
-        degrades_table = conn.create_table(TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
-                                           KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
-                                           AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
-                                           BillingMode="PAY_PER_REQUEST", )
-
         degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
         degrades = [
             DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()),
@@ -141,9 +134,9 @@ def mock_table_with_files():
 
         for degrade in degrades:
             DegradeMessage.model_validate(degrade)
-            degrades_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
+            mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
 
-            yield degrades_table
+    yield mock_table
 
 
 @pytest.fixture

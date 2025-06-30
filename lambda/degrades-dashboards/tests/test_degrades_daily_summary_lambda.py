@@ -27,27 +27,18 @@ def test_degrades_daily_summary_uses_trigger_date_to_query_dynamo(set_env, conte
 
 
 @mock_aws
-def test_generate_report_from_dynamo_query_result(set_env, context, mock_dynamo_service, mock_table):
-    degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
-    degrades = [
-        DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()),
-                       message_id=message["eventId"],
-                       event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for
-        message in
-        degrades_messages]
+def test_generate_report_from_dynamo_query_result(mock_table_with_files):
 
-    for degrade in degrades:
-        DegradeMessage.model_validate(degrade)
-        mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
+    degrades_from_table = mock_table_with_files.query(KeyConditionExpression=Key("Timestamp").eq(simple_message_timestamp))["Items"]
 
-    degrades_from_table = mock_table.query(KeyConditionExpression=Key("Timestamp").eq(simple_message_timestamp))["Items"]
     generate_report_from_dynamo_query(degrades_from_table, "2024-09-20")
     # TODO remember to add "tests/" back into file path for pytest to work from terminal.
-    expected = readfile("tests/reports/2024-09-20.csv")
+    expected = readfile(f"{os.getcwd()}/tests/reports/2024-09-20.csv")
     with open(f"{os.getcwd()}/tmp/2024-09-20.csv", "r") as file:
         actual = file.read()
-        print(actual)
         assert actual == expected
     os.remove(f"{os.getcwd()}/tmp/2024-09-20.csv")
 
 
+
+# TODO add test to ensure lambda calls generate report.
