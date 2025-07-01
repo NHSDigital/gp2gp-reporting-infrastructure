@@ -23,8 +23,6 @@ def is_degrade(file) -> bool:
     return event_type is not None and event_type == "DEGRADES"
 
 
-def extract_degrades_payload(payload: dict) -> list[str]:
-    degrades = []
-    for degrade in payload["degrades"]:
-        degrades.append({degrade["type"]: degrade["reason"]})
-    return degrades
+def extract_degrades_payload(payload: dict) -> list[dict]:
+    return [{degrade["type"]: degrade["reason"]} for degrade in payload["degrades"]]
+
