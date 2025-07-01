@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "degrades_messages" {
-  name = "degrades_messages_queue"
+  name = "${var.environment}_${var.degrades_message_queue}"
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.degrades_messages_deadletter.arn
@@ -8,7 +8,7 @@ resource "aws_sqs_queue" "degrades_messages" {
 }
 
 resource "aws_sqs_queue" "degrades_messages_deadletter" {
-  name = "degrades_messages_deadletter_queue"
+  name = "${var.environment}_${var.degrades_message_queue}_dlq"
 }
 
 resource "aws_sqs_queue_redrive_allow_policy" "degrades_message_queue_redrive_allow_policy" {
@@ -25,7 +25,8 @@ data "aws_iam_policy_document" "degrades_messages_sqs_receive" {
     actions = [
       "sqs:ReceiveMessage",
       "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl"
+      "sqs:GetQueueUrl",
+      "sqs:DeleteMessage"
     ]
     resources = ["${aws_sqs_queue.degrades_messages.arn}", "${aws_sqs_queue.degrades_messages_deadletter.arn}"]
   }

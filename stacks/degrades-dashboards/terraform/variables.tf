@@ -15,7 +15,7 @@ variable "environment" {
   description = "Uniquely identities each deployment, i.e. dev, prod."
 }
 
-variable "aws_region" {
+variable "region" {
   type        = string
   description = "AWS region to deploy to"
 }
@@ -40,4 +40,9 @@ variable "registrations_mi_event_bucket" {
 variable "degrades_message_table" {
   type        = string
   description = "Name of Degrades Message DynamoDB table"
+}
+
+variable "degrades_message_queue" {
+  type        = string
+  description = "Name of Degrades Message SQS queue"
 }
