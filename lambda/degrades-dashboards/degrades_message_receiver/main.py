@@ -20,7 +20,7 @@ def lambda_handler(event, context):
             message = json.loads(message["body"])
 
             if message["eventType"] != "DEGRADES":
-                logger.info("Validation error: Message is not of type DEGRADES")
+                logger.error("Validation error: Message is not of type DEGRADES")
                 raise ValueError("Invalid degrade message")
 
             timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
