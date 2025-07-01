@@ -29,10 +29,10 @@ resource "aws_iam_role_policy_attachment" "degrades_lambda_sqs_invoke" {
 
 resource "aws_iam_policy" "degrades_lambda_sqs_invoke" {
   name   = "degrades_sqs_invoke_policy"
-  policy = data.aws_iam_policy_document.degrades_messages_sqs_receive.json
+  policy = data.aws_iam_policy_document.degrades_messages_sqs_receiver.json
 }
 
-data "aws_iam_policy_document" "degrade_message_receiver_lambda_logging" {
+data "aws_iam_policy_document" "degrades_message_receiver_lambda_logging" {
   statement {
     effect = "Allow"
 
@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "degrade_message_receiver_lambda_logging" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["${aws_cloudwatch_log_group.degrades_messages_receiver.arn}", "${aws_cloudwatch_log_group.degrades_messages_receiver.arn}:*"]
+    resources = ["${aws_cloudwatch_log_group.degrades_message_receiver.arn}", "${aws_cloudwatch_log_group.degrades_message_receiver.arn}:*"]
   }
 }
 
@@ -50,7 +50,7 @@ resource "aws_iam_policy" "degrades_message_receiver_logging" {
   name        = "degrades_message_receiver_lambda_logging"
   path        = "/"
   description = "IAM policy for logging from a lambda"
-  policy      = data.aws_iam_policy_document.degrade_message_receiver_lambda_logging.json
+  policy      = data.aws_iam_policy_document.degrades_message_receiver_lambda_logging.json
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {

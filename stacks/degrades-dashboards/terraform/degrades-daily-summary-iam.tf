@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "degrades_daily_summary_lambda_assume_role" {
 }
 
 # Cloudwatch Logging
-data "aws_iam_policy_document" "degrade_daily_summary_lambda_logging" {
+data "aws_iam_policy_document" "degrades_daily_summary_lambda_logging" {
   statement {
     effect = "Allow"
 
@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "degrade_daily_summary_lambda_logging" {
 
 resource "aws_iam_policy" "degrades_daily_summary_logging" {
   name   = "degrades_daily_summary_lambda_logging_policy"
-  policy = data.aws_iam_policy_document.degrade_daily_summary_lambda_logging.json
+  policy = data.aws_iam_policy_document.degrades_daily_summary_lambda_logging.json
 }
 
 resource "aws_iam_role_policy_attachment" "degrades_daily_summary_logging" {
