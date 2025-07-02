@@ -126,7 +126,6 @@ def mock_sqs():
         queue = client.create_queue(QueueName=MOCK_DEGRADES_QUEUE_NAME)
         yield queue
 
-
 @pytest.fixture
 def set_env(monkeypatch):
     monkeypatch.setenv("REGION", REGION_NAME)
