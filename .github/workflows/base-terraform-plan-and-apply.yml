@@ -67,7 +67,7 @@ jobs:
         run: |
             cd $GITHUB_WORKSPACE
             chmod +x ./tasks_github_actions.sh
-            ./tasks_github_actions.sh build-lambdas    
+            ./tasks_github_actions.sh build-lambdas
             
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -80,7 +80,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: | 
+        run: |
           terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
@@ -165,7 +165,7 @@ jobs:
           echo "::add-mask::${{ vars.TF_VARS_FILE }}"
           # Output the sanitized plan to logs
           cat plan_output.txt
-          echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT        
+          echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Truncate Plan Output
