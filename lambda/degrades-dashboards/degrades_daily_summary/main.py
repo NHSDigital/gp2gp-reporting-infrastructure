@@ -25,17 +25,21 @@ def lambda_handler(event, context):
     degrades = dynamo_service.query(
         key="Timestamp",
         condition=query_timestamp,
-        table=os.getenv("DEGRADES_MESSAGE_TABLE"),
+        table_name=os.getenv("DEGRADES_MESSAGE_TABLE"),
     )
 
-    logger.info(f"Generating report for {query_day}")
     if not degrades:
         logger.info(f"No degrades found for {query_day}")
         return
 
+    logger.info(f"Generating report for {query_day}")
+
     file_path = generate_report_from_dynamo_query(degrades, query_day)
 
     base_file_key = query_day.replace("-", "/")
+
+    logger.info(f"Writing summary report to {base_file_key}")
+
     s3_service = S3Service()
     s3_service.upload_file(
         file=file_path,

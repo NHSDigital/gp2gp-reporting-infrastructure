@@ -35,7 +35,9 @@ def test_degrades_daily_summary_uses_trigger_date_to_query_dynamo(
 ):
     lambda_handler(mock_scheduled_event, context)
     mock_dynamo_service.query.assert_called_with(
-        key="Timestamp", condition=simple_message_timestamp, table=mock_table.table_name
+        key="Timestamp",
+        condition=simple_message_timestamp,
+        table_name=mock_table.table_name,
     )
     os.remove(f"{os.getcwd()}/tmp/{TEST_DEGRADES_DATE}.csv")
 

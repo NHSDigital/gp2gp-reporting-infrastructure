@@ -93,33 +93,6 @@ def mock_scheduled_event():
 
 
 @pytest.fixture
-def mock_degrades_message_event():
-    event = {
-        "Records": [
-            {
-                "eventId": "01-DEGRADES-01",
-                "eventGeneratedDateTime": "2024-09-20T00:00:00",
-                "eventType": "DEGRADES",
-                "reportingSystemSupplier": "EMIS",
-                "payload": {
-                    "degrades": [
-                        {
-                            "type": "MEDICATION",
-                            "reason": "CODE",
-                            "coding": [
-                                {"code": "02543001", "system": "UNKNOWN"},
-                                {"code": "02543001", "system": "UNKNOWN"},
-                            ],
-                        }
-                    ]
-                },
-            }
-        ]
-    }
-    return event
-
-
-@pytest.fixture
 def context():
     @dataclass
     class LambdaContext:

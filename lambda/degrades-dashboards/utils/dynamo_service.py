@@ -16,14 +16,26 @@ class DynamoService:
     def __init__(self):
         self.client = boto3.resource("dynamodb", region_name=os.getenv("REGION"))
 
-    def query(self, key, condition, table):
+    def query(self, key, condition, table_name):
         try:
-            table = self.client.Table(table)
-            results = table.query(KeyConditionExpression=Key(key).eq(condition))
-            return results["Items"]
+            table = self.client.Table(table_name)
+            response = table.query(KeyConditionExpression=Key(key).eq(condition))
+            results = response["Items"]
+            while "LastEvaluatedKey" in response:
+                response = table.query(
+                    KeyConditionExpression=Key(key).eq(condition),
+                    ExclusiveStartKey=response["LastEvaluatedKey"],
+                )
+                results += response["Items"]
+            return results
         except ClientError as e:
             print("There has been an error: {}".format(e))
             raise Exception
 
-    def put_item(self, table, payload):
-        table.put_item(Item=payload)
+    def put_item(self, table_name, payload):
+        try:
+            table = self.client.Table(table_name)
+            table.put_item(Item=payload)
+        except ClientError as e:
+            print("There has been an error: {}".format(e))
+            raise Exception

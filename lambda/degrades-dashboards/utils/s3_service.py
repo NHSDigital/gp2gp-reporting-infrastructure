@@ -17,12 +17,13 @@ class S3Service:
             self.client = boto3.client("s3", region_name=os.getenv("REGION"))
 
     def list_files_from_S3(self, bucket_name, prefix):
-        response = self.client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        s3_paginator = self.client.get_paginator("list_objects_v2")
         file_keys = []
-        response_objects = response.get("Contents", [])
-
-        if response_objects:
-            for obj in response_objects:
+        for paginated_result in s3_paginator.paginate(
+            Bucket=bucket_name, Prefix=prefix
+        ):
+            response = paginated_result.get("Contents", [])
+            for obj in response:
                 file_keys.append(obj["Key"])
 
         return file_keys

@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from pydantic import ValidationError
 from models.degrade_message import DegradeMessage
+from utils.dynamo_service import DynamoService
 from utils.utils import extract_degrades_payload
 
 logger = logging.getLogger()
@@ -13,8 +14,7 @@ logger.setLevel("INFO")
 
 def lambda_handler(event, context):
     messages = event.get("Records", [])
-    client = boto3.resource("dynamodb", region_name=os.getenv("REGION"))
-    table = client.Table(os.getenv("DEGRADES_MESSAGE_TABLE"))
+    dynamo_service = DynamoService()
 
     for message in messages:
         try:
@@ -40,8 +40,11 @@ def lambda_handler(event, context):
             )
             DegradeMessage.model_validate(degrades_message)
 
-            table.put_item(
-                Item=degrades_message.model_dump(by_alias=True, exclude={"event_type"})
+            dynamo_service.put_item(
+                table_name=os.getenv("DEGRADES_MESSAGE_TABLE"),
+                payload=degrades_message.model_dump(
+                    by_alias=True, exclude={"event_type"}
+                ),
             )
             logger.info("Degrade successfully added to table.")
         except ValidationError as e:
