@@ -3,7 +3,6 @@ from enum import StrEnum
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_pascal
 
-
 class EventTypes(StrEnum):
     DEGRADES = "DEGRADES"
 

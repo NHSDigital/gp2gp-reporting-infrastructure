@@ -8,7 +8,6 @@ from models.degrade_message import DegradeMessage, Degrade
 def get_key_from_date(date: str):
     return date.replace("-", "/")
 
-
 def calculate_number_of_degrades(path: str, files: list[str]) -> int:
     total = 0
 
@@ -20,7 +19,6 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
             if eventType is not None and eventType == "DEGRADES":
                 total += 1
     return total
-
 
 def is_degrade(file) -> bool:
     data = json.loads(file)
