@@ -15,7 +15,6 @@ class S3Service:
         if not self.initialised:
             self.client = boto3.client("s3", region_name=os.getenv("REGION"))
 
-
     def list_files_from_S3(self, bucket_name, prefix):
         response = self.client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
         file_keys = []
@@ -26,7 +25,6 @@ class S3Service:
                 file_keys.append(obj["Key"])
 
         return file_keys
-
 
     def get_file_from_S3(self, bucket_name, key):
         response = self.client.get_object(Bucket=bucket_name, Key=key)

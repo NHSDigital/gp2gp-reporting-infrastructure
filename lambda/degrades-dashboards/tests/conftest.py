@@ -44,7 +44,6 @@ def mock_invalid_event_empty_query_string():
 
     return api_gateway_event
 
-
 @pytest.fixture
 def mock_invalid_event_without_date():
     api_gateway_event = {
@@ -54,7 +53,6 @@ def mock_invalid_event_without_date():
     }
 
     return api_gateway_event
-
 
 @pytest.fixture
 def mock_invalid_event_invalid_date_format():
@@ -66,7 +64,6 @@ def mock_invalid_event_invalid_date_format():
 
     return api_gateway_event
 
-
 @pytest.fixture
 def mock_valid_event_valid_date():
     api_gateway_event = {
@@ -76,7 +73,6 @@ def mock_valid_event_valid_date():
     }
 
     return api_gateway_event
-
 
 @pytest.fixture
 def context():
@@ -90,7 +86,6 @@ def context():
 
     return LambdaContext()
 
-
 @pytest.fixture
 def mock_table():
     with mock_aws():
@@ -100,7 +95,6 @@ def mock_table():
                                        AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
                                        BillingMode="PAY_PER_REQUEST", )
         yield degrades_table
-
 
 @pytest.fixture
 def mock_s3_with_files():
@@ -116,7 +110,6 @@ def mock_s3_with_files():
 
         yield bucket
 
-
 @pytest.fixture
 def mock_s3_service(mocker):
     with mock_aws():
@@ -125,7 +118,6 @@ def mock_s3_service(mocker):
         mocker.patch.object(service, "get_file_from_S3")
         yield service
         S3Service._instance = None
-
 
 @pytest.fixture
 def mock_sqs():
