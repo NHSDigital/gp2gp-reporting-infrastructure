@@ -3,37 +3,52 @@ import os
 import boto3
 from moto import mock_aws
 
-from degrades_api_dashboards.main import lambda_handler, get_file_from_S3, list_files_from_S3, calculate_number_of_degrades
+from degrades_api_dashboards.main import (
+    lambda_handler,
+    get_file_from_S3,
+    list_files_from_S3,
+    calculate_number_of_degrades,
+)
 from tests.conftest import REGION_NAME, MOCK_BUCKET
+
 
 def readfile(filename: str) -> str:
     with open(filename, "r") as file:
         file_content = file.read()
     return file_content
 
-def test_lambda_handler_throws_400_no_query_string(mock_invalid_event_empty_query_string, context):
-    expected = {'statusCode': 400}
+
+def test_lambda_handler_throws_400_no_query_string(
+    mock_invalid_event_empty_query_string, context
+):
+    expected = {"statusCode": 400}
 
     result = lambda_handler(mock_invalid_event_empty_query_string, context)
     assert result == expected
 
 
-def test_lamda_handler_throws_400_no_date_in_query_string(mock_invalid_event_without_date, context):
-    expected = {'statusCode': 400}
+def test_lamda_handler_throws_400_no_date_in_query_string(
+    mock_invalid_event_without_date, context
+):
+    expected = {"statusCode": 400}
 
     result = lambda_handler(mock_invalid_event_without_date, context)
     assert result == expected
 
 
-def test_lamda_handler_throws_400_invalid_date_format_in_query_string(mock_invalid_event_invalid_date_format, context):
-    expected = {'statusCode': 400}
+def test_lamda_handler_throws_400_invalid_date_format_in_query_string(
+    mock_invalid_event_invalid_date_format, context
+):
+    expected = {"statusCode": 400}
 
     result = lambda_handler(mock_invalid_event_invalid_date_format, context)
     assert result == expected
 
 
-def test_lambda_handler_calls_S3_with_date_prefix(mock_valid_event_valid_date, context, mocker, set_env):
-    mock_function_call = mocker.patch('degrades_api_dashboards.main.list_files_from_S3')
+def test_lambda_handler_calls_S3_with_date_prefix(
+    mock_valid_event_valid_date, context, mocker, set_env
+):
+    mock_function_call = mocker.patch("degrades_api_dashboards.main.list_files_from_S3")
 
     lambda_handler(mock_valid_event_valid_date, context)
 
@@ -42,10 +57,10 @@ def test_lambda_handler_calls_S3_with_date_prefix(mock_valid_event_valid_date, c
 
 @mock_aws
 def test_list_all_files_from_S3():
-    folder_path = 'tests/mocks/mixed_messages'
-    json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+    folder_path = "tests/mocks/mixed_messages"
+    json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
 
-    conn = boto3.resource('s3', region_name=REGION_NAME)
+    conn = boto3.resource("s3", region_name=REGION_NAME)
     bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
 
     for file in json_files:
@@ -58,11 +73,19 @@ def test_list_all_files_from_S3():
         assert f"2024/01/01/{json_files[index]}" in files
 
 
-def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_valid_date, context, mocker):
-    mock_get_files_from_S3 = mocker.patch('degrades_api_dashboards.main.get_file_from_S3')
-    mock_list_files_from_S3 = mocker.patch('degrades_api_dashboards.main.list_files_from_S3')
+def test_get_files_from_S3_called_with_list_of_files(
+    set_env, mock_valid_event_valid_date, context, mocker
+):
+    mock_get_files_from_S3 = mocker.patch(
+        "degrades_api_dashboards.main.get_file_from_S3"
+    )
+    mock_list_files_from_S3 = mocker.patch(
+        "degrades_api_dashboards.main.list_files_from_S3"
+    )
     mock_list_files_from_S3.return_value = ["2024/01/01/01-DEGRADES-01.json"]
-    mock_get_files_from_S3.return_value = readfile("tests/mocks/mixed_messages/01-DEGRADES-01.json")
+    mock_get_files_from_S3.return_value = readfile(
+        "tests/mocks/mixed_messages/01-DEGRADES-01.json"
+    )
 
     lambda_handler(mock_valid_event_valid_date, context)
 
@@ -70,11 +93,13 @@ def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_v
 
 
 @mock_aws
-def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid_date, context):
-    folder_path = 'tests/mocks/mixed_messages'
-    json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+def test_get_files_from_S3_returns_correct_files(
+    set_env, mock_valid_event_valid_date, context
+):
+    folder_path = "tests/mocks/mixed_messages"
+    json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
 
-    conn = boto3.resource('s3', region_name=REGION_NAME)
+    conn = boto3.resource("s3", region_name=REGION_NAME)
     bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
 
     for file in json_files:
@@ -88,18 +113,23 @@ def test_get_files_from_S3_returns_correct_files(set_env, mock_valid_event_valid
 
 
 @mock_aws
-def test_lambda_handler_calculates_number_of_degrades(set_env, mock_valid_event_valid_date, context, mocker):
-    folder_path = 'tests/mocks/mixed_messages'
-    json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+def test_lambda_handler_calculates_number_of_degrades(
+    set_env, mock_valid_event_valid_date, context, mocker
+):
+    folder_path = "tests/mocks/mixed_messages"
+    json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
 
-    conn = boto3.resource('s3', region_name=REGION_NAME)
+    conn = boto3.resource("s3", region_name=REGION_NAME)
     bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
 
     for file in json_files:
         bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
-    expected = {'statusCode': 200, "body": json.dumps({"numberOfDegrades": 5})}
+    expected = {"statusCode": 200, "body": json.dumps({"numberOfDegrades": 5})}
     actual = lambda_handler(mock_valid_event_valid_date, context)
 
     assert actual == expected
-    assert calculate_number_of_degrades("2024/01/01/") == json.loads(expected["body"])["numberOfDegrades"]
+    assert (
+        calculate_number_of_degrades("2024/01/01/")
+        == json.loads(expected["body"])["numberOfDegrades"]
+    )

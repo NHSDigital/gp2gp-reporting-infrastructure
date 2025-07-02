@@ -20,15 +20,23 @@ def lambda_handler(event, context):
                 print("Validation error: Message is not of type DEGRADES")
                 raise ValueError("Invalid degrade message")
 
-            timestamp = int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp())
+            timestamp = int(
+                datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()
+            )
 
             degrades = extract_degrades_payload(message["payload"])
 
-            degrades_message = DegradeMessage(timestamp=timestamp, message_id=message["eventId"], event_type=message["eventType"], degrades=degrades)
+            degrades_message = DegradeMessage(
+                timestamp=timestamp,
+                message_id=message["eventId"],
+                event_type=message["eventType"],
+                degrades=degrades,
+            )
             DegradeMessage.model_validate(degrades_message)
 
-
-            table.put_item(Item=degrades_message.model_dump(by_alias=True, exclude={"event_type"}))
+            table.put_item(
+                Item=degrades_message.model_dump(by_alias=True, exclude={"event_type"})
+            )
             print("Degrade successfully added to table.")
         except ValidationError as e:
             print("Validation error: Invalid degrade message")

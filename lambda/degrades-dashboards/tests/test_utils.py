@@ -2,11 +2,24 @@ import os
 
 from models.degrade_message import DegradeMessage
 from tests.conftest import TEST_DEGRADES_DATE
-from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp, FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE, \
-    SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE, COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE
-from tests.mocks.sqs_messages.degrades import MOCK_FIRST_DEGRADES_MESSAGE, MOCK_COMPLEX_DEGRADES_MESSAGE
-from utils.utils import get_key_from_date, calculate_number_of_degrades, is_degrade, extract_degrades_payload, \
-    extract_query_timestamp_from_scheduled_event_trigger, get_degrade_totals_from_degrades
+from tests.mocks.dynamo_response.degrade_table import (
+    simple_message_timestamp,
+    FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE,
+    SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE,
+    COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE,
+)
+from tests.mocks.sqs_messages.degrades import (
+    MOCK_FIRST_DEGRADES_MESSAGE,
+    MOCK_COMPLEX_DEGRADES_MESSAGE,
+)
+from utils.utils import (
+    get_key_from_date,
+    calculate_number_of_degrades,
+    is_degrade,
+    extract_degrades_payload,
+    extract_query_timestamp_from_scheduled_event_trigger,
+    get_degrade_totals_from_degrades,
+)
 
 
 def test_get_key_from_date():
@@ -15,20 +28,20 @@ def test_get_key_from_date():
 
 
 def test_calculate_number_of_degrades():
-    folder_path = 'tests/mocks/mixed_messages'
-    json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+    folder_path = "tests/mocks/mixed_messages"
+    json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
 
     result = calculate_number_of_degrades(path=folder_path, files=json_files)
     assert result == 5
 
 
 def test_is_degrade_with_degrade_message():
-    with open('tests/mocks/mixed_messages/01-DEGRADES-01.json', 'r') as file:
+    with open("tests/mocks/mixed_messages/01-DEGRADES-01.json", "r") as file:
         assert is_degrade(file.read())
 
 
 def test_is_degrade_with_file_not_degrades_message():
-    with open('tests/mocks/mixed_messages/01-DOCUMENT_RESPONSES-01.json', 'r') as file:
+    with open("tests/mocks/mixed_messages/01-DOCUMENT_RESPONSES-01.json", "r") as file:
         assert is_degrade(file.read()) == False
 
 
@@ -56,7 +69,11 @@ def test_extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_eve
 
 
 def test_get_degrade_totals_from_degrades():
-    degrades = [DegradeMessage(**FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE), DegradeMessage(**SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE), DegradeMessage(**COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE)]
+    degrades = [
+        DegradeMessage(**FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+        DegradeMessage(**SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+        DegradeMessage(**COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+    ]
     expected = {"MEDICATION": 3, "RECORD_ENTRY": 1, "NON_DRUG_ALLERGY": 1, "TOTAL": 5}
 
     actual = get_degrade_totals_from_degrades(degrades)

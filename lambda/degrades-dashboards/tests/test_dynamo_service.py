@@ -6,32 +6,55 @@ from moto import mock_aws
 from boto3.dynamodb.conditions import Key
 from utils.utils import extract_degrades_payload
 from models.degrade_message import DegradeMessage
-from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, \
-    MOCK_SIMPLE_DEGRADES_MESSAGE
+from tests.mocks.sqs_messages.degrades import (
+    MOCK_COMPLEX_DEGRADES_MESSAGE,
+    MOCK_FIRST_DEGRADES_MESSAGE,
+    MOCK_SIMPLE_DEGRADES_MESSAGE,
+)
 
 from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp
 
 from utils.dynamo_service import DynamoService
 
-degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
+degrades_messages = [
+    MOCK_COMPLEX_DEGRADES_MESSAGE,
+    MOCK_FIRST_DEGRADES_MESSAGE,
+    MOCK_SIMPLE_DEGRADES_MESSAGE,
+]
+
 
 @mock_aws
 def test_dynamo_service_queries_table(mock_table, set_env):
-    degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
+    degrades_messages = [
+        MOCK_COMPLEX_DEGRADES_MESSAGE,
+        MOCK_FIRST_DEGRADES_MESSAGE,
+        MOCK_SIMPLE_DEGRADES_MESSAGE,
+    ]
     degrades = [
-        DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()),
-                       message_id=message["eventId"],
-                       event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for
-        message in
-        degrades_messages]
+        DegradeMessage(
+            timestamp=int(
+                datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()
+            ),
+            message_id=message["eventId"],
+            event_type=message["eventType"],
+            degrades=extract_degrades_payload(message["payload"]),
+        )
+        for message in degrades_messages
+    ]
 
     for degrade in degrades:
         DegradeMessage.model_validate(degrade)
-        mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
+        mock_table.put_item(
+            Item=degrade.model_dump(by_alias=True, exclude={"event_type"})
+        )
 
     service = DynamoService()
-    actual = service.query("Timestamp", simple_message_timestamp, os.getenv("DEGRADES_MESSAGE_TABLE"))
-    expected = mock_table.query(KeyConditionExpression=Key("Timestamp").eq(simple_message_timestamp))["Items"]
+    actual = service.query(
+        "Timestamp", simple_message_timestamp, os.getenv("DEGRADES_MESSAGE_TABLE")
+    )
+    expected = mock_table.query(
+        KeyConditionExpression=Key("Timestamp").eq(simple_message_timestamp)
+    )["Items"]
 
     assert actual == expected
 

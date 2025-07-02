@@ -2,8 +2,11 @@ import boto3
 from datetime import datetime
 from dataclasses import dataclass
 from moto import mock_aws
-from tests.mocks.sqs_messages.degrades import MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, \
-    MOCK_SIMPLE_DEGRADES_MESSAGE
+from tests.mocks.sqs_messages.degrades import (
+    MOCK_COMPLEX_DEGRADES_MESSAGE,
+    MOCK_FIRST_DEGRADES_MESSAGE,
+    MOCK_SIMPLE_DEGRADES_MESSAGE,
+)
 from utils.dynamo_service import DynamoService
 from utils.utils import extract_degrades_payload
 from models.degrade_message import DegradeMessage
@@ -17,25 +20,13 @@ MOCK_DEGRADES_MESSAGE_TABLE_NAME = "degrades_messages_table"
 TEST_DEGRADES_DATE = "2024-09-20"
 
 MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES = [
-    {
-        'AttributeName': 'Timestamp',
-        'AttributeType': 'N'
-    },
-    {
-        'AttributeName': 'MessageId',
-        'AttributeType': 'S'
-    },
+    {"AttributeName": "Timestamp", "AttributeType": "N"},
+    {"AttributeName": "MessageId", "AttributeType": "S"},
 ]
 
 MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
-    {
-        'AttributeName': 'Timestamp',
-        'KeyType': 'HASH'
-    },
-    {
-        "AttributeName": "MessageId",
-        "KeyType": "RANGE"
-    }
+    {"AttributeName": "Timestamp", "KeyType": "HASH"},
+    {"AttributeName": "MessageId", "KeyType": "RANGE"},
 ]
 
 
@@ -81,6 +72,7 @@ def mock_valid_event_valid_date():
     }
     return api_gateway_event
 
+
 @pytest.fixture
 def mock_scheduled_event():
     event = {
@@ -90,10 +82,8 @@ def mock_scheduled_event():
         "account": "123456789012",
         "time": "2024-09-21T06:00:00Z",
         "region": "us-east-1",
-        "resources": [
-            "arn:aws:events:us-east-1:123456789012:rule/ExampleRule"
-        ],
-        "detail": {}
+        "resources": ["arn:aws:events:us-east-1:123456789012:rule/ExampleRule"],
+        "detail": {},
     }
     return event
 
@@ -115,27 +105,42 @@ def context():
 def mock_table():
     with mock_aws():
         conn = boto3.resource("dynamodb", region_name=REGION_NAME)
-        degrades_table = conn.create_table(TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
-                                           KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
-                                           AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
-                                           BillingMode="PAY_PER_REQUEST", )
+        degrades_table = conn.create_table(
+            TableName=MOCK_DEGRADES_MESSAGE_TABLE_NAME,
+            KeySchema=MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA,
+            AttributeDefinitions=MOCK_DEGRADES_MESSAGE_TABLE_ATTRIBUTES,
+            BillingMode="PAY_PER_REQUEST",
+        )
         yield degrades_table
 
 
 @pytest.fixture
 def mock_table_with_files(mock_table):
     with mock_aws():
-        degrades_messages = [MOCK_COMPLEX_DEGRADES_MESSAGE, MOCK_FIRST_DEGRADES_MESSAGE, MOCK_SIMPLE_DEGRADES_MESSAGE]
+        degrades_messages = [
+            MOCK_COMPLEX_DEGRADES_MESSAGE,
+            MOCK_FIRST_DEGRADES_MESSAGE,
+            MOCK_SIMPLE_DEGRADES_MESSAGE,
+        ]
         degrades = [
-            DegradeMessage(timestamp=int(datetime.fromisoformat(message["eventGeneratedDateTime"]).timestamp()),
-                           message_id=message["eventId"],
-                           event_type=message["eventType"], degrades=extract_degrades_payload(message["payload"])) for
-            message in
-            degrades_messages]
+            DegradeMessage(
+                timestamp=int(
+                    datetime.fromisoformat(
+                        message["eventGeneratedDateTime"]
+                    ).timestamp()
+                ),
+                message_id=message["eventId"],
+                event_type=message["eventType"],
+                degrades=extract_degrades_payload(message["payload"]),
+            )
+            for message in degrades_messages
+        ]
 
         for degrade in degrades:
             DegradeMessage.model_validate(degrade)
-            mock_table.put_item(Item=degrade.model_dump(by_alias=True, exclude={"event_type"}))
+            mock_table.put_item(
+                Item=degrade.model_dump(by_alias=True, exclude={"event_type"})
+            )
 
     yield mock_table
 
