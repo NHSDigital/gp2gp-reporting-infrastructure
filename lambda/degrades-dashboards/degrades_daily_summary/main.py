@@ -37,7 +37,11 @@ def lambda_handler(event, context):
 
     base_file_key = query_day.replace("-", "/")
     s3_service = S3Service()
-    s3_service.upload_file(file=file_path, bucket_name=os.getenv("REGISTRATIONS_MI_EVENT_BUCKET"), key=f"{base_file_key}/degrades_summary.csv")
+    s3_service.upload_file(
+        file=file_path,
+        bucket_name=os.getenv("REGISTRATIONS_MI_EVENT_BUCKET"),
+        key=f"{base_file_key}/degrades_summary.csv",
+    )
 
 
 def generate_report_from_dynamo_query(

@@ -8,6 +8,7 @@ from models.degrade_message import DegradeMessage, Degrade
 def get_key_from_date(date: str):
     return date.replace("-", "/")
 
+
 def calculate_number_of_degrades(path: str, files: list[str]) -> int:
     total = 0
 
@@ -20,6 +21,7 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
                 total += 1
     return total
 
+
 def is_degrade(file) -> bool:
     data = json.loads(file)
     event_type = data.get("eventType", None)
@@ -28,12 +30,15 @@ def is_degrade(file) -> bool:
 
 
 def extract_degrades_payload(payload: dict) -> list[Degrade]:
-   return [Degrade(type=degrade["type"], reason=degrade["reason"]) for degrade in payload["degrades"]]
+    return [
+        Degrade(type=degrade["type"], reason=degrade["reason"])
+        for degrade in payload["degrades"]
+    ]
 
 
 def extract_query_timestamp_from_scheduled_event_trigger(
     event: dict,
-) -> tuple[int, str]|None:
+) -> tuple[int, str] | None:
     event_trigger_time = event.get("time", "")
 
     if event_trigger_time:

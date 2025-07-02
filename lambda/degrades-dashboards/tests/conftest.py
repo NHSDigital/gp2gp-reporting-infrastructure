@@ -32,6 +32,7 @@ MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
     {"AttributeName": "MessageId", "KeyType": "RANGE"},
 ]
 
+
 @pytest.fixture
 def mock_invalid_event_empty_query_string():
     api_gateway_event = {
@@ -143,6 +144,7 @@ def mock_table():
         )
         yield degrades_table
 
+
 @pytest.fixture
 def mock_table_with_files(mock_table):
     with mock_aws():
@@ -173,19 +175,21 @@ def mock_table_with_files(mock_table):
 
     yield mock_table
 
+
 @pytest.fixture
 def mock_s3_with_files():
     with mock_aws():
-        folder_path = 'tests/mocks/mixed_messages'
-        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        folder_path = "tests/mocks/mixed_messages"
+        json_files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
 
-        conn = boto3.resource('s3', region_name=REGION_NAME)
+        conn = boto3.resource("s3", region_name=REGION_NAME)
         bucket = conn.create_bucket(Bucket=MOCK_BUCKET)
 
         for file in json_files:
             bucket.upload_file(os.path.join(folder_path, file), f"2024/01/01/{file}")
 
         yield bucket
+
 
 @pytest.fixture
 def mock_s3_service(mocker):
@@ -197,12 +201,14 @@ def mock_s3_service(mocker):
         yield service
         service._instance = None
 
+
 @pytest.fixture
 def mock_sqs():
     with mock_aws():
         client = boto3.resource("sqs", region_name=REGION_NAME)
         queue = client.create_queue(QueueName=MOCK_DEGRADES_QUEUE_NAME)
         yield queue
+
 
 @pytest.fixture
 def mock_dynamo_service(mocker):
@@ -211,6 +217,7 @@ def mock_dynamo_service(mocker):
 
     yield service
     service._instance = None
+
 
 @pytest.fixture
 def set_env(monkeypatch):

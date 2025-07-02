@@ -57,7 +57,11 @@ def test_extract_degrades_payload_complex_message():
     payload = MOCK_COMPLEX_DEGRADES_MESSAGE["payload"]
 
     actual = extract_degrades_payload(payload)
-    expected = [Degrade(type="MEDICATION", reason="CODE"), Degrade(type="RECORD_ENTRY", reason="CODE"), Degrade(type="NON_DRUG_ALLERGY", reason="CODE")]
+    expected = [
+        Degrade(type="MEDICATION", reason="CODE"),
+        Degrade(type="RECORD_ENTRY", reason="CODE"),
+        Degrade(type="NON_DRUG_ALLERGY", reason="CODE"),
+    ]
     assert actual == expected
 
 

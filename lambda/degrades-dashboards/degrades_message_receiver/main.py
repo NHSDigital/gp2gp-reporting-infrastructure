@@ -10,6 +10,7 @@ from utils.utils import extract_degrades_payload
 logger = logging.getLogger()
 logger.setLevel("INFO")
 
+
 def lambda_handler(event, context):
     messages = event.get("Records", [])
     client = boto3.resource("dynamodb", region_name=os.getenv("REGION"))
