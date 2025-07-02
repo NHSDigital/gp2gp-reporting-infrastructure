@@ -74,6 +74,7 @@ def mock_valid_event_valid_date():
         "queryStringParameters": {"date": "2024-01-01"},
         "headers": {},
     }
+
     return api_gateway_event
 
 
@@ -124,6 +125,7 @@ def mock_s3_service(mocker):
         mocker.patch.object(service, "get_file_from_S3")
         yield service
         S3Service._instance = None
+
 
 @pytest.fixture
 def mock_sqs():

@@ -13,10 +13,10 @@ class S3Service:
 
     def __init__(self):
         if not self.initialised:
-         self.client = boto3.client("s3", region_name=os.getenv("REGION"))
+            self.client = boto3.client("s3", region_name=os.getenv("REGION"))
+
 
     def list_files_from_S3(self, bucket_name, prefix):
-
         response = self.client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
         file_keys = []
         response_objects = response.get("Contents", [])
