@@ -9,7 +9,7 @@ def calculate_number_of_degrades(path: str, files: list[str]) -> int:
 
     for file_name in files:
         file_path = os.path.join(path, file_name)
-        with open(file_path, "r") as json_file:
+        with open(file_path, "rb") as json_file:
             data = json.load(json_file)
             eventType = data.get("eventType", None)
             if eventType is not None and eventType == "DEGRADES":
@@ -21,3 +21,10 @@ def is_degrade(file) -> bool:
     event_type = data.get("eventType", None)
 
     return event_type is not None and event_type == "DEGRADES"
+
+
+def extract_degrades_payload(payload: dict) -> list[str]:
+    degrades = []
+    for degrade in payload["degrades"]:
+        degrades.append(degrade["type"])
+    return degrades

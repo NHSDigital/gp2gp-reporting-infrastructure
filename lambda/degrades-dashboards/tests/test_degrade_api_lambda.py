@@ -3,7 +3,7 @@ import os
 import boto3
 from moto import mock_aws
 
-from main import lambda_handler, get_file_from_S3, list_files_from_S3, calculate_number_of_degrades
+from degrades_api_dashboards.main import lambda_handler, get_file_from_S3, list_files_from_S3, calculate_number_of_degrades
 from tests.conftest import REGION_NAME, MOCK_BUCKET
 
 def readfile(filename: str) -> str:
@@ -33,7 +33,7 @@ def test_lamda_handler_throws_400_invalid_date_format_in_query_string(mock_inval
 
 
 def test_lambda_handler_calls_S3_with_date_prefix(mock_valid_event_valid_date, context, mocker, set_env):
-    mock_function_call = mocker.patch('main.list_files_from_S3')
+    mock_function_call = mocker.patch('degrades_api_dashboards.main.list_files_from_S3')
 
     lambda_handler(mock_valid_event_valid_date, context)
 
@@ -59,8 +59,8 @@ def test_list_all_files_from_S3():
 
 
 def test_get_files_from_S3_called_with_list_of_files(set_env, mock_valid_event_valid_date, context, mocker):
-    mock_get_files_from_S3 = mocker.patch('main.get_file_from_S3')
-    mock_list_files_from_S3 = mocker.patch('main.list_files_from_S3')
+    mock_get_files_from_S3 = mocker.patch('degrades_api_dashboards.main.get_file_from_S3')
+    mock_list_files_from_S3 = mocker.patch('degrades_api_dashboards.main.list_files_from_S3')
     mock_list_files_from_S3.return_value = ["2024/01/01/01-DEGRADES-01.json"]
     mock_get_files_from_S3.return_value = readfile("tests/mocks/mixed_messages/01-DEGRADES-01.json")
 

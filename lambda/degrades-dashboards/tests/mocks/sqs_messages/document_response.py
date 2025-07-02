@@ -1,4 +1,4 @@
-{
+DOCUMENT_RESPONSE = {
   "eventId": "01-DOCUMENT_RESPONSES-01",
   "eventGeneratedDateTime": "2024-09-20T12:15:06",
   "eventType": "DOCUMENT_RESPONSES",
@@ -21,8 +21,8 @@
       "sizeBytes": 837482
     },
     "documentMigration": {
-      "successful": true,
-      "reason": null
+      "successful": True,
+      "reason": None
     }
   },
   "requestingSupplierName": "EMIS",
