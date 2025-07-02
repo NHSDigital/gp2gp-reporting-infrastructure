@@ -38,7 +38,7 @@ def test_degrades_message_receiver_handles_more_than_one_degrade_message(set_env
 
 def test_degrades_message_receiver_throws_error_message_not_degrades(set_env, context, mock_table, caplog):
     event = {"Records": [{"body": json.dumps(DOCUMENT_RESPONSE)}]}
-    expected_message = "Validation error: Message is not of type DEGRADES"
+    expected_message = "Invalid degrade message"
 
     with pytest.raises(ValueError):
         lambda_handler(event, context)

@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "degrade_message_receiver_lambda_logging" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["${aws_cloudwatch_log_group.degrades_messages_receiver.arn}"]
+    resources = ["${aws_cloudwatch_log_group.degrades_messages_receiver.arn}", "${aws_cloudwatch_log_group.degrades_messages_receiver.arn}:*"]
   }
 }
 
