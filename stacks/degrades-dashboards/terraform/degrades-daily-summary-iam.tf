@@ -52,4 +52,3 @@ resource "aws_iam_role_policy_attachment" "degrades_daily_summary_registrations_
   policy_arn = aws_iam_policy.registrations_mi_events_access.arn
   role       = aws_iam_role.degrades_daily_summary_lambda.name
 }
-

@@ -24,3 +24,6 @@ class DynamoService:
         except ClientError as e:
             print("There has been an error: {}".format(e))
             raise Exception
+
+    def put_item(self, table, payload):
+        table.put_item(Item=payload)

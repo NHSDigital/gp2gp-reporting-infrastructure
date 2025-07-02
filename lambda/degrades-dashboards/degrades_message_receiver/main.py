@@ -17,6 +17,7 @@ def lambda_handler(event, context):
 
     for message in messages:
         try:
+            logger.info(f"Processing message: {message['messageId']}")
             message = json.loads(message["body"])
 
             if message["eventType"] != "DEGRADES":

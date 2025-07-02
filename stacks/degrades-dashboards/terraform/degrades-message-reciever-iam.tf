@@ -53,7 +53,7 @@ resource "aws_iam_policy" "degrades_message_receiver_logging" {
   policy      = data.aws_iam_policy_document.degrades_message_receiver_lambda_logging.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
+resource "aws_iam_role_policy_attachment" "degrades_message_receiver_logs" {
   role       = aws_iam_role.degrades_message_receiver_lambda.name
   policy_arn = aws_iam_policy.degrades_message_receiver_logging.arn
 }

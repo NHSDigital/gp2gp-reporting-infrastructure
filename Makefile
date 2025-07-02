@@ -14,7 +14,7 @@ test-degrades:
 	cd $(DEGRADES_LAMBDA_PATH)  && venv/bin/python3 -m pytest tests/
 
 deploy-local:  zip-degrades-lambdas
-	localstack start -d
+	ACTIVATE_PRO=0 localstack start -d
 	$(DEGRADES_LAMBDA_PATH)/venv/bin/awslocal s3 mb s3://terraform-state
 	cd stacks/degrades-dashboards/terraform && ../../../$(DEGRADES_LAMBDA_PATH)/venv/bin/tflocal init
 	cd stacks/degrades-dashboards/terraform && ../../../$(DEGRADES_LAMBDA_PATH)/venv/bin/tflocal plan
