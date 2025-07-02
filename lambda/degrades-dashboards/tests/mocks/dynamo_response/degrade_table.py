@@ -8,18 +8,18 @@ complex_message_timestamp = int(datetime.fromisoformat(MOCK_COMPLEX_DEGRADES_MES
 FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "01-DEGRADES-01",
     "Timestamp": first_message_timestamp,
-    "Degrades": ["MEDICATION"]
+    "Degrades": [{"MEDICATION": "CODE"}]
 }
 
 SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "05-DEGRADES-05",
     "Timestamp": simple_message_timestamp,
-    "Degrades": ["MEDICATION"]
+    "Degrades": [{"MEDICATION": "CODE"}]
 }
 
 COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "02-DEGRADES-02",
     "Timestamp": complex_message_timestamp,
-    "Degrades": ["MEDICATION", "RECORD_ENTRY", "NON_DRUG_ALLERGY"]
+    "Degrades": [{"MEDICATION": "CODE"}, {"RECORD_ENTRY": "CODE"}, {"NON_DRUG_ALLERGY": "CODE"}]
 
 }
