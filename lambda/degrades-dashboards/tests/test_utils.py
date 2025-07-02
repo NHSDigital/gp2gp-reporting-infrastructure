@@ -1,6 +1,6 @@
 import os
 
-from models.degrade_message import DegradeMessage
+from models.degrade_message import DegradeMessage, Degrade
 from tests.conftest import TEST_DEGRADES_DATE
 from tests.mocks.dynamo_response.degrade_table import (
     simple_message_timestamp,
@@ -49,7 +49,7 @@ def test_extract_degrades_payload_simple_message():
     payload = MOCK_FIRST_DEGRADES_MESSAGE["payload"]
 
     actual = extract_degrades_payload(payload)
-    expected = ["MEDICATION"]
+    expected = [Degrade(type="MEDICATION", reason="CODE")]
     assert actual == expected
 
 
@@ -57,7 +57,7 @@ def test_extract_degrades_payload_complex_message():
     payload = MOCK_COMPLEX_DEGRADES_MESSAGE["payload"]
 
     actual = extract_degrades_payload(payload)
-    expected = ["MEDICATION", "RECORD_ENTRY", "NON_DRUG_ALLERGY"]
+    expected = [Degrade(type="MEDICATION", reason="CODE"), Degrade(type="RECORD_ENTRY", reason="CODE"), Degrade(type="NON_DRUG_ALLERGY", reason="CODE")]
     assert actual == expected
 
 
@@ -70,9 +70,9 @@ def test_extract_query_timestamp_from_scheduled_event_trigger(mock_scheduled_eve
 
 def test_get_degrade_totals_from_degrades():
     degrades = [
-        DegradeMessage(**FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
-        DegradeMessage(**SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
-        DegradeMessage(**COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+        DegradeMessage.model_validate(FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+        DegradeMessage.model_validate(SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
+        DegradeMessage.model_validate(COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE),
     ]
     expected = {"MEDICATION": 3, "RECORD_ENTRY": 1, "NON_DRUG_ALLERGY": 1, "TOTAL": 5}
 

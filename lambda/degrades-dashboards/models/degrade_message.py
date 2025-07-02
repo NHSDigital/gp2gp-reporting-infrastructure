@@ -8,6 +8,12 @@ class EventTypes(StrEnum):
     DEGRADES = "DEGRADES"
 
 
+class Degrade(BaseModel):
+    model_config = ConfigDict(alias_generator=to_pascal, populate_by_name=True, use_enum_values=True)
+    type: str
+    reason: str
+
+
 class DegradeMessage(BaseModel):
     model_config = ConfigDict(
         alias_generator=to_pascal, populate_by_name=True, use_enum_values=True
@@ -15,4 +21,7 @@ class DegradeMessage(BaseModel):
     message_id: str
     timestamp: int
     event_type: EventTypes = EventTypes.DEGRADES
-    degrades: list[str]
+    degrades: list[Degrade]
+
+
+

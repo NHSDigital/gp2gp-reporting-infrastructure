@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime, timedelta
 
-from models.degrade_message import DegradeMessage
+from models.degrade_message import DegradeMessage, Degrade
 
 
 def get_key_from_date(date: str):
@@ -29,16 +29,13 @@ def is_degrade(file) -> bool:
     return event_type is not None and event_type == "DEGRADES"
 
 
-def extract_degrades_payload(payload: dict) -> list[str]:
-    degrades = []
-    for degrade in payload["degrades"]:
-        degrades.append(degrade["type"])
-    return degrades
+def extract_degrades_payload(payload: dict) -> list[Degrade]:
+   return [Degrade(type=degrade["type"], reason=degrade["reason"]) for degrade in payload["degrades"]]
 
 
 def extract_query_timestamp_from_scheduled_event_trigger(
     event: dict,
-) -> tuple[int, str]:
+) -> tuple[int, str]|None:
     event_trigger_time = event.get("time", "")
 
     if event_trigger_time:
@@ -51,12 +48,12 @@ def extract_query_timestamp_from_scheduled_event_trigger(
 def get_degrade_totals_from_degrades(degrades: list[DegradeMessage]) -> dict:
     degrade_totals = {"TOTAL": 0}
 
-    for degrade in degrades:
-        for degrade_type in degrade.degrades:
-            if degrade_totals.get(degrade_type):
-                degrade_totals[degrade_type] += 1
+    for degrade_message in degrades:
+        for degrade in degrade_message.degrades:
+            if degrade_totals.get(degrade.type):
+                degrade_totals[degrade.type] += 1
             else:
-                degrade_totals[degrade_type] = 1
+                degrade_totals[degrade.type] = 1
 
     for type, count in degrade_totals.items():
         degrade_totals["TOTAL"] += count

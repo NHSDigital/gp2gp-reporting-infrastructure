@@ -63,3 +63,7 @@ def test_degrades_daily_summary_generates_report(
 
 
 #  TODO PRM-366 test degrades daily summary uploads to S3
+
+@mock_aws
+def test_degrades_daily_summary_uploads_to_s3():
+    pass

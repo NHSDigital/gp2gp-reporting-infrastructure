@@ -28,7 +28,12 @@ def lambda_handler(event, context):
     )
 
     logger.info(f"Generating report for {query_day}")
+    if not degrades:
+        logger.info(f"No degrades found for {query_day}")
+        return
+
     generate_report_from_dynamo_query(degrades, query_day)
+
 
 
 def generate_report_from_dynamo_query(

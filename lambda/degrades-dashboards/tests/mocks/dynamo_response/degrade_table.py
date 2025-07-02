@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from models.degrade_message import Degrade
 from tests.mocks.sqs_messages.degrades import (
     MOCK_SIMPLE_DEGRADES_MESSAGE,
     MOCK_FIRST_DEGRADES_MESSAGE,
@@ -24,17 +26,17 @@ complex_message_timestamp = int(
 FIRST_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "01-DEGRADES-01",
     "Timestamp": first_message_timestamp,
-    "Degrades": ["MEDICATION"],
+    "Degrades": [{"Type":"MEDICATION", "Reason":"CODE"}],
 }
 
 SIMPLE_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "05-DEGRADES-05",
     "Timestamp": simple_message_timestamp,
-    "Degrades": ["MEDICATION"],
+    "Degrades": [{"Type":"MEDICATION", "Reason":"CODE"}],
 }
 
 COMPLEX_DEGRADES_MESSAGE_DYNAMO_RESPONSE = {
     "MessageId": "02-DEGRADES-02",
     "Timestamp": complex_message_timestamp,
-    "Degrades": ["MEDICATION", "RECORD_ENTRY", "NON_DRUG_ALLERGY"],
+    "Degrades": [{"Type":"MEDICATION", "Reason":"CODE"}, {"Type":"RECORD_ENTRY", "Reason":"CODE"}, {"Type":"NON_DRUG_ALLERGY", "Reason":"CODE"}]
 }
