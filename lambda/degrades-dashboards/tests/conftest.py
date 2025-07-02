@@ -167,7 +167,7 @@ def mock_s3_service(mocker):
         mocker.patch.object(service, "list_files_from_S3")
         mocker.patch.object(service, "get_file_from_S3")
         yield service
-        S3Service._instance = None
+        service._instance = None
 
 @pytest.fixture
 def mock_sqs():

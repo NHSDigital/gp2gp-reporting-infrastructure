@@ -43,4 +43,14 @@ def test_get_file_from_S3_raises_error_client_issue(set_env):
     with pytest.raises(ClientError):
         service.get_file_from_S3('test', "key")
 
+@mock_aws
+def test_s3_service_uploads_files(set_env, mock_s3_with_files):
+    service = S3Service()
+
+    service.upload_file(file="./tests/reports/2024-09-20.csv", bucket_name=MOCK_BUCKET, key="2024/09/20/summary.csv")
+
+    actual = service.get_file_from_S3(MOCK_BUCKET, "2024/09/20/summary.csv")
+    with open("./tests/reports/2024-09-20.csv", "rb") as expected:
+        assert expected.read() == actual
+
 

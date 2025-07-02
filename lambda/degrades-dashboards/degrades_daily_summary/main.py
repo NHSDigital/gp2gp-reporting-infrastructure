@@ -34,8 +34,6 @@ def lambda_handler(event, context):
 
     generate_report_from_dynamo_query(degrades, query_day)
 
-
-
 def generate_report_from_dynamo_query(
     degrades_from_table: list[dict], date: str
 ) -> None:
