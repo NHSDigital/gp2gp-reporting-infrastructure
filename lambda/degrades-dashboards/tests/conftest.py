@@ -92,6 +92,33 @@ def mock_scheduled_event():
 
 
 @pytest.fixture
+def mock_degrades_message_event():
+    event = {
+        "Records": [
+            {
+                "eventId": "01-DEGRADES-01",
+                "eventGeneratedDateTime": "2024-09-20T00:00:00",
+                "eventType": "DEGRADES",
+                "reportingSystemSupplier": "EMIS",
+                "payload": {
+                    "degrades": [
+                        {
+                            "type": "MEDICATION",
+                            "reason": "CODE",
+                            "coding": [
+                                {"code": "02543001", "system": "UNKNOWN"},
+                                {"code": "02543001", "system": "UNKNOWN"},
+                            ],
+                        }
+                    ]
+                },
+            }
+        ]
+    }
+    return event
+
+
+@pytest.fixture
 def context():
     @dataclass
     class LambdaContext:
@@ -166,6 +193,7 @@ def mock_s3_service(mocker):
         service = S3Service()
         mocker.patch.object(service, "list_files_from_S3")
         mocker.patch.object(service, "get_file_from_S3")
+        mocker.patch.object(service, "upload_file")
         yield service
         service._instance = None
 

@@ -4,6 +4,7 @@ import os
 import logging
 from models.degrade_message import DegradeMessage
 from utils.dynamo_service import DynamoService
+from utils.s3_service import S3Service
 from utils.utils import (
     extract_query_timestamp_from_scheduled_event_trigger,
     get_degrade_totals_from_degrades,
@@ -32,11 +33,16 @@ def lambda_handler(event, context):
         logger.info(f"No degrades found for {query_day}")
         return
 
-    generate_report_from_dynamo_query(degrades, query_day)
+    file_path = generate_report_from_dynamo_query(degrades, query_day)
+
+    base_file_key = query_day.replace("-", "/")
+    s3_service = S3Service()
+    s3_service.upload_file(file=file_path, bucket_name=os.getenv("REGISTRATIONS_MI_EVENT_BUCKET"), key=f"{base_file_key}/degrades_summary.csv")
+
 
 def generate_report_from_dynamo_query(
     degrades_from_table: list[dict], date: str
-) -> None:
+) -> str:
     degrades = [DegradeMessage(**message) for message in degrades_from_table]
 
     logger.info(f"Getting degrades totals from: {degrades}")
@@ -47,3 +53,5 @@ def generate_report_from_dynamo_query(
         writer = csv.writer(output_file)
         for key, value in degrade_totals.items():
             writer.writerow([key, value])
+
+    return f"{os.getcwd()}/tmp/{date}.csv"

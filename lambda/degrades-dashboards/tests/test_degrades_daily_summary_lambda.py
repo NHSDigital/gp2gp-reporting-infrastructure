@@ -4,7 +4,7 @@ from degrades_daily_summary.main import (
     lambda_handler,
     generate_report_from_dynamo_query,
 )
-from tests.conftest import TEST_DEGRADES_DATE
+from tests.conftest import TEST_DEGRADES_DATE, mock_s3_service
 from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp
 from tests.test_degrade_api_lambda import readfile
 from boto3.dynamodb.conditions import Key
@@ -12,7 +12,7 @@ from boto3.dynamodb.conditions import Key
 
 @mock_aws
 def test_degrades_daily_summary_lambda_queries_dynamo(
-    set_env, context, mock_dynamo_service, mock_table, mock_scheduled_event
+    set_env, context, mock_dynamo_service, mock_table, mock_scheduled_event, mock_s3_service
 ):
     lambda_handler(mock_scheduled_event, context)
     mock_dynamo_service.query.assert_called()
@@ -21,7 +21,7 @@ def test_degrades_daily_summary_lambda_queries_dynamo(
 
 @mock_aws
 def test_degrades_daily_summary_uses_trigger_date_to_query_dynamo(
-    set_env, context, mock_dynamo_service, mock_table, mock_scheduled_event
+    set_env, context, mock_dynamo_service, mock_table, mock_scheduled_event, mock_s3_service
 ):
     lambda_handler(mock_scheduled_event, context)
     mock_dynamo_service.query.assert_called_with(
@@ -47,7 +47,7 @@ def test_generate_report_from_dynamo_query_result(mock_table_with_files):
 
 @mock_aws
 def test_degrades_daily_summary_generates_report(
-    mock_scheduled_event, context, set_env, mocker, mock_table_with_files
+    mock_scheduled_event, context, set_env, mocker, mock_table_with_files, mock_s3_service
 ):
     mock_generate_report = mocker.patch(
         "degrades_daily_summary.main.generate_report_from_dynamo_query"
@@ -62,8 +62,13 @@ def test_degrades_daily_summary_generates_report(
     mock_generate_report.assert_called_with(degrades, TEST_DEGRADES_DATE)
 
 
-#  TODO PRM-366 test degrades daily summary uploads to S3
-
 @mock_aws
-def test_degrades_daily_summary_uploads_to_s3():
-    pass
+def test_degrades_daily_summary_uploads_to_s3(mock_scheduled_event, context, set_env, mock_s3_service, mocker, mock_table_with_files):
+    mock_generate_report = mocker.patch(
+        "degrades_daily_summary.main.generate_report_from_dynamo_query")
+
+    mock_generate_report.return_value = "./tests/reports/2024-09-20.csv"
+
+    lambda_handler(mock_scheduled_event, context)
+
+    mock_s3_service.upload_file.assert_called()
