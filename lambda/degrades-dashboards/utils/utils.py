@@ -53,10 +53,11 @@ def get_degrade_totals_from_degrades(degrades: list[DegradeMessage]) -> dict:
 
     for degrade_message in degrades:
         for degrade in degrade_message.degrades:
-            if degrade_totals.get(degrade.type):
-                degrade_totals[degrade.type] += 1
+            degrade_type_reason = f"{degrade.type}: {degrade.reason}"
+            if degrade_totals.get(degrade_type_reason):
+                degrade_totals[degrade_type_reason] += 1
             else:
-                degrade_totals[degrade.type] = 1
+                degrade_totals[degrade_type_reason] = 1
 
     for type, count in degrade_totals.items():
         degrade_totals["TOTAL"] += count
