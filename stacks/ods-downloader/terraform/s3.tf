@@ -71,3 +71,7 @@ resource "aws_s3_bucket_public_access_block" "ods_output" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+output "gp2gp_asid_lookup_bucket_arn" {
+  value = aws_s3_bucket.ods_input.arn
+}
