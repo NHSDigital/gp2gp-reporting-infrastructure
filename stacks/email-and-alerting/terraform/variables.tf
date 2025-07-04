@@ -25,6 +25,17 @@ variable "email_report_lambda_zip" {
   default     = "lambda/build/email-report.zip"
 }
 
+variable "store_asid_lookup_lambda_name" {
+  type        = string
+  default     = "store_asid_lookup_lambda"
+}
+
+variable "store_asid_lookup_lambda_zip" {
+  type        = string
+  description = "Path to zipfile containing code for asid lookup Lambda"
+  default     = "lambda/build/store-asid-lookup.zip"
+}
+
 variable "log_alerts_technical_failures_above_threshold_rate_param_name" {
   type        = string
   description = "SSM parameter containing the technical failure rate threshold percentage"
@@ -58,6 +69,11 @@ variable "log_group_param_name" {
 variable "reports_generator_bucket_param_name" {
   type        = string
   description = "Reports generator output bucket name"
+}
+
+variable "gp2gp_asid_lookup_bucket_arn" {
+  type        = string
+  description = "ARN of the GP2GP asid lookup storage bucket"
 }
 
 variable "cloudwatch_dashboard_url" {
