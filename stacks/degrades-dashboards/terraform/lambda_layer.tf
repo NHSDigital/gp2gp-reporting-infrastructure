@@ -1,4 +1,4 @@
-resource "aws_lambda_layer_version" "degrades_lambda_layer" {
+resource "aws_lambda_layer_version" "degrades" {
   layer_name               = "${var.environment}_degrades_lambda_layer"
   compatible_runtimes      = ["python3.12"]
   compatible_architectures = ["x86_64"]
@@ -6,8 +6,8 @@ resource "aws_lambda_layer_version" "degrades_lambda_layer" {
   filename                 = var.degrades_lambda_layer_zip
 }
 
-resource "aws_iam_policy" "lambda_layer_policy" {
-  name = "${aws_lambda_layer_version.degrades_lambda_layer.layer_name}_policy"
+resource "aws_iam_policy" "lambda_layer" {
+  name = "lambda_layer_policy"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -19,7 +19,7 @@ resource "aws_iam_policy" "lambda_layer_policy" {
           "lambda:ListLayers"
         ],
         Resource = [
-          "${aws_lambda_layer_version.degrades_lambda_layer.arn}:*"
+          "${aws_lambda_layer_version.degrades.arn}:*"
         ]
       }
     ]
