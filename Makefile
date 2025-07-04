@@ -13,7 +13,7 @@ test-degrades:
 	cd $(DEGRADES_LAMBDA_PATH)  && venv/bin/python3 -m pytest tests/
 
 
-zip-degrades-local:
+zip-degrades-local: zip-lambda-layer
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-api || true
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-receiver || true
 
