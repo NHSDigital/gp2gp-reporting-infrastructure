@@ -16,11 +16,11 @@ test-degrades:
 
 
 zip-degrades-local: zip-lambda-layer
-	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-receiver || true
+	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-message-receiver || true
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-daily-summary || true
 
 
-	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-receiver
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-message-receiver
 	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-daily-summary
 
 
@@ -28,19 +28,19 @@ zip-degrades-local: zip-lambda-layer
  	--only-binary=:all: --implementation cp --python-version 3.12 -r requirements.txt -t ../../$(BUILD_PATH)/degrades-daily-summary
 
 	cd $(DEGRADES_LAMBDA_PATH) && ./venv/bin/pip3 install --platform manylinux2014_x86_64\
- 	--only-binary=:all: --implementation cp --python-version 3.12 -r requirements.txt -t ../../$(BUILD_PATH)/degrades-receiver
+ 	--only-binary=:all: --implementation cp --python-version 3.12 -r requirements.txt -t ../../$(BUILD_PATH)/degrades-message-receiver
 
 
 	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_daily_summary/main.py $(BUILD_PATH)/degrades-daily-summary
-	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-receiver
+	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-message-receiver
 
 	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-daily-summary/utils
-	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-receiver/utils
+	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-message-receiver/utils
 
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-daily-summary/models
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-receiver/models
 
-	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../degrades-message-receiver.zip .
+	cd $(BUILD_PATH)/degrades-message-receiver && zip -r -X ../degrades-message-receiver.zip .
 	cd $(BUILD_PATH)/degrades-daily-summary && zip -r -X ../degrades-daily-summary.zip .
 
 
@@ -59,21 +59,24 @@ zip-lambda-layer:
 	cd $(BUILD_PATH)/layers && zip -r -X ../degrades-lambda-layer.zip .
 
 zip-degrades-lambdas: zip-lambda-layer
-	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-receiver
+	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-message-receiver || true
+	cd $(DEGRADES_LAMBDA_PATH) && rm -rf ../../$(BUILD_PATH)/degrades-daily-summary || true
+
+	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-message-receiver
 	cd $(DEGRADES_LAMBDA_PATH) && mkdir -p ../../$(BUILD_PATH)/degrades-daily-summary
 
-	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-receiver
+	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-message-receiver
 	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_daily_summary/main.py $(BUILD_PATH)/degrades-daily-summary
 
-	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-receiver/utils
+	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-message-receiver/utils
 	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-daily-summary/utils
 
 
-	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-receiver/models
+	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-message-receiver/models
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-daily-summary/models
 
 
-	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../ddegrades-receiver.zip .
+	cd $(BUILD_PATH)/degrades-message-receiverr && zip -r -X ../degrades-message-receiver.zip .
 	cd $(BUILD_PATH)/degrades-daily-summary && zip -r -X ../degrades-daily-summary.zip .
 
 
