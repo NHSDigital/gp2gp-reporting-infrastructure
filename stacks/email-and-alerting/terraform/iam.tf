@@ -246,7 +246,7 @@ resource "aws_s3_bucket_policy" "gp2gp_inbox_storage" {
 # Store asid lookup
 data "aws_iam_policy_document" "store_asid_lookup_lambda_assume_role" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
       identifiers = ["lambda.amazonaws.com"]

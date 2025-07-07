@@ -26,8 +26,8 @@ variable "email_report_lambda_zip" {
 }
 
 variable "store_asid_lookup_lambda_name" {
-  type        = string
-  default     = "store_asid_lookup_lambda"
+  type    = string
+  default = "store_asid_lookup_lambda"
 }
 
 variable "store_asid_lookup_lambda_zip" {
