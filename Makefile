@@ -1,6 +1,9 @@
 BUILD_PATH = stacks/degrades-dashboards/terraform/lambda/build
 DEGRADES_LAMBDA_PATH = lambda/degrades-dashboards
 
+terraform-format:
+	terraform fmt -recursive
+
 degrades-env:
 	cd $(DEGRADES_LAMBDA_PATH) && rm -rf lambdas/venv || true
 	cd $(DEGRADES_LAMBDA_PATH) && python3 -m venv ./venv
@@ -73,6 +76,3 @@ zip-degrades-lambdas: zip-lambda-layer
 
 	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../degrades-message-receiver.zip .
 	cd $(BUILD_PATH)/degrades-api && zip -r -X ../degrades-api-dashboards.zip .
-
-
-
