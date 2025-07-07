@@ -76,7 +76,7 @@ zip-degrades-lambdas: zip-lambda-layer
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-daily-summary/models
 
 
-	cd $(BUILD_PATH)/degrades-message-receiverr && zip -r -X ../degrades-message-receiver.zip .
+	cd $(BUILD_PATH)/degrades-message-receiver && zip -r -X ../degrades-message-receiver.zip .
 	cd $(BUILD_PATH)/degrades-daily-summary && zip -r -X ../degrades-daily-summary.zip .
 
 
