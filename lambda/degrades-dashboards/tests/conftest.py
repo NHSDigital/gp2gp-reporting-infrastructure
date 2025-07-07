@@ -32,6 +32,10 @@ MOCK_DEGRADES_MESSAGE_TABLE_KEY_SCHEMA = [
     {"AttributeName": "MessageId", "KeyType": "RANGE"},
 ]
 
+def readfile(filename: str) -> str:
+    with open(filename, "r") as file:
+        file_content = file.read()
+    return file_content
 
 @pytest.fixture
 def mock_invalid_event_empty_query_string():

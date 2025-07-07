@@ -2,10 +2,8 @@ import os
 import pytest
 from scripts.populate_table import populate_degrades_table
 from tests.conftest import MOCK_BUCKET, REGION_NAME, MOCK_DEGRADES_QUEUE_NAME
-import degrades_api_dashboards.main
 from moto import mock_aws
 import boto3
-from utils.s3_service import S3Service
 from utils.utils import calculate_number_of_degrades
 
 test_date = "2024/01/01"

@@ -4,9 +4,8 @@ from degrades_daily_summary.main import (
     lambda_handler,
     generate_report_from_dynamo_query,
 )
-from tests.conftest import TEST_DEGRADES_DATE, mock_s3_service, MOCK_BUCKET
+from tests.conftest import TEST_DEGRADES_DATE, mock_s3_service, MOCK_BUCKET, readfile
 from tests.mocks.dynamo_response.degrade_table import simple_message_timestamp
-from tests.test_degrade_api_lambda import readfile
 from boto3.dynamodb.conditions import Key
 
 
