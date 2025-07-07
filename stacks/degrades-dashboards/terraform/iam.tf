@@ -1,27 +1,3 @@
-# Degrades API Lambda
-data "aws_iam_policy_document" "degrades_api_lambda_assume_role" {
-  statement {
-    effect = "Allow"
-
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      identifiers = ["lambda.amazonaws.com"]
-      type        = "Service"
-    }
-  }
-}
-
-resource "aws_iam_role" "degrades_api_lambda_role" {
-  name               = "${var.environment}_degrades_api_lambda_role"
-  assume_role_policy = data.aws_iam_policy_document.degrades_api_lambda_assume_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "degrades_api_lambda_s3_access" {
-  role       = aws_iam_role.degrades_api_lambda_role.name
-  policy_arn = aws_iam_policy.registrations_mi_events_access.arn
-}
-
 resource "aws_iam_policy" "registrations_mi_events_access" {
   name   = "regristrations_mi_events_read_policy"
   policy = data.aws_iam_policy_document.registrations_mi_events_access.json
