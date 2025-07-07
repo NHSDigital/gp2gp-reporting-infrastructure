@@ -31,7 +31,7 @@ zip-degrades-local: zip-lambda-layer
  	--only-binary=:all: --implementation cp --python-version 3.12 -r requirements.txt -t ../../$(BUILD_PATH)/degrades-receiver
 
 
-	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_api_dashboards/main.py $(BUILD_PATH)/degrades-daily-summary
+	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_daily_summary/main.py $(BUILD_PATH)/degrades-daily-summary
 	cp ./$(DEGRADES_LAMBDA_PATH)/degrades_message_receiver/main.py $(BUILD_PATH)/degrades-receiver
 
 	cp -r $(DEGRADES_LAMBDA_PATH)/utils $(BUILD_PATH)/degrades-daily-summary/utils
@@ -41,7 +41,7 @@ zip-degrades-local: zip-lambda-layer
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-receiver/models
 
 	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../degrades-message-receiver.zip .
-	cd $(BUILD_PATH)/degrades-api && zip -r -X ../degrades-daily-summary.zip .
+	cd $(BUILD_PATH)/degrades-daily-summary && zip -r -X ../degrades-daily-summary.zip .
 
 
 deploy-local:  zip-degrades-local
@@ -73,8 +73,8 @@ zip-degrades-lambdas: zip-lambda-layer
 	cp -r $(DEGRADES_LAMBDA_PATH)/models $(BUILD_PATH)/degrades-daily-summary/models
 
 
-	cd $(BUILD_PATH)/degrades-api && zip -r -X ../degrades-api-dashboards.zip .
-	cd $(BUILD_PATH)/degrades-api && zip -r -X ../degrades-daily-summary.zip .
+	cd $(BUILD_PATH)/degrades-receiver && zip -r -X ../ddegrades-receiver.zip .
+	cd $(BUILD_PATH)/degrades-daily-summary && zip -r -X ../degrades-daily-summary.zip .
 
 
 
