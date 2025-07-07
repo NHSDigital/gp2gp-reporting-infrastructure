@@ -16,6 +16,12 @@ variable "degrades_daily_summary_lambda_zip" {
   default     = "lambda/build/degrades-daily-summary.zip"
 }
 
+variable "degrades_lambda_layer_zip" {
+  type        = string
+  description = "File path for Degrades Lambda Layer"
+  default     = "lambda/build/degrades-lambda-layer.zip"
+}
+
 variable "environment" {
   type        = string
   description = "Uniquely identities each deployment, i.e. dev, prod."

@@ -10,3 +10,4 @@ venv/
 __pycache__
 tmp/
 *local.auto.tfvars
+*.auto.tfvars
