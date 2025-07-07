@@ -71,11 +71,6 @@ variable "reports_generator_bucket_param_name" {
   description = "Reports generator output bucket name"
 }
 
-variable "gp2gp_asid_lookup_bucket_arn" {
-  type        = string
-  description = "ARN of the GP2GP asid lookup storage bucket"
-}
-
 variable "cloudwatch_dashboard_url" {
   type        = string
   description = "URL of the cloudwatch dashboard pipeline overview"
