@@ -3,9 +3,7 @@ from typing import Callable
 
 
 def validate_date_input(lambda_func: Callable):
-
     def interceptor(event, context):
-
         try:
             params = event.get("queryStringParameters", None)
             if not params:

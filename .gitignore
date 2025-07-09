@@ -8,3 +8,7 @@ stacks/degrades-dashboards/terraform/lambda/build
 **/**/.terraform.*
 venv/
 __pycache__
+tmp/
+*local.auto.tfvars
+*.auto.tfvars
+.coverage
