@@ -144,73 +144,82 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // 1. Retrieve existing bot comments for the PR
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
+            try {
+              // 1. Retrieve existing bot comments for the PR
+              const response = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
             })
+
+            const comments = response?.data || []
+
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}')
+              return (
+                comment?.user?.type === 'Bot' &&
+                comment?.body?.includes(`Report for ${inputs.terraform_stack} on environment: ${vars.AWS_ENVIRONMENT}`)
+              )
             })
 
             // 2. Prepare format of the comment
-            const output = `### Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}
-            
-            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `### Report for ${inputs.terraform_stack} on environment: ${vars.AWS_ENVIRONMENT}
+
+            #### Terraform Format and Style 🖌\`${steps.fmt.outcome}\`
             <details><summary>Format Output</summary>
 
-            \`\`\`\n
-            ${{ steps.fmt.outputs.stdout }}
+            \`\`\`
+              ${steps.fmt.outputs.stdout}
             \`\`\`
 
             </details>
-            
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+
+            #### Terraform Initialization ⚙️\`${steps.init.outcome}\`
             <details><summary>Initialization Output</summary>
 
-            \`\`\`\n
-            ${{ steps.init.outputs.stdout }}
+            \`\`\`
+            ${steps.init.outputs.stdout}
             \`\`\`
 
             </details>
 
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Validation 🤖\`${steps.validate.outcome}\`
             <details><summary>Validation Output</summary>
 
-            \`\`\`\n
-            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+            ${steps.validate.outputs.stdout}
             \`\`\`
 
             </details>
 
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Plan 📖\`${steps.plan.outcome}\`
 
-            <details><summary>Show Plan (${{ steps.plan.outputs.summary }})</summary>
+            <details><summary>Show Plan (${steps.plan.outputs.summary})</summary>
 
-            \`\`\`\n
-            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+            ${steps.plan.outputs.stdout}
             \`\`\`
 
             </details>`;
 
-            // 3. If we have a comment, update it, otherwise create a new one
-            if (botComment) {
-              github.rest.issues.deleteComment({
+              // 3. If we have a comment, update it, otherwise create a new one
+              if (botComment) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id
+                })
+              }
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: botComment.id,
                 body: output
               })
+            } catch (error) {
+              core.warning(`PR comment update skipped due to error: ${error.message}`)
             }
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
+              
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && inputs.is_deployment && inputs.environment != 'prod'
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
