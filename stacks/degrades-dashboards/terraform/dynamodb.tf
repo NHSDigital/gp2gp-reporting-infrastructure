@@ -30,3 +30,8 @@ data "aws_iam_policy_document" "degrades_message_table_access" {
     resources = ["${aws_dynamodb_table.degrades_message_table.arn}"]
   }
 }
+
+resource "aws_iam_policy" "degrades_message_table_access" {
+  name   = "degrades_message_table_access_policy"
+  policy = data.aws_iam_policy_document.degrades_message_table_access.json
+}

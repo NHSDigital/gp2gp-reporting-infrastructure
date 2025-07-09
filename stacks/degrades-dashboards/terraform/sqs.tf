@@ -20,7 +20,7 @@ resource "aws_sqs_queue_redrive_allow_policy" "degrades_message_queue_redrive_al
   })
 }
 
-data "aws_iam_policy_document" "degrades_messages_sqs_receive" {
+data "aws_iam_policy_document" "degrades_messages_sqs_receiver" {
   statement {
     actions = [
       "sqs:ReceiveMessage",
