@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
       "events:DescribeRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
   }
 
@@ -136,7 +136,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
       "events:DescribeRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
   }
 

@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "spine_exporter" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = data.aws_ssm_parameter.cloud_watch_log_group.value
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.id
           awslogs-stream-prefix = "spine-exporter/${var.spine_exporter_image_tag}"
         }
       }

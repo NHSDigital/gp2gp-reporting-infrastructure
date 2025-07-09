@@ -103,8 +103,8 @@ data "aws_iam_policy_document" "metrics_ssm_parameter_read_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/practice-metrics-s3-path",
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/national-metrics-s3-path"
+      "arn:aws:ssm:${data.aws_region.current.id}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/practice-metrics-s3-path",
+      "arn:aws:ssm:${data.aws_region.current.id}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/national-metrics-s3-path"
     ]
   }
 }

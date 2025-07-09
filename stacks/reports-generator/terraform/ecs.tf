@@ -33,7 +33,7 @@ resource "aws_ecs_task_definition" "reports_generator" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = data.aws_ssm_parameter.cloud_watch_log_group.value
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.id
           awslogs-stream-prefix = "reports-generator/${var.reports_generator_image_tag}"
         }
       }
