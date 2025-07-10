@@ -99,5 +99,5 @@ def test_degrades_daily_summary_uploads_to_s3(
     mock_s3_service.upload_file.assert_called_with(
         file="./tests/reports/2024-09-20.csv",
         bucket_name=MOCK_BUCKET,
-        key="/reports/daily/2024-09-20.csv",
+        key="reports/daily/2024-09-20.csv",
     )
