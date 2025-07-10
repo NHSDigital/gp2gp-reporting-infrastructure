@@ -57,6 +57,7 @@ def generate_report_from_dynamo_query(
     degrade_totals = get_degrade_totals_from_degrades(degrades)
 
     logger.info(f"Writing degrades report...")
+
     with open(f"/tmp/{date}.csv", "w") as output_file:
         fieldnames = list(degrade_totals.keys())
         writer = csv.DictWriter(output_file, fieldnames=fieldnames)
