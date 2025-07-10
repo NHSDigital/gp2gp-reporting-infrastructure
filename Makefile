@@ -10,8 +10,6 @@ degrades-env:
 
 
 test-degrades:
-	cd $(DEGRADES_LAMBDA_PATH) && rm -rf tmp || true
-	cd ${DEGRADES_LAMBDA_PATH} && mkdir -p tmp
 	cd $(DEGRADES_LAMBDA_PATH)  && venv/bin/python3 -m pytest tests/
 
 
