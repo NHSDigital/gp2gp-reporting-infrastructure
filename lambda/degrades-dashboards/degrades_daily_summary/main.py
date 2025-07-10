@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 
     file_path = generate_report_from_dynamo_query(degrades, query_day)
 
-    base_file_key = "/reports/daily/"
+    base_file_key = "reports/daily/"
 
     logger.info(f"Writing summary report to {base_file_key}")
 
