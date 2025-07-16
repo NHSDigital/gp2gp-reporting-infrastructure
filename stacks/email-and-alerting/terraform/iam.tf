@@ -312,7 +312,7 @@ resource "aws_iam_policy" "store_asid_lookup_lambda_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda_policy" {
+resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
   policy_arn = aws_iam_policy.store_asid_lookup_lambda_policy.arn
   role       = aws_iam_role.store_asid_lookup_lambda.name
 }
