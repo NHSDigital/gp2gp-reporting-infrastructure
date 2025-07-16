@@ -47,8 +47,7 @@ resource "aws_ses_receipt_rule" "asid_lookup" {
   }
 
   depends_on = [
-    aws_s3_bucket_policy.gp2gp_inbox_storage,
-    aws_lambda_function.store_asid_lookup
+    aws_s3_bucket_policy.gp2gp_inbox_storage
   ]
 }
 
