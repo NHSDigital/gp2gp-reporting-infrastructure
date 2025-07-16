@@ -11,12 +11,16 @@ These instructions assume you are using:
 
 Rolling out terraform against each environment is managed by the GoCD pipeline. If you'd like to test it locally, run the following commands:
 
-1. Enter the container:
+1. If you haven't already, add your profile to the AWS Vault
+
+`aws-vault add <profile-name>`
+
+2. Enter the container:
 
 `aws-vault exec <profile-name> -- dojo`
 
 
-2. Invoke terraform locally
+3. Invoke terraform locally
 
 ```
   ./tasks validate <stack-name> <environment>

@@ -242,3 +242,77 @@ resource "aws_s3_bucket_policy" "gp2gp_inbox_storage" {
   bucket = aws_s3_bucket.gp2gp_inbox_storage.id
   policy = data.aws_iam_policy_document.ses_to_s3.json
 }
+
+# Store asid lookup
+data "aws_iam_policy_document" "store_asid_lookup_lambda_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role" "store_asid_lookup_lambda" {
+  name               = "${var.environment}-store-asid-lookup-lambda-role"
+  assume_role_policy = data.aws_iam_policy_document.store_asid_lookup_lambda_assume_role.json
+}
+
+data "aws_s3_bucket" "gp2gp_asid_lookup" {
+  bucket = "prm-gp2gp-asid-lookup-${var.environment}"
+}
+
+resource "aws_iam_policy" "store_asid_lookup_lambda" {
+  name        = "${var.environment}-store-asid-lookup-lambda-policy"
+  description = "IAM policy for Store ASID Lookup Lambda"
+
+  policy = jsonencode({
+    version = "2012-10-17"
+    statement = [
+      {
+        effect = "Allow"
+        action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        resources = ["${aws_cloudwatch_log_group.store_asid_lookup.arn}"]
+      },
+      {
+        effect = "Allow"
+        action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ]
+        resources = [
+          "${aws_s3_bucket.gp2gp_inbox_storage.arn}/*"
+        ]
+      },
+      {
+        effect = "Allow"
+        action = [
+          "s3:ListBucket"
+        ]
+        resources = [
+          aws_s3_bucket.gp2gp_inbox_storage.arn
+        ]
+      },
+      {
+        effect = "Allow"
+        action = [
+          "s3:PutObject",
+        ]
+        resources = [
+          "${data.aws_s3_bucket.gp2gp_asid_lookup.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
+  policy_arn = aws_iam_policy.store_asid_lookup_lambda.arn
+  role       = aws_iam_role.store_asid_lookup_lambda.name
+}

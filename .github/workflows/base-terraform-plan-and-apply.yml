@@ -27,7 +27,6 @@ on:
         type: boolean
         default: false
 
-
 jobs:
   terraform_plan_and_apply:
     runs-on: ubuntu-latest
@@ -112,6 +111,7 @@ jobs:
                 gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
                 email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
                 validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
+                store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
                 region = "${{ vars.AWS_REGION }}"
             EOF
             if [[ -n "$image_key" ]]; then
@@ -159,24 +159,23 @@ jobs:
         env:
           LENGTH: 64512
         run: |
-          LENGTH=${{ env.LENGTH }}
-          PLAN_FULL="${{ steps.plan.outputs.stdout }}${{ steps.plan.outputs.stderr }}"
+          PLAN_FULL=$(grep -v 'Refreshing state...' <<'EOF'
+          ${{ steps.plan.outputs.stdout }}
+          ${{ steps.plan.outputs.stderr }}
+          EOF
+          )
 
-          # Remove 'Refreshing state...' lines
-          PLAN_FULL=$(echo "$PLAN_FULL" | grep -v 'Refreshing state...')
-
-          # Redactions
+          # Optionally redact sensitive strings in the PLAN_FULL variable
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9_-]+#[REDACTED_IAM_ROLE_ARN]#g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's/[0-9]{12}/[REDACTED_AWS_ACCOUNT_ID]/g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#https://[a-zA-Z0-9.-]+\.lambda\.amazonaws\.com/[a-zA-Z0-9/._-]+#[REDACTED_LAMBDA_URL]#g')
           PLAN_FULL=$(echo "$PLAN_FULL" | sed -E 's#https://[a-zA-Z0-9.-]+\.execute-api\.[a-zA-Z0-9.-]+\.amazonaws\.com/[a-zA-Z0-9/._-]*#[REDACTED_API_GATEWAY_URL]#g')
 
           echo "PLAN<<EOF" >> $GITHUB_ENV
-          echo "${PLAN_FULL:0:$LENGTH}" >> $GITHUB_ENV
-          if (( ${#PLAN_FULL} > LENGTH )); then
-            echo "(truncated - see workflow logs for full output)" >> $GITHUB_ENV
-          fi
+          echo "${PLAN_FULL::$LENGTH}" >> $GITHUB_ENV
+          [ ${#PLAN_FULL} -gt $LENGTH ] && echo "(truncated - see workflow logs for full output)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+
         working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
         shell: bash
 

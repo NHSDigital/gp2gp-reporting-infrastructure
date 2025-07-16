@@ -33,3 +33,7 @@ resource "aws_s3_bucket_public_access_block" "gp2gp_inbox_storage" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+output "gp2gp_inbox_storage_bucket_arn" {
+  value = aws_s3_bucket.gp2gp_inbox_storage.arn
+}

@@ -28,7 +28,6 @@ jobs:
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: email-and-alerting    
       build_lambda: true
-      
     secrets: inherit
 
   gp2gp-dashboard:

@@ -33,10 +33,17 @@ resource "aws_ses_receipt_rule" "asid_lookup" {
   enabled       = true
   scan_enabled  = true
   recipients    = ["${data.aws_ssm_parameter.asid_lookup_address_prefix.value}@${local.ses_domain}"]
+
   s3_action {
     bucket_name       = aws_s3_bucket.gp2gp_inbox_storage.id
     object_key_prefix = "asid_lookup/"
     position          = 1
+  }
+
+  lambda_action {
+    function_arn    = aws_lambda_function.store_asid_lookup.arn
+    invocation_type = "Event"
+    position        = 2
   }
 
   depends_on = [
