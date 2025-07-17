@@ -48,6 +48,8 @@ on:
           - transfer-classifier
           - metrics-calculator
           - reports-generator
+          - validate-metrics
+          - step-function
         required: true
       build_lambda:
         description: "Does the workflow need a lambda build"
