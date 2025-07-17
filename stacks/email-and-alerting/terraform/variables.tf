@@ -111,7 +111,7 @@ variable "log_alerts_general_webhook_url_param_name" {
 
 variable "gp2gp_dashboard_national_statistics_url" {
   type        = string
-  description = "Url for the gp2gp dashboard nationalist statistics"
+  description = "URL for the gp2gp dashboard nationalist statistics"
 }
 
 variable "hosted_zone_name" {
