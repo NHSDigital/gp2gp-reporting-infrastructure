@@ -7,6 +7,7 @@ resource "aws_s3_bucket" "gp2gp_inbox_storage" {
 
   lifecycle {
     prevent_destroy = true
+    ignore_changes  = [acl]
   }
 
   tags = merge(
