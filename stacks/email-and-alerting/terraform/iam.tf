@@ -264,7 +264,7 @@ data "aws_s3_bucket" "gp2gp_asid_lookup" {
   bucket = "prm-gp2gp-asid-lookup-${var.environment}"
 }
 
-resource "aws_iam_policy" "store_asid_lookup_lambda_policy" {
+resource "aws_iam_policy" "store_asid_lookup_lambda" {
   name        = "${var.environment}-store-asid-lookup-lambda-policy"
   description = "IAM policy for Store ASID Lookup Lambda"
 
@@ -312,7 +312,7 @@ resource "aws_iam_policy" "store_asid_lookup_lambda_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda_policy" {
-  policy_arn = aws_iam_policy.store_asid_lookup_lambda_policy.arn
+resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
+  policy_arn = aws_iam_policy.store_asid_lookup_lambda.arn
   role       = aws_iam_role.store_asid_lookup_lambda.name
 }
