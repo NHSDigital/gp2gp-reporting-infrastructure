@@ -267,49 +267,54 @@ data "aws_s3_bucket" "gp2gp_asid_lookup" {
 resource "aws_iam_policy" "store_asid_lookup_lambda" {
   name        = "${var.environment}-store-asid-lookup-lambda-policy"
   description = "IAM policy for Store ASID Lookup Lambda"
+  policy      = data.aws_iam_policy_document.store_asid_lookup_lambda_access.json
+}
 
-  policy = jsonencode({
-    version = "2012-10-17"
-    statement = [
-      {
-        effect = "Allow"
-        action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        resources = ["${aws_cloudwatch_log_group.store_asid_lookup.arn}"]
-      },
-      {
-        effect = "Allow"
-        action = [
-          "s3:GetObject",
-          "s3:GetObjectVersion"
-        ]
-        resources = [
-          "${aws_s3_bucket.gp2gp_inbox_storage.arn}/*"
-        ]
-      },
-      {
-        effect = "Allow"
-        action = [
-          "s3:ListBucket"
-        ]
-        resources = [
-          aws_s3_bucket.gp2gp_inbox_storage.arn
-        ]
-      },
-      {
-        effect = "Allow"
-        action = [
-          "s3:PutObject",
-        ]
-        resources = [
-          "${data.aws_s3_bucket.gp2gp_asid_lookup.arn}/*"
-        ]
-      }
+data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
+  statement {
+    sid    = "WriteLogsAndLogStream"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
     ]
-  })
+    resources = ["${aws_cloudwatch_log_group.store_asid_lookup.arn}"]
+  }
+
+  statement {
+    sid    = "ReadObjects"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion"
+    ]
+    resources = [
+      "${aws_s3_bucket.gp2gp_inbox_storage.arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "ListBucket"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.gp2gp_inbox_storage.arn
+    ]
+  }
+
+  statement {
+    sid    = "WriteObjects"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+    ]
+    resources = [
+      "${data.aws_s3_bucket.gp2gp_asid_lookup.arn}/*"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
