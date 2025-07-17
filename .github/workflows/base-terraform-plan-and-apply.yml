@@ -39,7 +39,15 @@ on:
         default: false
       terraform_stack:
         description: "Which terraform stack directory to run"
-        type: string
+        type: choice
+        options:
+          - email-and-alerting
+          - gp2gp-dashboard
+          - spine-exporter
+          - ods-downloader
+          - transfer-classifier
+          - metrics-calculator
+          - reports-generator
         required: true
       build_lambda:
         description: "Does the workflow need a lambda build"
@@ -52,7 +60,7 @@ on:
         description: "Does the lambda use the new recursive build feature"
         type: boolean
         default: false
-        
+
 jobs:
   terraform_plan_and_apply:
     runs-on: ubuntu-latest
