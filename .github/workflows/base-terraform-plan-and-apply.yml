@@ -26,6 +26,49 @@ on:
         description: "Does the lambda use the new recursive build feature"
         type: boolean
         default: false
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Which Environment settings to use"
+        required: true
+        type: string
+        default: "dev"
+      is_deployment:
+        description: "Is workflow run on deployment"
+        type: boolean
+        default: false
+      terraform_stack:
+        description: "Which terraform stack directory to run"
+        type: choice
+        options:
+          - email-and-alerting
+          - gp2gp-dashboard
+          - spine-exporter
+          - ods-downloader
+          - transfer-classifier
+          - metrics-calculator
+          - reports-generator
+          - validate-metrics
+          - step-function
+        required: true
+      build_lambda:
+        description: "Does the workflow need a lambda build"
+        type: boolean
+        default: false
+      image_tag:
+        description: "Does the workflow need an image tag"
+        type: choice
+        options:
+          - gp2gp_dashboard
+          - spine_exporter
+          - ods_downloader
+          - transfer_classifier
+          - metrics_calculator
+          - reports_generator
+      is_build_recursive:
+        description: "Does the lambda use the new recursive build feature"
+        type: boolean
+        default: false
 
 jobs:
   terraform_plan_and_apply:
