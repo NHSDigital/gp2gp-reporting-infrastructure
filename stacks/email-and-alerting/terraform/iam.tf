@@ -279,7 +279,7 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-    resources = ["${aws_cloudwatch_log_group.store_asid_lookup.arn}"]
+    resources = ["${aws_cloudwatch_log_group.store_asid_lookup.arn}:*"]
   }
 
   statement {
