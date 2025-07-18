@@ -283,9 +283,10 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
   }
 
   statement {
-    sid    = "ReadObjects"
+    sid    = "ReadWriteEmails"
     effect = "Allow"
     actions = [
+      "s3:DeleteObject",
       "s3:GetObject",
       "s3:GetObjectVersion"
     ]
