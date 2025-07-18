@@ -4,7 +4,8 @@ resource "aws_lambda_function" "store_asid_lookup" {
   role             = aws_iam_role.store_asid_lookup_lambda.arn
   runtime          = "python3.9"
   handler          = "main.lambda_handler"
-  timeout          = 900
+  timeout          = 60
+  memory_size      = 1769
   source_code_hash = filebase64sha256("${var.store_asid_lookup_lambda_zip}")
 
   environment {
