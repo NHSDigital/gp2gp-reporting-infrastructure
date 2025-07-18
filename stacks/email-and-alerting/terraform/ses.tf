@@ -28,7 +28,7 @@ resource "aws_ses_active_receipt_rule_set" "active_rule_set" {
 }
 
 resource "aws_ses_receipt_rule" "asid_lookup" {
-  name          = "store-asid-lookup-in-s3-${var.environment}"
+  name          = local.ses_receipt_rule_asid_lookup_name
   rule_set_name = aws_ses_receipt_rule_set.gp2gp_inbox.rule_set_name
   enabled       = true
   scan_enabled  = true
@@ -47,7 +47,8 @@ resource "aws_ses_receipt_rule" "asid_lookup" {
   }
 
   depends_on = [
-    aws_s3_bucket_policy.gp2gp_inbox_storage
+    aws_s3_bucket_policy.gp2gp_inbox_storage,
+    aws_lambda_permission.store_asid_lookup_ses_trigger
   ]
 }
 

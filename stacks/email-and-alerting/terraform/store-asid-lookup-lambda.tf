@@ -18,3 +18,12 @@ resource "aws_cloudwatch_log_group" "store_asid_lookup" {
   name              = "/aws/lambda/${aws_lambda_function.store_asid_lookup.function_name}"
   retention_in_days = 0
 }
+
+# https://github.com/hashicorp/terraform-provider-aws/issues/7917
+resource "aws_lambda_permission" "store_asid_lookup_ses_trigger" {
+  statement_id  = "AllowExecutionFromSES"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.store_asid_lookup.function_name
+  principal     = "ses.amazonaws.com"
+  source_arn    = "${aws_ses_receipt_rule_set.gp2gp_inbox.arn}:receipt-rule/${local.ses_receipt_rule_asid_lookup_name}"
+}
