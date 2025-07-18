@@ -315,6 +315,18 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
       "${data.aws_s3_bucket.gp2gp_asid_lookup.arn}/*"
     ]
   }
+
+  statement {
+    sid    = "GetSSMParameter"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/permitted-emails",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
