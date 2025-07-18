@@ -11,10 +11,12 @@ ssm_client = boto3.client('ssm')
 
 # Constants
 environment = os.environ["ENVIRONMENT"]
+email_user = os.environ["EMAIL_USER"]
+
 expected_email_destination = (
-    "asidlookup@mail.gp-registrations-data.nhs.uk"
+    f"{email_user}@mail.gp-registrations-data.nhs.uk"
     if environment == "prod"
-    else f"asidlookup@mail.{environment}.gp-registrations-data.nhs.uk"
+    else f"{email_user}@mail.{environment}.gp-registrations-data.nhs.uk"
 )
 permitted_emails_ssm_location = f"/registrations/{environment}/data-pipeline/gp2gp-dashboard/permitted-emails"
 source_s3_bucket_ssm_location = f'/registrations/{environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name'
