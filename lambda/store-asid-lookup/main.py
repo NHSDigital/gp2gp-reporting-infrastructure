@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     print(f"Processing email with messageId: {message_id}")
 
     validate_email_event(email_event)
-    raw_email = get_raw_email_from_source_s3(email_event)
+    raw_email = get_raw_email_from_source_s3(message_id)
     attached_csv = extract_csv_attachment_from_email(raw_email)
     compressed_csv = compress_csv(attached_csv)
     store_file_in_destination_s3(compressed_csv)
@@ -84,7 +84,7 @@ def validate_event_headers(ses_mail: dict):
     }
 
     for key, expected in required_headers.items():
-        if headers.get(key) != expected:
+        if headers.get(key).upper() != expected.upper():
             raise EmailValidationError(f"Email validation failed. Header {key} did not pass. Got: {headers.get(key)}")
 
     print('Header validation passed')
@@ -92,11 +92,11 @@ def validate_event_headers(ses_mail: dict):
 
 def validate_event_receipt(ses_receipt: dict):
     if not all([
-        ses_receipt['spamVerdict']['status'] == 'PASS',
-        ses_receipt['virusVerdict']['status'] == 'PASS',
-        ses_receipt['spfVerdict']['status'] == 'PASS',
-        ses_receipt['dkimVerdict']['status'] == 'PASS',
-        ses_receipt['dmarcVerdict']['status'] == 'PASS',
+        ses_receipt['spamVerdict']['status'].upper() == 'PASS',
+        ses_receipt['virusVerdict']['status'].upper() == 'PASS',
+        ses_receipt['spfVerdict']['status'].upper() == 'PASS',
+        ses_receipt['dkimVerdict']['status'].upper() == 'PASS',
+        ses_receipt['dmarcVerdict']['status'].upper() == 'PASS',
     ]):
         raise EmailValidationError("Email validation failed due to incorrect receipt")
 
@@ -120,33 +120,45 @@ def get_raw_email_from_source_s3(message_id: str):
 
     try:
         response = s3_client.get_object(Bucket=source_s3_bucket, Key=s3_file_key)
+        print(f"Successfully obtained email from s3 at {source_s3_bucket}/{s3_file_key}")
         return response['Body'].read()
     except ClientError as e:
         raise RuntimeError(f"Failed to retrieve email from S3: bucket={source_s3_bucket}, key={s3_file_key}, error={e}")
 
 
 def extract_csv_attachment_from_email(raw_email: bytes):
+    print(f"Finding attachment in email...")
     msg = email.message_from_bytes(raw_email)
+    print(f"...parsed email to raw...")
     for part in msg.walk():
-        if part.get_filename() == asid_lookup_filename:
-            return part.get_payload(decode=True)
-    else:
-        raise FileNotFoundError("asidLookup.csv not found in email")
+        print(f"...looking at part...")
+        content_disposition = part.get_content_disposition()
+        if content_disposition and 'attachment' in content_disposition:
+            print(f"...content_disposition = attachment...")
+            if part.get_filename() == asid_lookup_filename:
+                print(f"...attachment found!")
+                return part.get_payload(decode=True)
+            else:
+                print(f"...filename is {part.get_filename()}")
+    
+    raise FileNotFoundError("asidLookup.csv not found in email :(")
 
 
 def compress_csv(csv: bytes):
+    print(f"Compressing CSV...")
     output = BytesIO()
     with gzip.GzipFile(fileobj=output, mode="wb") as gz:
         gz.write(csv)
 
     output.seek(0)
-
+    print(f"...CSV compressed!")
     return output
 
 
 def store_file_in_destination_s3(file: BytesIO):
     now = datetime.now(timezone.utc)
     file_key = f"{now.year}/{now.month}/{asid_lookup_filename}.gz"
+    print(f"Storing zip in s3: {destination_s3_bucket}/{file_key}")
     s3_client.put_object(Bucket=destination_s3_bucket, Key=file_key, Body=file.read())
     print(f"Successfully uploaded compressed file at {destination_s3_bucket}/{file_key}")
 
