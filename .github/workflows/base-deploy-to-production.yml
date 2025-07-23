@@ -72,10 +72,10 @@ jobs:
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:     
       environment: ${{ inputs.environment }}
-      is_deployment: ${{ inputs.environment }}
-      terraform_stack: ${{ inputs.environment }}
-      image_tag: ${{ inputs.environment }}
-      build_lambda: ${{ inputs.environment }}
+      is_deployment: ${{ inputs.is_deployment }}
+      terraform_stack: ${{ inputs.terraform_stack }}
+      image_tag: ${{ inputs.image_tag }}
+      build_lambda: ${{ inputs.build_lambda }}
     secrets: inherit
 
   deploy-infra-with-images:
