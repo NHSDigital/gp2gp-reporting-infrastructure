@@ -79,7 +79,7 @@ jobs:
     secrets: inherit
 
   deploy-infra-no-images:
-    if: inputs.is_deployment
+    if: ${{ inputs.image_tag == '' && inputs.is_deployment }}
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure (no images)
     needs: [ plan-infra-with-images ] 
