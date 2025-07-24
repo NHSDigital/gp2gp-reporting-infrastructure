@@ -82,7 +82,7 @@ jobs:
     if: inputs.is_deployment
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure with new images
-    needs: [ plan-infra-with-images ] 
+    needs: [ plan-infra-with-images, promote-images-to-prod ] 
     runs-on: ubuntu-latest
     defaults:
         run:
