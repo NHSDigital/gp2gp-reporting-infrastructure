@@ -129,7 +129,14 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-
+        
+      - name: Setup Terraform variables
+        id: vars
+        run: |-
+          cat > pipeline.auto.tfvars <<EOF
+            environment = "${{ vars.AWS_ENVIRONMENT }}"
+          EOF
+          
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
         if: inputs.image_tag
