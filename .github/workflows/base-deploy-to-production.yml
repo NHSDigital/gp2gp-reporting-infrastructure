@@ -43,13 +43,15 @@ jobs:
       - name: Get ECR Prod Account ID
         id: extract-prod-registry
         run: |
-          prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed -E 's|^arn:aws:ecr-public:[^:]+:([0-9]+):.*$|\1|')
+          prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed 's/^.*:://g' | sed 's/:.*//g')
+          echo "::add-mask::$prodaccountid" 
           echo "prodaccountid=$prodaccountid" >> $GITHUB_ENV
 
       - name: Get ECR Holding Account ID
         id: ecr-holding-account
         run: |
           accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
+          echo "::add-mask::$accountid" 
           echo "accountid=$accountid" >> $GITHUB_ENV
           
       # Needs the AmazonEC2ContainerRegistryPowerUser role
