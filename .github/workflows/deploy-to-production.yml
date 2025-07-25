@@ -8,7 +8,7 @@ on:
         type: string
         default: "prod"
       is_deployment:
-        description: "Is workflow run on deployment"
+        description: "Do you want to run Terraform Apply"
         type: boolean
         default: false
 
