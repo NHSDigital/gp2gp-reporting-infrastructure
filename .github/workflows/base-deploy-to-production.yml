@@ -9,7 +9,7 @@ on:
         type: string
         default: "prod"
       is_deployment:
-        description: "Is workflow run on deployment"
+        description: "Do you want to run Terraform Apply"
         type: boolean
         default: false
       terraform_stack:
@@ -40,35 +40,30 @@ jobs:
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
-      - name: Get ECR Prod Account ID
-        id: extract-prod-registry
-        run: |
-          prodaccountid=$(echo "${{ secrets.AWS_ASSUME_ROLE }}" | sed -E 's|^arn:aws:ecr-public:[^:]+:([0-9]+):.*$|\1|')
-          echo "prodaccountid=$prodaccountid" >> $GITHUB_ENV
-
       - name: Get ECR Holding Account ID
         id: ecr-holding-account
         run: |
-          accountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
-          echo "accountid=$accountid" >> $GITHUB_ENV
+          devaccountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
+          echo "::add-mask::$devaccountid" 
+          echo "devaccountid=$devaccountid" >> $GITHUB_ENV
           
       # Needs the AmazonEC2ContainerRegistryPowerUser role
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          registries: "${{ env.prodaccountid }},${{ env.accountid }}"
+          registries: "${{ steps.creds.outputs.aws-account-id }},${{ env.devaccountid }}"
 
       - name: ECR Copy
         id: ecr-copy
         run: |
-          source_repo=${{ env.accountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
-          destination_repo=${{ env.prodaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_DEV_REPOSITORY }}/${{ inputs.terraform_stack }}:latest}
+          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}/${{ inputs.terraform_stack }}:latest}
           docker pull $source_repo
           docker tag $source_repo $destination_repo
           docker push $destination_repo
           
-  plan-infra-with-images:
-    name: Plan Infrastructure with new images
+  plan-infra:
+    name: Plan Infrastructure
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: ${{ inputs.environment }}
@@ -82,7 +77,7 @@ jobs:
     if: ${{ inputs.image_tag == '' && inputs.is_deployment }}
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure (no images)
-    needs: [ plan-infra-with-images ] 
+    needs: [ plan-infra ] 
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -167,7 +162,7 @@ jobs:
     if: ${{ inputs.image_tag && inputs.is_deployment }}
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure (with new image)
-    needs: [ promote-images-to-prod, plan-infra-with-images ]
+    needs: [ promote-images-to-prod, plan-infra ]
     runs-on: ubuntu-latest
     defaults:
       run:
