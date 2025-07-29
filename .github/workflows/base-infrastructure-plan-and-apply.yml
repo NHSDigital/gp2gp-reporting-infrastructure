@@ -37,6 +37,7 @@ jobs:
     with:
       environment: ${{ matrix.environment }}
       terraform_stack: ${{ matrix.terraform_stack }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
     secrets: inherit
 
 
