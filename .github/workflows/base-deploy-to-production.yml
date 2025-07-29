@@ -56,11 +56,13 @@ jobs:
       - name: ECR Copy
         id: ecr-copy
         run: |
-          source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_DEV_REPOSITORY }}${{ inputs.terraform_stack }}:latest
-          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }}:latest
-          docker pull $source_repo
-          docker tag $source_repo $destination_repo
-          docker push $destination_repo
+          source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_DEV_REPOSITORY }}${{ inputs.terraform_stack }}
+          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }}
+          docker pull $source_repo:latest
+          docker tag $source_repo:latest $destination_repo:latest
+          docker tag $source_repo:latest $destination_repo:${{ github.sha }}
+          docker push $destination_repo:latest
+          docker push $destination_repo:${{ github.sha }}
           
   plan-infra:
     name: Plan Infrastructure
