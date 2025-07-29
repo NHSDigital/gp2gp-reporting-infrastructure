@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
 
   validate-metrics:
-    needs: [ transfer-classifier ]
+    needs: [ infra_terraform_plan_and_apply ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
@@ -52,7 +52,7 @@ jobs:
     secrets: inherit
 
   ods-downloader:
-    needs: [ validate-metrics ]
+    needs: [ infra_terraform_plan_and_apply ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
@@ -62,7 +62,7 @@ jobs:
     secrets: inherit
 
   reports-generator:
-    needs: [ ods-downloader ]
+    needs: [ infra_terraform_plan_and_apply ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
@@ -72,7 +72,7 @@ jobs:
     secrets: inherit
 
   spine-exporter:
-    needs: [ reports-generator ]
+    needs: [ infra_terraform_plan_and_apply ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
@@ -82,7 +82,7 @@ jobs:
     secrets: inherit
 
   metrics-calculator:
-    needs: [ spine-exporter ]
+    needs: [ infra_terraform_plan_and_apply ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
@@ -92,8 +92,8 @@ jobs:
     secrets: inherit
 
   email-and-alerting:
-    needs: [ metrics-calculator ]
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    needs: [ infra_terraform_plan_and_apply ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
@@ -102,8 +102,8 @@ jobs:
     secrets: inherit
 
   gp2gp-dashboard:
-    needs: [ email-and-alerting ]
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    needs: [ infra_terraform_plan_and_apply ]
+    uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
@@ -113,7 +113,7 @@ jobs:
     secrets: inherit
 
   step-function:
-    needs: [ gp2gp-dashboard ]
+    needs: [ gp2gp-dashboard, email-and-alerting, metrics-calculator, spine-exporter, reports-generator, ods-downloader, validate-metrics, transfer-classifier ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       environment: ${{ inputs.environment }}
