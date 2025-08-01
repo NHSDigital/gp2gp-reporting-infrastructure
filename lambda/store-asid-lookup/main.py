@@ -45,12 +45,10 @@ def validate_email_event(email_event: dict):
     try:
         validate_event_source(ses_mail)
         validate_event_destination(ses_mail)
-        validate_event_headers(ses_mail)
-        validate_event_receipt(ses_receipt)
 
         print("Email event validated successfully")
     except Exception as e:
-        remove_email_from_s3(ses_mail['messageId'])
+        print("Email processing failed checks")
         raise e
 
 
@@ -73,45 +71,6 @@ def validate_event_destination(ses_mail: dict):
         raise EmailValidationError(f"Unexpected destination: {destination}")
 
     print('Destination validation passed')
-
-
-def validate_event_headers(ses_mail: dict):
-    headers = {h["name"]: h["value"] for h in ses_mail["headers"]}
-    required_headers = {
-        "X-SES-Spam-Verdict": "PASS",
-        "X-SES-Virus-Verdict": "PASS",
-        "X-MS-Has-Attach": "Yes",
-    }
-
-    for key, expected in required_headers.items():
-        if headers.get(key).upper() != expected.upper():
-            raise EmailValidationError(f"Email validation failed. Header {key} did not pass. Got: {headers.get(key)}")
-
-    print('Header validation passed')
-
-
-def validate_event_receipt(ses_receipt: dict):
-    if not all([
-        ses_receipt['spamVerdict']['status'].upper() == 'PASS',
-        ses_receipt['virusVerdict']['status'].upper() == 'PASS',
-        ses_receipt['spfVerdict']['status'].upper() == 'PASS',
-        ses_receipt['dkimVerdict']['status'].upper() == 'PASS',
-        ses_receipt['dmarcVerdict']['status'].upper() == 'PASS',
-    ]):
-        raise EmailValidationError("Email validation failed due to incorrect receipt")
-
-    print('Receipt validation passed')
-
-
-def remove_email_from_s3(message_id: str):
-    source_s3_bucket = get_ssm_param(source_s3_bucket_ssm_location)
-    s3_file_key = f"{asid_lookup_s3_filekey_prefix}/{message_id}"
-
-    try:
-        s3_client.delete_object(Bucket=source_s3_bucket, Key=s3_file_key)
-        print(f"Deleted email from S3: bucket={source_s3_bucket}, key={s3_file_key}")
-    except ClientError as e:
-        print(f"Failed to delete email from S3: bucket={source_s3_bucket}, key={s3_file_key}, error={e}")
 
 
 def get_raw_email_from_source_s3(message_id: str):
