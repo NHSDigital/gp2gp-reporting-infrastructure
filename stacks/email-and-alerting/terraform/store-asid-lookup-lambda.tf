@@ -1,5 +1,5 @@
 module "ods_downloader" {
-  source = "../../step-function/terraform/ods-downloader-step-function.tf"
+  source = "../../step-function/terraform"
 }
 
 resource "aws_lambda_function" "store_asid_lookup" {
