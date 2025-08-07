@@ -1,5 +1,5 @@
-module "ods_downloader" {
-  source = "../../step-function/terraform"
+data "aws_sfn_state_machine" "ods_downloader" {
+  name = "ods-downloader-pipeline"
 }
 
 resource "aws_lambda_function" "store_asid_lookup" {
@@ -16,7 +16,7 @@ resource "aws_lambda_function" "store_asid_lookup" {
     variables = {
       ENVIRONMENT        = var.environment,
       EMAIL_USER         = data.aws_ssm_parameter.asid_lookup_address_prefix.value,
-      ODS_DOWNLOADER_ARN = module.ods_downloader.arn
+      ODS_DOWNLOADER_ARN = data.aws_sfn_state_machine.ods_downloader.arn
     }
   }
 }
