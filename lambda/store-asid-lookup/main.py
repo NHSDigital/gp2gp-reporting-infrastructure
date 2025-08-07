@@ -5,9 +5,12 @@ import os
 from datetime import datetime, timezone
 from io import BytesIO
 from botocore.exceptions import ClientError
+import json
 
 s3_client = boto3.client('s3')
 ssm_client = boto3.client('ssm')
+stepfunctions_client = boto3.client('stepfunctions')
+now = datetime.now(timezone.utc)
 
 # Constants
 environment = os.environ["ENVIRONMENT"]
@@ -27,6 +30,7 @@ destination_s3_bucket = f"prm-gp2gp-asid-lookup-{environment}"
 
 def lambda_handler(event, context):
     email_event = event['Records'][0]
+    
 
     message_id = email_event['ses']['mail']['messageId']
     print(f"Processing email with messageId: {message_id}")
@@ -36,6 +40,15 @@ def lambda_handler(event, context):
     attached_csv = extract_csv_attachment_from_email(raw_email)
     compressed_csv = compress_csv(attached_csv)
     store_file_in_destination_s3(compressed_csv)
+    execution_input = {
+        "time": f"{now.year}-{now.month:02d}-01T00:00:00Z"
+    }
+    state_machine_arn = os.environ['ODS_DOWNLOADER_ARN']
+    stepfunctions_client.start_execution(
+        stateMachineArn=state_machine_arn,
+        input=json.dumps(execution_input)
+    )
+    
 
 
 def validate_email_event(email_event: dict):
@@ -114,8 +127,7 @@ def compress_csv(csv: bytes):
     return output
 
 
-def store_file_in_destination_s3(file: BytesIO):
-    now = datetime.now(timezone.utc)
+def store_file_in_destination_s3(file: BytesIO, now: datetime):
     file_key = f"{now.year}/{now.month}/{asid_lookup_filename}.gz"
     print(f"Storing zip in s3: {destination_s3_bucket}/{file_key}")
     s3_client.put_object(Bucket=destination_s3_bucket, Key=file_key, Body=file.read())
