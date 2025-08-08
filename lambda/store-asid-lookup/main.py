@@ -38,7 +38,7 @@ def lambda_handler(event, context):
     raw_email = get_raw_email_from_source_s3(message_id)
     attached_csv = extract_csv_attachment_from_email(raw_email)
     compressed_csv = compress_csv(attached_csv)
-    store_file_in_destination_s3(compressed_csv, now)
+    store_file_in_destination_s3(compressed_csv)
 
     response = stepfunctions_client.list_state_machines()['stateMachines']
     for stepfn in response:
