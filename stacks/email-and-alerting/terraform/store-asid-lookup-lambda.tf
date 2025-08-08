@@ -1,7 +1,3 @@
-data "aws_sfn_state_machine" "ods_downloader" {
-  name = "ods-downloader-pipeline"
-}
-
 resource "aws_lambda_function" "store_asid_lookup" {
   function_name    = "${var.environment}_${var.store_asid_lookup_lambda_name}"
   filename         = var.store_asid_lookup_lambda_zip
@@ -15,7 +11,7 @@ resource "aws_lambda_function" "store_asid_lookup" {
   environment {
     variables = {
       ENVIRONMENT = var.environment,
-      EMAIL_USER  = data.aws_ssm_parameter.asid_lookup_address_prefix.value,
+      EMAIL_USER  = data.aws_ssm_parameter.asid_lookup_address_prefix.value
     }
   }
 }
@@ -33,4 +29,3 @@ resource "aws_lambda_permission" "store_asid_lookup_ses_trigger" {
   principal     = "ses.amazonaws.com"
   source_arn    = "${aws_ses_receipt_rule_set.gp2gp_inbox.arn}:receipt-rule/${local.ses_receipt_rule_asid_lookup_name}"
 }
-
