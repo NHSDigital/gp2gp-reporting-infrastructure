@@ -30,7 +30,6 @@ destination_s3_bucket = f"prm-gp2gp-asid-lookup-{environment}"
 
 def lambda_handler(event, context):
     email_event = event['Records'][0]
-    
     message_id = email_event['ses']['mail']['messageId']
     print(f"Processing email with messageId: {message_id}")
 
