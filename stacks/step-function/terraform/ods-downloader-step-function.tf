@@ -52,9 +52,3 @@ resource "aws_sfn_state_machine" "ods_downloader" {
 data "aws_ssm_parameter" "ods_downloader_task_definition_arn" {
   name = var.ods_downloader_task_definition_arn_param_name
 }
-
-output "ods_downloader_arn" {
-
-  value = aws_sfn_state_machine.ods_downloader.arn
-
-}

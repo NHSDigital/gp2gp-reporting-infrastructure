@@ -39,9 +39,11 @@ def lambda_handler(event, context):
     raw_email = get_raw_email_from_source_s3(message_id)
     attached_csv = extract_csv_attachment_from_email(raw_email)
     compressed_csv = compress_csv(attached_csv)
-    store_file_in_destination_s3(compressed_csv)
+    store_file_in_destination_s3(compressed_csv, now)
+    
     execution_input = {
-        "time": f"{now.year}-{now.month:02d}-01T00:00:00Z"
+        "time": f"{now.year}-{now.month:02d}-01T00:00:00Z",
+        "name": f"{now.year}-{now.month}"
     }
     state_machine_arn = os.environ['ODS_DOWNLOADER_ARN']
     stepfunctions_client.start_execution(
