@@ -50,7 +50,7 @@ def lambda_handler(event, context):
 
     stepfunctions_client.start_execution(
         stateMachineArn=ods_downloader_arn,
-        name=f"{now.year}-{now.month}"
+        name=f"{now.year}-{now.month}",
         input=json.dumps(execution_input)
     )
 
