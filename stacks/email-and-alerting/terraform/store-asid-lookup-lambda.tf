@@ -14,8 +14,8 @@ resource "aws_lambda_function" "store_asid_lookup" {
 
   environment {
     variables = {
-      ENVIRONMENT        = var.environment,
-      EMAIL_USER         = data.aws_ssm_parameter.asid_lookup_address_prefix.value,
+      ENVIRONMENT = var.environment,
+      EMAIL_USER  = data.aws_ssm_parameter.asid_lookup_address_prefix.value,
     }
   }
 }
