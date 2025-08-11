@@ -335,15 +335,15 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
     actions   = ["states:ListStateMachines"]
     resources = ["*"]
   }
-  
+
   statement {
-    sid       = "StepFunctionExecution"
+    sid    = "StepFunctionExecution"
     effect = "Allow"
     action = [
-          "states:StartExecution"
-        ]
+      "states:StartExecution"
+    ]
     resource = "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"
-      }
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
