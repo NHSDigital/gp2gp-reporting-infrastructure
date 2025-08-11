@@ -253,6 +253,12 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_assume_role" {
       type        = "Service"
     }
   }
+
+  statement {
+    effect = "Allow"
+    actions = ["states:ListStateMachines"]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role" "store_asid_lookup_lambda" {
