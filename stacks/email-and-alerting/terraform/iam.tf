@@ -255,8 +255,8 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_assume_role" {
   }
 
   statement {
-    effect = "Allow"
-    actions = ["states:ListStateMachines"]
+    effect    = "Allow"
+    actions   = ["states:ListStateMachines"]
     resources = ["*"]
   }
 }
