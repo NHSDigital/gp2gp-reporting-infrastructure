@@ -335,7 +335,7 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
     actions   = ["states:ListStateMachines"]
     resources = ["*"]
   }
-
+  
   statement {
     sid       = "StepFunctionExecution"
     effect = "Allow"
