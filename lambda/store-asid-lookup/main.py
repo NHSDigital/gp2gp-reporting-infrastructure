@@ -47,12 +47,13 @@ def lambda_handler(event, context):
     execution_input = {
         "time": f"{now.year}-{now.month:02d}-01T00:00:00Z"
     }
-
+    print(f"Beginning Step Function Execution")
     stepfunctions_client.start_execution(
         stateMachineArn=ods_downloader_arn,
         name=f"{now.year}-{now.month}",
         input=json.dumps(execution_input)
     )
+    print(f"Step Function Executed")
 
 
 def validate_email_event(email_event: dict):
