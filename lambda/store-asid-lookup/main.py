@@ -38,16 +38,20 @@ def lambda_handler(event, context):
     attached_csv = extract_csv_attachment_from_email(raw_email)
     compressed_csv = compress_csv(attached_csv)
     store_file_in_destination_s3(compressed_csv)
+    execution_input = {
+        "time": f"{now.year}-{now.month:02d}-01T00:00:00Z"
+    }
+    start_ods_downloader_step_function(execution_input)
+    
 
+def start_ods_downloader_step_function(execution_input):
+    print(f"Getting State Machine arn")
     response = stepfunctions_client.list_state_machines()['stateMachines']
     for stepfn in response:
         if stepfn['name'] == "ods-downloader-pipeline":
             ods_downloader_arn = stepfn['stateMachineArn']
-    
-    execution_input = {
-        "time": f"{now.year}-{now.month:02d}-01T00:00:00Z"
-    }
-    print(f"Beginning Step Function Execution")
+    print(f'State Machine Arn found: {ods_downloader_arn}')
+    print(f'Beginning Step Function execution')
     stepfunctions_client.start_execution(
         stateMachineArn=ods_downloader_arn,
         name=f"{now.year}-{now.month}",
