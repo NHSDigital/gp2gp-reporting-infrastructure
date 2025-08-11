@@ -330,6 +330,7 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
   }
 
   statement {
+    sid       = "GetStateMachines"
     effect    = "Allow"
     actions   = ["states:ListStateMachines"]
     resources = ["*"]
