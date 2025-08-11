@@ -296,5 +296,5 @@ jobs:
             })
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && inputs.is_deployment && inputs.environment != 'prod'
+        if: github.ref == 'refs/heads/main' && inputs.environment != 'prod'
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
