@@ -342,7 +342,7 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
     actions = [
       "states:StartExecution"
     ]
-    resource = "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"
+    resources = "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"
   }
 }
 
