@@ -328,6 +328,22 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
       "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name"
     ]
   }
+
+  statement {
+    sid       = "ListStepFunctions"
+    effect    = "Allow"
+    actions   = ["states:ListStateMachines"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "StepFunctionExecution"
+    effect = "Allow"
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = ["arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "store_asid_lookup_lambda" {
