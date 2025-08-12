@@ -61,8 +61,10 @@ jobs:
           docker pull $source_repo:latest
           docker tag $source_repo:latest $destination_repo:latest
           docker tag $source_repo:latest $destination_repo:${{ github.sha }}
+          docker tag $source_repo:latest $destination_repo:${{ github.ref_name }}
           docker push $destination_repo:latest
           docker push $destination_repo:${{ github.sha }}
+          docker push $destination_repo:${{ github.ref_name }}
           
   plan-infra:
     name: Plan Infrastructure
