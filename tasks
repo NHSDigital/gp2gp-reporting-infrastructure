@@ -77,9 +77,6 @@ validate)
   tf_init
   terraform -chdir=${tf_dir} validate
   ;;
-dojo-validate)
-  dojo "./tasks validate ${stack_name} ${stack_env}"
-  ;;
 plan)
   build_lambda log-alerts-technical-failures-above-threshold
   build_lambda log-alerts-pipeline-error
@@ -93,15 +90,9 @@ plan)
     -var-file=${var_file} \
     -out=${plan_output}
   ;;
-dojo-plan)
-  dojo "./tasks plan ${stack_name} ${stack_env}"
-  ;;
 apply)
   tf_init
   terraform -chdir=${tf_dir} apply ${stack_env}.tfplan
-  ;;
-dojo-apply)
-  dojo "./tasks apply ${stack_name} ${stack_env}"
   ;;
 format)
   terraform -chdir=${tf_dir} fmt
