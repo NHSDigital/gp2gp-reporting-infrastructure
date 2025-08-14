@@ -9,7 +9,3 @@ fileignoreconfig:
 - filename: lambda/gp2gp-dashboard-alert/main.py
   checksum: c45153dffd35bd6d2cd28d284116d494805e30b5712daac3dc0d4e981403720e
 
-
-fileignoreconfig:
-- filename: Dojofile
-  checksum: a300c3e9c287f0d3ecf66563b79d87e3e975b64cfdb23b760637535b795cb7a2
