@@ -68,7 +68,6 @@ jobs:
           
   plan-infra:
     name: Plan Infrastructure
-    needs: [promote-images-to-prod]
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: ${{ inputs.environment }}
