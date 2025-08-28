@@ -56,7 +56,7 @@ jobs:
       - name: ECR Copy
         id: ecr-copy
         run: |
-          source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_DEV_REPOSITORY }}${{ inputs.terraform_stack }}
+          source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_DEV_REPOSITORY }}${{ inputs.terraform_stack }}
           destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }}
           docker pull $source_repo:latest
           docker tag $source_repo:latest $destination_repo:latest
