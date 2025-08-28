@@ -57,7 +57,7 @@ jobs:
         id: ecr-copy
         run: |
           source_repo=${{ env.devaccountid }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_DEV_REPOSITORY }}${{ inputs.terraform_stack }}
-          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }}
+          destination_repo=${{ steps.creds.outputs.aws-account-id }}.dkr.ecr.eu-west-2.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }}
           docker pull $source_repo:latest
           docker tag $source_repo:latest $destination_repo:latest
           docker tag $source_repo:latest $destination_repo:${{ github.sha }}
@@ -225,7 +225,7 @@ jobs:
         id: vars-image-tag
         if: inputs.image_tag
         run: |-
-            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             cat > pipeline.auto.tfvars <<EOF
             ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
             environment = "${{ vars.AWS_ENVIRONMENT }}"
@@ -248,7 +248,7 @@ jobs:
                 store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
             EOF
             if [[ -n "$image_key" ]]; then
-              IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+              IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
               image_tag=$IMAGE_TAG
               echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
               cat pipeline.auto.tfvars
