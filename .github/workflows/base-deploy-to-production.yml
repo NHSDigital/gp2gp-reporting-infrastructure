@@ -39,13 +39,6 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-skip-session-tagging: true
           mask-aws-account-id: true
-
-      - name: Get ECR Holding Account ID
-        id: ecr-holding-account
-        run: |
-          devaccountid= ${{ secrets.AWS_DEV_ACCOUNT_ID }} 
-          echo "::add-mask::$devaccountid" 
-          echo "devaccountid=$devaccountid" >> $GITHUB_ENV
           
       # Needs the AmazonEC2ContainerRegistryPowerUser role
       - name: Login to ECR
