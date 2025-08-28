@@ -62,6 +62,7 @@ jobs:
   plan-infra:
     name: Plan Infrastructure
     needs: [promote-images-to-prod]
+    if: always() && (needs.promote-images-to-prod.result == 'skipped' || needs.promote-images-to-prod.result == 'success')
     uses: ./.github/workflows/base-terraform-plan-and-apply.yml
     with:
       environment: ${{ inputs.environment }}
