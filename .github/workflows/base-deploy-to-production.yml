@@ -43,7 +43,7 @@ jobs:
       - name: Get ECR Holding Account ID
         id: ecr-holding-account
         run: |
-          devaccountid=$(echo ${{ secrets.IAM_ROLE_ECR_HOLDING_ACCOUNT_READ_WRITE }} | sed 's/^.*:://g' | sed 's/:.*//g')
+          devaccountid= ${{ secrets.AWS_DEV_ACCOUNT_ID }} 
           echo "::add-mask::$devaccountid" 
           echo "devaccountid=$devaccountid" >> $GITHUB_ENV
           
