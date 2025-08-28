@@ -23,6 +23,7 @@ on:
       image_tag:
         description: "Does the workflow need an image tag"
         type: string
+        default: ''
 
 jobs:
   promote-images-to-prod:
@@ -73,7 +74,7 @@ jobs:
     secrets: inherit
 
   deploy-infra-no-images:
-    if: ${{ inputs.image_tag == '' && inputs.is_deployment }}
+    if: ${{ always() && inputs.image_tag == '' && inputs.is_deployment && needs.plan-infra.result == 'success' }}
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure (no images)
     needs: [ plan-infra ] 
@@ -158,7 +159,7 @@ jobs:
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
 
   deploy-infra-with-images:
-    if: ${{ inputs.image_tag && inputs.is_deployment }}
+    if: ${{ always() && inputs.image_tag && inputs.is_deployment && needs.plan-infra.result == 'success' }}
     environment: ${{ inputs.environment }}-deploy
     name: Deploy Infrastructure (with new image)
     needs: [ promote-images-to-prod, plan-infra ]
