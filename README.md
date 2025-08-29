@@ -1,4 +1,4 @@
-# prm-gp2gp-data-pipeline-infra
+# gp2gp-reporting-infrastructure
 
 ## Setup
 
