@@ -11,7 +11,7 @@ variable "team" {
 
 variable "repo_name" {
   type        = string
-  default     = "prm-gp2gp-dashboard-infra"
+  default     = "gp2gp-reporting-infrastructure"
   description = "Name of this repository"
 }
 

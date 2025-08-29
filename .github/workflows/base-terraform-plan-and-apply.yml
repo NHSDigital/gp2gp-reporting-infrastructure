@@ -81,7 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: nhsconnect/prm-gp2gp-data-pipeline-infra
+          repository: nhsconnect/gp2gp-reporting-infrastructure
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
