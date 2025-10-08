@@ -39,7 +39,6 @@ If you are unable to validate/plan, make sure you doing it inside the dojo conta
     dojo (then running command inside)
     or
     ./tasks dojo-validate
-
 ```
 
 Error: `Invalid length for parameter RoleArn, value: 4, valid range: 20-inf`
