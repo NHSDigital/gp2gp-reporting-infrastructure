@@ -36,8 +36,6 @@ def lambda_handler(event, context):
 
     pipeline_error_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
 
-    slack_channel = secret_manager.get_secret(os.environ["SLACK_CHANNEL_ID_PARAM_NAME"])
-    slack_bot_token = secret_manager.get_secret(os.environ["SLACK_BOT_TOKEN_PARAM_NAME"])
 
     try:
         pipeline_error_alert_resp = http.request('POST', url=pipeline_error_alert_webhook_url, body=pipeline_error_encoded_msg)
@@ -57,8 +55,22 @@ def lambda_handler(event, context):
         print("Successfully sent alerts")
 
 
-def send_slack_alert():
-    pass
+def send_slack_alert(channel_id, bot_token):
+
+    slack_message = {
+        "channel": channel_id,
+        "blocks": create_slack_message()
+    }
+
+    requests.post(
+        url="https://slack.com/api/chat.postMessage",
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {bot_token}"
+        },
+        data=json.dumps(slack_message),
+
+    )
 
 def create_slack_message():
 
