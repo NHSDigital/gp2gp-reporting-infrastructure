@@ -57,7 +57,7 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
   role             = aws_iam_role.log_alerts_lambda_role.arn
   handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${var.log_alerts_pipeline_error_lambda_zip}")
-  runtime          = "python3.12"
+  runtime          = "python3.9"
   timeout          = 15
   tags = merge(
     local.common_tags,
