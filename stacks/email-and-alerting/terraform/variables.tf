@@ -129,3 +129,13 @@ variable "validate_metrics" {
   type        = string
   default     = ""
 }
+
+variable "log_alerts_slack_channel_id_param_name" {
+  type = string
+  description = "SSM parameter containing slack channel id to send alerts to"
+}
+
+variable "log_alerts_slack_bot_token_param_name" {
+  type = string
+  description = "SSM parameter containing the slack bot token needed to send message to slack channels"
+}
