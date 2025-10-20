@@ -24,41 +24,27 @@ class SsmSecretManager:
 
 
 def lambda_handler(event, context):
-    ssm = boto3.client("ssm")
-    secret_manager = SsmSecretManager(ssm)
-
-    cloudwatch_dashboard_url = os.environ["CLOUDWATCH_DASHBOARD_URL"]
-
-    text = (
-        f"## **There was an error in the data pipeline:** <br>"
-        f"See all the details in cloudwatch: {cloudwatch_dashboard_url}%<br>"
-    )
-
-    msg = {
-        "text": text,
-        "textFormat": "markdown"
-    }
-    pipeline_error_encoded_msg = json.dumps(msg).encode('utf-8')
-
-    pipeline_error_alert_webhook_url = secret_manager.get_secret(os.environ["LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME"])
-
 
     try:
-        pipeline_error_alert_resp = http.request('POST', url=pipeline_error_alert_webhook_url, body=pipeline_error_encoded_msg)
+        ssm = boto3.client("ssm", region_name="eu-west-2")
+        secret_manager = SsmSecretManager(ssm)
 
-        print({
-            "message": msg["text"],
-            "status_code": pipeline_error_alert_resp.status,
-            "response": pipeline_error_alert_resp.data,
-            "alert_type": "pipeline_error_technical_failure_rates",
-        })
+        slack_channel_id = secret_manager.get_secret(os.environ["SLACK_CHANNEL_ID_PARAM_NAME"])
+        slack_bot_token = secret_manager.get_secret(os.environ["SLACK_BOT_TOKEN_PARAM_NAME"])
+
+        send_slack_alert(channel_id=slack_channel_id, bot_token=slack_bot_token)
+
+        logger.info("Successfully sent slack alert")
 
     except ClientError as e:
-        print(e.response['Error']['Message'])
+        logger.error(e)
+        logger.error("SSM failure")
+    except HTTPError as e:
+        logger.error(e)
+        logger.error("Failed to send alert")
     except Exception as e:
-        print("An error has occurred: ", e)
-    else:
-        print("Successfully sent alerts")
+        logger.error(e)
+        logger.error("Unhandled exception raised")
 
 
 def send_slack_alert(channel_id, bot_token):
@@ -79,9 +65,11 @@ def send_slack_alert(channel_id, bot_token):
     except HTTPError as e:
         logger.error(e)
         logger.error("Failed to send slack alert")
+    except Exception as e:
+        logger.error(e)
+
 
 def create_slack_message():
-
     cloudwatch_dashboard_url = os.environ["CLOUDWATCH_DASHBOARD_URL"]
 
     return [
@@ -100,4 +88,3 @@ def create_slack_message():
             }
         }
     ]
-
