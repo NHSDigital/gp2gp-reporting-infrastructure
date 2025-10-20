@@ -1,3 +1,5 @@
+import logging
+
 import urllib3
 import boto3
 import json
@@ -5,8 +7,12 @@ import os
 import requests
 
 from botocore.exceptions import ClientError
+from requests import HTTPError
 
 http = urllib3.PoolManager()
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 class SsmSecretManager:
     def __init__(self, ssm):
@@ -61,16 +67,18 @@ def send_slack_alert(channel_id, bot_token):
         "channel": channel_id,
         "blocks": create_slack_message()
     }
-
-    requests.post(
-        url="https://slack.com/api/chat.postMessage",
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {bot_token}"
-        },
-        data=json.dumps(slack_message),
-
-    )
+    try:
+        requests.post(
+            url="https://slack.com/api/chat.postMessage",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {bot_token}"
+            },
+            data=json.dumps(slack_message),
+        )
+    except HTTPError as e:
+        logger.error(e)
+        logger.error("Failed to send slack alert")
 
 def create_slack_message():
 

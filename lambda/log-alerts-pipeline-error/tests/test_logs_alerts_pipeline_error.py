@@ -3,6 +3,8 @@ import json
 
 import pytest
 from datetime import datetime
+
+import requests
 from main import create_slack_message, SsmSecretManager, send_slack_alert
 
 @pytest.fixture
@@ -45,8 +47,8 @@ def test_create_slack_message_template(set_environment):
 
     assert actual == expected
 
-def test_send_slack_message(mocker, set_environment):
-    mocker_post = mocker.patch("main.requests.post")
+def test_send_slack_message_happy_path(mocker, set_environment):
+    mock_post = mocker.patch("main.requests.post")
 
     slack_message = {
         "channel": "channel_id",
@@ -55,7 +57,17 @@ def test_send_slack_message(mocker, set_environment):
 
     send_slack_alert(channel_id="channel_id", bot_token="bot_token")
 
-    mocker_post.assert_called_with(headers={"Content-Type": "application/json",
+    mock_post.assert_called_with(headers={"Content-Type": "application/json",
                                             "Authorization": "Bearer bot_token"},
                                    url="https://slack.com/api/chat.postMessage",
-                                   data=json.dumps(slack_message),)
+                                   data=json.dumps(slack_message))
+
+def test_send_slack_message_http_error_logs_error(mocker, set_environment, caplog):
+    mock_post = mocker.patch("main.requests.post")
+    mock_post.side_effect = requests.exceptions.HTTPError()
+
+    send_slack_alert(channel_id="channel_id", bot_token="bot_token")
+
+    expected_message = "Failed to send slack alert"
+
+    assert caplog.records[-1].msg == expected_message
