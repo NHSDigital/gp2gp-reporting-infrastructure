@@ -11,8 +11,9 @@ data "aws_acm_certificate" "dashboard_certificate" {
 
 resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
   aliases = [var.alternate_domain_name]
+
   origin {
-    domain_name = aws_s3_bucket.dashboard_website.website_endpoint
+    domain_name = aws_s3_bucket_website_configuration.dashboard_website.website_endpoint
     origin_id   = local.s3_origin_id
 
     custom_origin_config {
