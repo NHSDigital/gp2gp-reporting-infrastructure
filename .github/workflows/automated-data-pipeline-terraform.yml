@@ -1,29 +1,30 @@
-name: Data Pipeline Plan and Apply
+name: "Z-AUTOMATED: Data Pipeline Terraform Plan/Apply"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'stacks/step-function/**'
-      - 'stacks/transfer-classifier/**'
-      - 'stacks/validate-metrics/**'
-      - 'stacks/ods-downloader/**'
-      - 'stacks/reports-generator/**'
-      - 'stacks/spine-exporter/**'
-      - 'stacks/metrics-calculator/**'
-      - '.github/workflows/data-pipeline-plan-and-apply.yml'
-      
+      - "stacks/step-function/**"
+      - "stacks/transfer-classifier/**"
+      - "stacks/validate-metrics/**"
+      - "stacks/ods-downloader/**"
+      - "stacks/reports-generator/**"
+      - "stacks/spine-exporter/**"
+      - "stacks/metrics-calculator/**"
+      - ".github/workflows/data-pipeline-plan-and-apply.yml"
+
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'stacks/step-function/**'
-      - 'stacks/transfer-classifier/**'
-      - 'stacks/validate-metrics/**'
-      - 'stacks/ods-downloader/**'
-      - 'stacks/reports-generator/**'
-      - 'stacks/spine-exporter/**'
-      - 'stacks/metrics-calculator/**'
-      - '.github/workflows/data-pipeline-plan-and-apply.yml'
+      - "stacks/step-function/**"
+      - "stacks/transfer-classifier/**"
+      - "stacks/validate-metrics/**"
+      - "stacks/ods-downloader/**"
+      - "stacks/reports-generator/**"
+      - "stacks/spine-exporter/**"
+      - "stacks/metrics-calculator/**"
+      - ".github/workflows/data-pipeline-plan-and-apply.yml"
+
 permissions:
   pull-requests: write
   id-token: write # This is required for requesting the JWT
@@ -31,74 +32,76 @@ permissions:
 
 jobs:
   step-function:
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: step-function
+      git_ref: ${{ github.ref }}
     secrets: inherit
-
 
   transfer-classifier:
     needs: step-function
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: transfer-classifier
       image_tag: transfer_classifier
+      git_ref: ${{ github.ref }}
     secrets: inherit
-
 
   validate-metrics:
     needs: transfer-classifier
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: validate-metrics
       build_lambda: true
+      git_ref: ${{ github.ref }}
     secrets: inherit
 
   ods-downloader:
     needs: validate-metrics
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods-downloader
       image_tag: ods_downloader
+      git_ref: ${{ github.ref }}
     secrets: inherit
-
 
   reports-generator:
     needs: ods-downloader
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: reports-generator
       image_tag: reports_generator
+      git_ref: ${{ github.ref }}
     secrets: inherit
-
 
   spine-exporter:
     needs: reports-generator
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: spine-exporter
       image_tag: spine_exporter
+      git_ref: ${{ github.ref }}
     secrets: inherit
-
 
   metrics-calculator:
     needs: spine-exporter
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: metrics-calculator
       image_tag: metrics_calculator
+      git_ref: ${{ github.ref }}
     secrets: inherit
