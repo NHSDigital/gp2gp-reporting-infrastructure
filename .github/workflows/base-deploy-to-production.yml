@@ -35,7 +35,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v5
         with:
-          repository: nhsconnect/gp2gp-reporting-infrastructure
+          repository: NHSDigital/gp2gp-reporting-infrastructure
           ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials for Prod
@@ -93,7 +93,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          repository: nhsconnect/gp2gp-reporting-infrastructure
+          repository: NHSDigital/gp2gp-reporting-infrastructure
           ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials
@@ -179,7 +179,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          repository: nhsconnect/gp2gp-reporting-infrastructure
+          repository: NHSDigital/gp2gp-reporting-infrastructure
           ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials
