@@ -1,20 +1,20 @@
-name: Email and Alerting Plan and Apply
+name: "Z-AUTOMATED: Email and Alerting Terraform Plan/Apply"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'stacks/email-and-alerting/**'
-      - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
-      
+      - "stacks/email-and-alerting/**"
+      - "stacks/gp2gp-dashboard/**"
+      - ".github/workflows/email-and-alerting-plan-and-apply.yml"
+
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'stacks/email-and-alerting/**'
-      - 'stacks/gp2gp-dashboard/**'
-      - '.github/workflows/email-and-alerting-plan-and-apply.yml'
-   
+      - "stacks/email-and-alerting/**"
+      - "stacks/gp2gp-dashboard/**"
+      - ".github/workflows/email-and-alerting-plan-and-apply.yml"
+
 permissions:
   pull-requests: write
   id-token: write # This is required for requesting the JWT
@@ -22,21 +22,23 @@ permissions:
 
 jobs:
   email-and-alerting:
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: email-and-alerting    
+      terraform_stack: email-and-alerting
       build_lambda: true
+      git_ref: ${{ github.ref }}
     secrets: inherit
 
   gp2gp-dashboard:
     needs: email-and-alerting
-    uses: ./.github/workflows/base-terraform-plan-and-apply.yml
+    uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp-dashboard
       image_tag: gp2gp_dashboard
       build_lambda: true
+      git_ref: ${{ github.ref }}
     secrets: inherit
