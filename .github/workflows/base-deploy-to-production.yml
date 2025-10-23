@@ -24,6 +24,11 @@ on:
         type: string
         default: main
 
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
 jobs:
   promote-images-to-prod:
     environment: prod-deploy
