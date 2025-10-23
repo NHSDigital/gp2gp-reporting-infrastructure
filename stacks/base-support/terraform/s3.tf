@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "terraform_state" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes = [ grant ]
+    ignore_changes  = [grant]
   }
 
   tags = merge(

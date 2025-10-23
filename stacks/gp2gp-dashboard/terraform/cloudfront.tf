@@ -13,7 +13,7 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
   aliases = [var.alternate_domain_name]
 
   origin {
-    domain_name = aws_s3_bucket_website_configuration.dashboard_website.bucket_regional_domain_name
+    domain_name = aws_s3_bucket_website_configuration.dashboard_website.website_endpoint
     origin_id   = local.s3_origin_id
 
     custom_origin_config {
