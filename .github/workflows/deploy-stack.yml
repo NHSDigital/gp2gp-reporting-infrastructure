@@ -1,4 +1,5 @@
-name: base-terraform-plan-and-apply
+name: "Deploy - Stack"
+
 on:
   workflow_call:
     inputs:
@@ -22,10 +23,10 @@ on:
       image_tag:
         description: "Does the workflow need an image tag"
         type: string
-      is_build_recursive:
-        description: "Does the lambda use the new recursive build feature"
-        type: boolean
-        default: false
+      git_ref:
+        description: "The git_ref to checkout"
+        type: string
+        default: main
   workflow_dispatch:
     inputs:
       environment:
@@ -65,10 +66,10 @@ on:
           - transfer_classifier
           - metrics_calculator
           - reports_generator
-      is_build_recursive:
-        description: "Does the lambda use the new recursive build feature"
-        type: boolean
-        default: false
+      git_ref:
+        description: "The git_ref to deploy"
+        type: string
+        default: main
 
 jobs:
   terraform_plan_and_apply:
@@ -79,30 +80,31 @@ jobs:
         working-directory: ./stacks/${{ inputs.terraform_stack }}/terraform
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          repository: nhsconnect/gp2gp-reporting-infrastructure
+          repository: NHSDigital/gp2gp-reporting-infrastructure
+          ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume:  ${{ inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
+          role-to-assume: ${{ inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
           role-skip-session-tagging: true
           mask-aws-account-id: true
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.12
 
       - name: Build Lambda Zip
         if: inputs.build_lambda && inputs.terraform_stack
         run: |
-            cd $GITHUB_WORKSPACE
-            chmod +x ./tasks_github_actions.sh
-            ./tasks_github_actions.sh build-lambdas
-            
+          cd $GITHUB_WORKSPACE
+          chmod +x ./tasks_github_actions.sh
+          ./tasks_github_actions.sh build-lambdas
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -135,41 +137,41 @@ jobs:
         id: vars-image-tag
         if: inputs.image_tag
         run: |-
-            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
-            cat > pipeline.auto.tfvars <<EOF
-            ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
-            environment = "${{ vars.AWS_ENVIRONMENT }}"
-            EOF
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          cat > pipeline.auto.tfvars <<EOF
+          ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
+          environment = "${{ vars.AWS_ENVIRONMENT }}"
+          EOF
 
       - name: Setup Terraform variables for Build Lambda
         id: update-lambda-build-references
         if: inputs.build_lambda
         run: |-
-            image_key="${{ inputs.image_tag }}"
-            aws_env="${{ vars.AWS_ENVIRONMENT }}"
-            cat > pipeline.auto.tfvars <<EOF
-                environment = "$aws_env"
-                log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
-                log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
-                gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
-                email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
-                validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
-                store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
-                region = "${{ vars.AWS_REGION }}"
-            EOF
-            if [[ -n "$image_key" ]]; then
-              IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
-              image_tag=$IMAGE_TAG
-              echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
-              cat pipeline.auto.tfvars
-            fi
+          image_key="${{ inputs.image_tag }}"
+          aws_env="${{ vars.AWS_ENVIRONMENT }}"
+          cat > pipeline.auto.tfvars <<EOF
+              environment = "$aws_env"
+              log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
+              log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
+              gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
+              email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
+              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
+              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
+              region = "${{ vars.AWS_REGION }}"
+          EOF
+          if [[ -n "$image_key" ]]; then
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            image_tag=$IMAGE_TAG
+            echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
+            cat pipeline.auto.tfvars
+          fi
 
       - name: Terraform Plan
         id: plan
         run: |
           terraform plan -input=false -no-color -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out ${{ vars.AWS_ENVIRONMENT }}.tfplan > plan_output.txt 2>&1
           terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > tfplan.txt 2>&1
-          
+
           # Mask sensitive URLs in the Terraform Plan output
           grep -Eo 'https://[a-zA-Z0-9.-]+\.execute-api\.[a-zA-Z0-9.-]+\.amazonaws\.com/[a-zA-Z0-9/._-]*' tfplan.txt | while read -r api_url; do
             if [ -n "$api_url" ]; then
@@ -223,7 +225,7 @@ jobs:
         shell: bash
 
       - name: Add PR comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -240,7 +242,7 @@ jobs:
 
             // 2. Prepare format of the comment
             const output = `### Report for ${{ inputs.terraform_stack  }} on environment: ${{ vars.AWS_ENVIRONMENT  }}
-            
+
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             <details><summary>Format Output</summary>
 
@@ -249,7 +251,7 @@ jobs:
             \`\`\`
 
             </details>
-            
+
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             <details><summary>Initialization Output</summary>
 
@@ -287,7 +289,7 @@ jobs:
                 body: output
               })
             }
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
