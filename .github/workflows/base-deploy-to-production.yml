@@ -45,7 +45,7 @@ jobs:
 
       - name: Configure AWS Credentials for Prod
         id: creds
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
@@ -102,7 +102,7 @@ jobs:
           ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
@@ -188,7 +188,7 @@ jobs:
           ref: ${{ inputs.git_ref }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY }}
