@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "dashboard_website" {
   bucket = var.s3_dashboard_bucket_name
-  acl    = "public-read"
 
   tags = merge(
     local.common_tags,
@@ -11,8 +10,25 @@ resource "aws_s3_bucket" "dashboard_website" {
     }
   )
 
-  website {
-    index_document = "index.html"
-    error_document = "404.html"
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [grant, website]
+  }
+}
+
+resource "aws_s3_bucket_acl" "dashboard_website" {
+  bucket = aws_s3_bucket.dashboard_website.id
+  acl    = "public-read"
+}
+
+resource "aws_s3_bucket_website_configuration" "dashboard_website" {
+  bucket = aws_s3_bucket.dashboard_website.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "404.html"
   }
 }

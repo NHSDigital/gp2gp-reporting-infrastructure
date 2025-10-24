@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "gp2gp_inbox_storage" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes  = [acl]
+    ignore_changes  = [grant]
   }
 
   tags = merge(
@@ -17,6 +17,11 @@ resource "aws_s3_bucket" "gp2gp_inbox_storage" {
       ApplicationRole = "AwsS3Bucket"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "gp2gp_inbox_storage" {
+  bucket = aws_s3_bucket.gp2gp_inbox_storage.id
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_versioning" "gp2gp_inbox_storage" {
