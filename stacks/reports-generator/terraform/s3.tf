@@ -15,8 +15,8 @@ resource "aws_s3_bucket" "reports_generator" {
 }
 
 resource "aws_s3_bucket_acl" "reports_generator" {
-  bucket = aws_s3_bucket.reports_generator.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.reports_generator.id
+  acl        = "private"
   depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
 }
 

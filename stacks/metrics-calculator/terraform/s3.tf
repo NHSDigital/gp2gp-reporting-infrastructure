@@ -15,8 +15,8 @@ resource "aws_s3_bucket" "metrics_calculator" {
 }
 
 resource "aws_s3_bucket_acl" "metrics_calculator" {
-  bucket = aws_s3_bucket.metrics_calculator.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.metrics_calculator.id
+  acl        = "private"
   depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
 }
 

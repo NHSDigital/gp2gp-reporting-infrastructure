@@ -17,8 +17,8 @@ resource "aws_s3_bucket" "dashboard_website" {
 }
 
 resource "aws_s3_bucket_acl" "dashboard_website" {
-  bucket = aws_s3_bucket.dashboard_website.id
-  acl    = "public-read"
+  bucket     = aws_s3_bucket.dashboard_website.id
+  acl        = "public-read"
   depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
 }
 

@@ -15,8 +15,8 @@ resource "aws_s3_bucket" "transfer_classifier" {
 }
 
 resource "aws_s3_bucket_acl" "transfer_classifier" {
-  bucket = aws_s3_bucket.transfer_classifier.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.transfer_classifier.id
+  acl        = "private"
   depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
 }
 
