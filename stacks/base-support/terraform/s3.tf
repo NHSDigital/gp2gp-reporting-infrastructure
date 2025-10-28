@@ -18,10 +18,10 @@ resource "aws_s3_bucket" "terraform_state" {
 resource "aws_s3_bucket_acl" "terraform_state" {
   bucket     = aws_s3_bucket.terraform_state.id
   acl        = "private"
-  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+  depends_on = [aws_s3_bucket_ownership_controls.terraform_state]
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+resource "aws_s3_bucket_ownership_controls" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
   rule {
     object_ownership = "ObjectWriter"

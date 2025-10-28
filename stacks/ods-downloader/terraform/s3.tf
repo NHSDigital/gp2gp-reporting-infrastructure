@@ -17,10 +17,10 @@ resource "aws_s3_bucket" "ods_input" {
 resource "aws_s3_bucket_acl" "ods_input" {
   bucket     = aws_s3_bucket.ods_input.id
   acl        = "private"
-  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+  depends_on = [aws_s3_bucket_ownership_controls.ods_downloader]
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+resource "aws_s3_bucket_ownership_controls" "ods_downloader" {
   bucket = aws_s3_bucket.ods_input.id
   rule {
     object_ownership = "ObjectWriter"

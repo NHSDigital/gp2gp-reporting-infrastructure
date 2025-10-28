@@ -17,10 +17,10 @@ resource "aws_s3_bucket" "spine_exporter" {
 resource "aws_s3_bucket_acl" "spine_exporter" {
   bucket     = aws_s3_bucket.spine_exporter.id
   acl        = "private"
-  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+  depends_on = [aws_s3_bucket_ownership_controls.spine_exporter]
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+resource "aws_s3_bucket_ownership_controls" "spine_exporter" {
   bucket = aws_s3_bucket.spine_exporter.id
   rule {
     object_ownership = "ObjectWriter"
