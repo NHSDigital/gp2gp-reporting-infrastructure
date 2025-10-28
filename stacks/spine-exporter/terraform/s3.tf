@@ -15,8 +15,16 @@ resource "aws_s3_bucket" "spine_exporter" {
 }
 
 resource "aws_s3_bucket_acl" "spine_exporter" {
+  bucket     = aws_s3_bucket.spine_exporter.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.spine_exporter]
+}
+
+resource "aws_s3_bucket_ownership_controls" "spine_exporter" {
   bucket = aws_s3_bucket.spine_exporter.id
-  acl    = "private"
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "spine_exporter" {

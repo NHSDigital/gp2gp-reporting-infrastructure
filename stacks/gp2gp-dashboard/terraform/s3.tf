@@ -17,8 +17,16 @@ resource "aws_s3_bucket" "dashboard_website" {
 }
 
 resource "aws_s3_bucket_acl" "dashboard_website" {
+  bucket     = aws_s3_bucket.dashboard_website.id
+  acl        = "public-read"
+  depends_on = [aws_s3_bucket_ownership_controls.dashboard_website]
+}
+
+resource "aws_s3_bucket_ownership_controls" "dashboard_website" {
   bucket = aws_s3_bucket.dashboard_website.id
-  acl    = "public-read"
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_website_configuration" "dashboard_website" {
