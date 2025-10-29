@@ -6,14 +6,16 @@ on:
     paths:
       - "stacks/email-and-alerting/**"
       - "stacks/gp2gp-dashboard/**"
-      - ".github/workflows/email-and-alerting-plan-and-apply.yml"
+      - ".github/workflows/automated-email-and-alerting-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
 
   pull_request:
     branches: [main]
     paths:
       - "stacks/email-and-alerting/**"
       - "stacks/gp2gp-dashboard/**"
-      - ".github/workflows/email-and-alerting-plan-and-apply.yml"
+      - ".github/workflows/automated-email-and-alerting-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
 
 permissions:
   pull-requests: write

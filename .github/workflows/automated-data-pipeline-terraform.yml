@@ -11,7 +11,8 @@ on:
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
-      - ".github/workflows/data-pipeline-plan-and-apply.yml"
+      - ".github/workflows/automated-data-pipeline-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
 
   pull_request:
     branches: [main]
@@ -23,7 +24,8 @@ on:
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
-      - ".github/workflows/data-pipeline-plan-and-apply.yml"
+      - ".github/workflows/automated-data-pipeline-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
 
 permissions:
   pull-requests: write
