@@ -166,6 +166,10 @@ jobs:
             cat pipeline.auto.tfvars
           fi
 
+      - name: Terraform Import
+        id: import
+        run: terraform import -no-color aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
+
       - name: Terraform Plan
         id: plan
         run: |

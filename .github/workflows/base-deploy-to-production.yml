@@ -160,6 +160,10 @@ jobs:
               store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
           EOF
 
+      - name: Terraform Import
+        id: import
+        run: terraform import -no-color aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
+
       - name: Terraform Plan
         id: plan
         run: |
@@ -262,6 +266,10 @@ jobs:
             echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
             cat pipeline.auto.tfvars
           fi
+
+      - name: Terraform Import
+        id: import
+        run: terraform import -no-color aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
 
       - name: Terraform Plan
         id: plan
