@@ -122,6 +122,11 @@ jobs:
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
 
+      - name: Terraform Import
+        id: import
+        if: inputs.terraform_stack == 'gp2gp-dashboard'
+        run: terraform import aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
+
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
@@ -165,11 +170,6 @@ jobs:
             echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
             cat pipeline.auto.tfvars
           fi
-
-      - name: Terraform Import
-        id: import
-        if: inputs.terraform_stack == 'gp2gp-dashboard'
-        run: terraform import -no-color aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
 
       - name: Terraform Plan
         id: plan
