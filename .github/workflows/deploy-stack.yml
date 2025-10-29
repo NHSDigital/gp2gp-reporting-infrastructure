@@ -166,11 +166,6 @@ jobs:
             cat pipeline.auto.tfvars
           fi
 
-      - name: Terraform Import
-        id: import
-        if: inputs.terraform_stack == 'gp2gp-dashboard'
-        run: terraform import -no-color -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" aws_s3_bucket_acl.dashboard_website prm-service-dashboard-${{ vars.AWS_ENVIRONMENT }},public-read
-
       - name: Terraform Plan
         id: plan
         run: |
