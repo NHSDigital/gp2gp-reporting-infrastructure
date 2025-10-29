@@ -8,7 +8,7 @@ on:
       - "stacks/base-support/**"
       - "stacks/base-networking/**"
       - "stacks/ecs-cluster/**"
-      - ".github/workflows/base-infrastructure-plan-and-apply.yml"
+      - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
   pull_request:
@@ -18,7 +18,7 @@ on:
       - "stacks/base-support/**"
       - "stacks/base-networking/**"
       - "stacks/ecs-cluster/**"
-      - ".github/workflows/base-infrastructure-plan-and-apply.yml"
+      - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
 permissions:
