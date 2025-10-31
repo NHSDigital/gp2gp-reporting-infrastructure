@@ -2,10 +2,16 @@ resource "aws_iam_role" "dashboard_pipeline_step_function" {
   name               = "${var.environment}-dashboard-pipeline-step-function"
   description        = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.dashboard_pipeline_step_function.arn,
-    aws_iam_policy.metrics_calculator_step_function.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline" {
+  role       = aws_iam_role.dashboard_pipeline_step_function.name
+  policy_arn = aws_iam_policy.dashboard_pipeline_step_function.arn
+}
+
+resource "aws_iam_role_policy_attachment" "metrics_calculater" {
+  role       = aws_iam_role.dashboard_pipeline_step_function.name
+  policy_arn = aws_iam_policy.metrics_calculator_step_function.arn
 }
 
 resource "aws_iam_policy" "dashboard_pipeline_step_function" {
