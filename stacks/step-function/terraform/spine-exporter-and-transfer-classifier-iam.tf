@@ -10,10 +10,16 @@ resource "aws_iam_role" "spine_exporter_and_transfer_classifier_step_function" {
   name               = "${var.environment}-spine-exporter-and-transfer-classifier-step-function"
   description        = "StepFunction role for spine exporter and transfer classifier"
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.spine_exporter_step_function.arn,
-    aws_iam_policy.transfer_classifier_step_function.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "spine_exporter_step_function" {
+  role       = aws_iam_role.spine_exporter_and_transfer_classifier_step_function.name
+  policy_arn = aws_iam_policy.spine_exporter_step_function.arn
+}
+
+resource "aws_iam_role_policy_attachment" "transfer_classifier_step_function" {
+  role       = aws_iam_role.spine_exporter_and_transfer_classifier_step_function.name
+  policy_arn = aws_iam_policy.transfer_classifier_step_function.arn
 }
 
 resource "aws_iam_policy" "spine_exporter_step_function" {

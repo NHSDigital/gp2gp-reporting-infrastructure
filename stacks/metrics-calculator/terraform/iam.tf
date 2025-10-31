@@ -15,12 +15,26 @@ resource "aws_iam_role" "metrics_calculator" {
   name               = "${var.environment}-registrations-metrics-calculator"
   description        = "Role for metrics calculator ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    data.aws_ssm_parameter.transfers_data_bucket_read_access_arn.value,
-    data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value,
-    aws_iam_policy.metrics_calculator_output_bucket_write_access.arn,
-    aws_iam_policy.ssm_put_access.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "transfers_data_bucket_read_access_arn" {
+  role       = aws_iam_role.metrics_calculator.name
+  policy_arn = data.aws_ssm_parameter.transfers_data_bucket_read_access_arn.value
+}
+
+resource "aws_iam_role_policy_attachment" "ods_metadata_bucket_read_access_arn" {
+  role       = aws_iam_role.metrics_calculator.name
+  policy_arn = data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value
+}
+
+resource "aws_iam_role_policy_attachment" "metrics_calculator_output_bucket_write_access" {
+  role       = aws_iam_role.metrics_calculator.name
+  policy_arn = aws_iam_policy.metrics_calculator_output_bucket_write_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_put_access" {
+  role       = aws_iam_role.metrics_calculator.name
+  policy_arn = aws_iam_policy.ssm_put_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {

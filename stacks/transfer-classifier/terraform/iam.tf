@@ -10,11 +10,21 @@ resource "aws_iam_role" "transfer_classifier" {
   name               = "${var.environment}-registrations-transfer-classifier"
   description        = "Role for transfer classifier ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.spine_messages_bucket_read_access.arn,
-    data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value,
-    aws_iam_policy.transfer_classifier_output_buckets_write_access.arn,
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "spine_messages_bucket_read_access" {
+  role       = aws_iam_role.transfer_classifier.name
+  policy_arn = aws_iam_policy.spine_messages_bucket_read_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ods_metadata_bucket_read_access_arn" {
+  role       = aws_iam_role.transfer_classifier.name
+  policy_arn = data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value
+}
+
+resource "aws_iam_role_policy_attachment" "transfer_classifier_output_buckets_write_access" {
+  role       = aws_iam_role.transfer_classifier.name
+  policy_arn = aws_iam_policy.transfer_classifier_output_buckets_write_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {
