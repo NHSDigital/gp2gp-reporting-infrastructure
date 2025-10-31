@@ -7,12 +7,15 @@ data "aws_ssm_parameter" "transfer_classifier_task_definition_arn" {
 }
 
 resource "aws_iam_role" "transfer_classifier_step_function" {
-  name                = "${var.environment}-transfer-classifier-step-function"
-  description         = "StepFunction role for transfer classifier"
-  assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [aws_iam_policy.transfer_classifier_step_function.arn]
+  name               = "${var.environment}-transfer-classifier-step-function"
+  description        = "StepFunction role for transfer classifier"
+  assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
 }
 
+resource "aws_iam_role_policy_attachment" "transfer_classifier_step_function" {
+  role       = aws_iam_role.transfer_classifier_step_function.name
+  policy_arn = aws_iam_policy.transfer_classifier_step_function.arn
+}
 resource "aws_iam_policy" "transfer_classifier_step_function" {
   name   = "${var.environment}-transfer-classifier-step-function"
   policy = data.aws_iam_policy_document.transfer_classifier_step_function.json
