@@ -160,9 +160,9 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
 
 # Event trigger
 resource "aws_iam_role" "dashboard_pipeline_trigger" {
-  name                = "${var.environment}-dashboard-pipeline-trigger"
-  description         = "Role used by EventBridge to trigger step function"
-  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  name               = "${var.environment}-dashboard-pipeline-trigger"
+  description        = "Role used by EventBridge to trigger step function"
+  assume_role_policy = data.aws_iam_policy_document.assume_event.json
 }
 
 resource "aws_iam_role_policy_attachment" "dashboard_pipeline_trigger" {
