@@ -163,7 +163,11 @@ resource "aws_iam_role" "dashboard_pipeline_trigger" {
   name                = "${var.environment}-dashboard-pipeline-trigger"
   description         = "Role used by EventBridge to trigger step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.dashboard_pipeline_trigger.arn]
+}
+
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_trigger" {
+  role       = aws_iam_role.dashboard_pipeline_trigger.name
+  policy_arn = aws_iam_policy.dashboard_pipeline_trigger.arn
 }
 
 resource "aws_iam_policy" "dashboard_pipeline_trigger" {
