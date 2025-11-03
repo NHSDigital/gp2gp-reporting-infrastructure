@@ -3,13 +3,13 @@ data "aws_ssm_parameter" "reports_generator_task_definition_arn" {
 }
 
 resource "aws_iam_role" "report_generator_step_function" {
-  name                = "${var.environment}-reports-generator-step-function"
-  description         = "StepFunction role for reports generator"
-  assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
+  name               = "${var.environment}-reports-generator-step-function"
+  description        = "StepFunction role for reports generator"
+  assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
 }
 
 resource "aws_iam_role_policy_attachment" "report_generator_step-function" {
-  role = aws_iam_role.report_generator_step_function.name
+  role       = aws_iam_role.report_generator_step_function.name
   policy_arn = aws_iam_policy.report_generator_step_function.arn
 }
 
@@ -80,13 +80,13 @@ data "aws_iam_policy_document" "report_generator_step_function" {
 
 # Event trigger
 resource "aws_iam_role" "reports_generator_trigger" {
-  name                = "${var.environment}-reports-generator-trigger"
-  description         = "Role used by EventBridge to trigger step function"
-  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
+  name               = "${var.environment}-reports-generator-trigger"
+  description        = "Role used by EventBridge to trigger step function"
+  assume_role_policy = data.aws_iam_policy_document.assume_event.json
 }
 
 resource "aws_iam_role_policy_attachment" "reports_generator_trigger" {
-  role = aws_iam_role.reports_generator_trigger.name
+  role       = aws_iam_role.reports_generator_trigger.name
   policy_arn = aws_iam_policy.reports_generator_trigger.arn
 }
 

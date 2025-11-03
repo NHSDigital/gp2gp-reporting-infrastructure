@@ -8,17 +8,17 @@ resource "aws_iam_role" "gp2gp_dashboard" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_output_bucket_write_access" {
-  role = aws_iam_role.gp2gp_dashboard.name
+  role       = aws_iam_role.gp2gp_dashboard.name
   policy_arn = aws_iam_policy.gp2gp_dashboard_output_bucket_write_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_metrics_input_bucket_read_access" {
-  role = aws_iam_role.gp2gp_dashboard.name
+  role       = aws_iam_role.gp2gp_dashboard.name
   policy_arn = aws_iam_policy.metrics_input_bucket_read_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_metrics_ssm_parameter_read_access" {
-  role = aws_iam_role.gp2gp_dashboard.name
+  role       = aws_iam_role.gp2gp_dashboard.name
   policy_arn = aws_iam_policy.metrics_ssm_parameter_read_access.arn
 }
 
