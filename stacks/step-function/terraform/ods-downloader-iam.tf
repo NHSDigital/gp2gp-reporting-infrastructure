@@ -4,7 +4,7 @@ resource "aws_iam_role" "ods_downloader_step_function" {
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "ods_downloader" {
+resource "aws_iam_role_policy_attachment" "ods_downloader_step_function" {
   role       = aws_iam_role.ods_downloader_step_function.name
   policy_arn = aws_iam_policy.ods_downloader_step_function.arn
 }

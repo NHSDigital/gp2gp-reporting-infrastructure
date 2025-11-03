@@ -6,7 +6,11 @@ resource "aws_iam_role" "report_generator_step_function" {
   name                = "${var.environment}-reports-generator-step-function"
   description         = "StepFunction role for reports generator"
   assume_role_policy  = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [aws_iam_policy.report_generator_step_function.arn]
+}
+
+resource "aws_iam_role_policy_attachment" "report_generator_step-function" {
+  role = aws_iam_role.report_generator_step_function.name
+  policy_arn = aws_iam_policy.report_generator_step_function.arn
 }
 
 resource "aws_iam_policy" "report_generator_step_function" {
@@ -79,7 +83,11 @@ resource "aws_iam_role" "reports_generator_trigger" {
   name                = "${var.environment}-reports-generator-trigger"
   description         = "Role used by EventBridge to trigger step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.reports_generator_trigger.arn]
+}
+
+resource "aws_iam_role_policy_attachment" "reports_generator_trigger" {
+  role = aws_iam_role.reports_generator_trigger.name
+  policy_arn = aws_iam_policy.reports_generator_trigger.arn
 }
 
 resource "aws_iam_policy" "reports_generator_trigger" {

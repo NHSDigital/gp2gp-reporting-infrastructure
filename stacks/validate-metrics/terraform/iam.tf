@@ -3,17 +3,17 @@ resource "aws_iam_role" "validate_metrics_lambda_role" {
   assume_role_policy = data.aws_iam_policy_document.validate_metrics_lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "validate_metrics_lambda" {
+resource "aws_iam_role_policy_attachment" "validate_metrics_lambda_ssm_access" {
   role       = aws_iam_role.validate_metrics_lambda_role.name
   policy_arn = aws_iam_policy.validate_metrics_lambda_ssm_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "validate_metrics_cloudwatch_log_access" {
+resource "aws_iam_role_policy_attachment" "validate_metrics_lambda_cloudwatch_log_access" {
   role       = aws_iam_role.validate_metrics_lambda_role.name
   policy_arn = aws_iam_policy.validate_metrics_cloudwatch_log_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "metrics_input_bucket_read_access" {
+resource "aws_iam_role_policy_attachment" "validate_metrics_lambda_metrics_input_bucket_read_access" {
   role       = aws_iam_role.validate_metrics_lambda_role.name
   policy_arn = aws_iam_policy.metrics_input_bucket_read_access.arn
 }

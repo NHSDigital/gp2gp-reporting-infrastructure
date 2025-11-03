@@ -17,7 +17,7 @@ resource "aws_iam_role_policy_attachment" "spine_exporter_step_function" {
   policy_arn = aws_iam_policy.spine_exporter_step_function.arn
 }
 
-resource "aws_iam_role_policy_attachment" "transfer_classifier_step_function" {
+resource "aws_iam_role_policy_attachment" "spine_exporter_and_transfer_classifier_step_function" {
   role       = aws_iam_role.spine_exporter_and_transfer_classifier_step_function.name
   policy_arn = aws_iam_policy.transfer_classifier_step_function.arn
 }
@@ -105,6 +105,11 @@ resource "aws_iam_role" "spine_exporter_and_transfer_classifier_trigger" {
   name                = "${var.environment}-daily-spine-exporter-and-transfer-classifier-trigger"
   description         = "Role used by EventBridge to trigger step function"
   assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.spine_exporter_and_transfer_classifier_trigger.arn]
+}
+
+resource "aws_iam_role_policy_attachment" "spine_exporter_and_transfer_classifier_trigger" {
+  role = aws_iam_role.spine_exporter_and_transfer_classifier_trigger.name
+  policy_arn = aws_iam_policy.spine_exporter_and_transfer_classifier_trigger.arn
+
 }
 # /Event trigger

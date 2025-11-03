@@ -4,12 +4,12 @@ resource "aws_iam_role" "dashboard_pipeline_step_function" {
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "dashboard_pipeline" {
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_step_function" {
   role       = aws_iam_role.dashboard_pipeline_step_function.name
   policy_arn = aws_iam_policy.dashboard_pipeline_step_function.arn
 }
 
-resource "aws_iam_role_policy_attachment" "metrics_calculater" {
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_step_function_metrics_calculater_step_function" {
   role       = aws_iam_role.dashboard_pipeline_step_function.name
   policy_arn = aws_iam_policy.metrics_calculator_step_function.arn
 }

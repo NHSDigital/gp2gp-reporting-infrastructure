@@ -2,10 +2,16 @@ resource "aws_iam_role" "ods_downloader" {
   name               = "${var.environment}-registrations-ods-downloader"
   description        = "Role for ods downloader ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.ods_input_bucket_read_access.arn,
-    aws_iam_policy.ods_output_bucket_write_access.arn,
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "ods_downloader_ods_input_bucket_read_access" {
+  role       = aws_iam_role.ods_downloader.name
+  policy_arn = aws_iam_policy.ods_input_bucket_read_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ods_downloader_ods_output_bucket_write_access" {
+  role       = aws_iam_role.ods_downloader.name
+  policy_arn = aws_iam_policy.ods_output_bucket_write_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {
