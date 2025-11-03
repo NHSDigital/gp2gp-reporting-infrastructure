@@ -28,7 +28,7 @@ resource "aws_cloudwatch_event_rule" "run_once_a_month_on_15th_cron_expression" 
   name                = "${var.environment}-run-data-pipeline-step-functions-every-month-15th-7am"
   description         = "Eventbridge Event Rule that triggers the Reports Generator Step Function and Dashboard Pipeline Step Function at 7am every month on the 15th"
   schedule_expression = "cron(0 7 15 * ? *)"
-  is_enabled          = true
+  state               = "ENABLED"
   tags = merge(
     local.common_tags,
     {
@@ -42,7 +42,7 @@ resource "aws_cloudwatch_event_rule" "run_once_a_week_on_monday_cron_expression"
   name                = "${var.environment}-run-data-pipeline-step-functions-every-week-month-7am"
   description         = "Eventbridge Event Rule that triggers the Reports Generator Step Function at 7am every monday"
   schedule_expression = "cron(0 7 ? * 2 *)"
-  is_enabled          = true
+  state               = "ENABLED"
   tags = merge(
     local.common_tags,
     {
