@@ -8,7 +8,7 @@ resource "aws_iam_role" "report_generator_step_function" {
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "report_generator_step-function" {
+resource "aws_iam_role_policy_attachment" "report_generator_step_function" {
   role       = aws_iam_role.report_generator_step_function.name
   policy_arn = aws_iam_policy.report_generator_step_function.arn
 }

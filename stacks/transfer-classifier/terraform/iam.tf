@@ -17,7 +17,7 @@ resource "aws_iam_role_policy_attachment" "transfer_classifier_spine_messages_bu
   policy_arn = aws_iam_policy.spine_messages_bucket_read_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "transfer_classifier_ods_metadata_bucket_read_access_arn" {
+resource "aws_iam_role_policy_attachment" "transfer_classifier_ods_metadata_bucket_read_access" {
   role       = aws_iam_role.transfer_classifier.name
   policy_arn = data.aws_ssm_parameter.ods_metadata_bucket_read_access_arn.value
 }
