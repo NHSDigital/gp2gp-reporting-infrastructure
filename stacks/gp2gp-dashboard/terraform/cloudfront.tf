@@ -3,7 +3,7 @@ locals {
 }
 
 data "aws_acm_certificate" "dashboard_certificate" {
-  provider    = aws.cf_certificate_only_region
+  provider    = "us-east-1"
   domain      = var.alternate_domain_name
   types       = ["AMAZON_ISSUED"]
   most_recent = true
