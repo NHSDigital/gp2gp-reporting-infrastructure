@@ -62,10 +62,10 @@ data "aws_iam_policy_document" "email_report_lambda_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_email_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_internal_email_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_key_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_email_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_internal_email_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_key_param_name}",
     ]
   }
 }
@@ -128,7 +128,7 @@ data "aws_iam_policy_document" "email_report_send_raw_email" {
     ]
 
     resources = [
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${data.aws_ssm_parameter.email_report_sender_email.value}",
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${data.aws_ssm_parameter.email_report_sender_email.value}",
     ]
   }
 }
@@ -200,10 +200,10 @@ data "aws_iam_policy_document" "log_alerts_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_general_webhook_url_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}"
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_webhook_url_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_webhook_url_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_general_webhook_url_param_name}",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.log_alerts_technical_failures_above_threshold_rate_param_name}"
     ]
   }
 }
@@ -324,8 +324,8 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
       "ssm:GetParameter"
     ]
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/permitted-emails",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name"
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/permitted-emails",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/registrations/${var.environment}/data-pipeline/gp2gp-dashboard/email-storage-bucket-name"
     ]
   }
 
@@ -342,7 +342,7 @@ data "aws_iam_policy_document" "store_asid_lookup_lambda_access" {
     actions = [
       "states:StartExecution"
     ]
-    resources = ["arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"]
+    resources = ["arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:ods-downloader-pipeline"]
   }
 }
 
