@@ -27,7 +27,15 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  terraform_plan:
+  base_infrastructure_plan:
+    uses: ./.github/workflows/deploy-stack.yml
+    with:
+      environment: dev
+      terraform_stack: base_infra
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      git_ref: ${{ github.ref }}
+    secrets: inherit
+  terraform_infrastructure_plan:
     strategy:
       fail-fast: false
       max-parallel: 1
