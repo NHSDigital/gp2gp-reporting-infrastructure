@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/user-input/splunk-*"
+      "arn:aws:ssm:${data.aws_region.current.region}:${local.account_id}:parameter/registrations/${var.environment}/user-input/splunk-*"
     ]
   }
 }
