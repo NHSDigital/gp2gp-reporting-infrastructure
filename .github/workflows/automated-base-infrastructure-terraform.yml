@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: dev
-      terraform_stack: base_infra
+      terraform_stack: base-infra
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       git_ref: ${{ github.ref }}
     secrets: inherit
