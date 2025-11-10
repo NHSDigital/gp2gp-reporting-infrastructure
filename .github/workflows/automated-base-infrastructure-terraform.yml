@@ -10,6 +10,7 @@ on:
       - "stacks/ecs-cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
+      - "stacks/base-infra/**"
 
   pull_request:
     branches: [main]
