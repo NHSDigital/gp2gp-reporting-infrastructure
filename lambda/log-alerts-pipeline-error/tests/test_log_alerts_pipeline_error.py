@@ -1,14 +1,12 @@
-import os
 import json
-from dataclasses import dataclass
+import os
 
 import boto3
 import pytest
-from datetime import datetime
-
 import requests
-from main import create_slack_message, SsmSecretManager, send_slack_alert, lambda_handler
 from moto import mock_aws
+
+from main import create_slack_message, SsmSecretManager, send_slack_alert, lambda_handler
 
 
 @pytest.fixture
