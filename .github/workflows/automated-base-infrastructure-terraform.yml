@@ -1,0 +1,44 @@
+name: "Z-AUTOMATED: Base Infrastructure Terraform Plan/Apply"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "stacks/container-repositories/**"
+      - "stacks/base-support/**"
+      - "stacks/base-networking/**"
+      - "stacks/ecs-cluster/**"
+      - ".github/workflows/automated-base-infrastructure-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
+
+  pull_request:
+    branches: [main]
+    paths:
+      - "stacks/container-repositories/**"
+      - "stacks/base-support/**"
+      - "stacks/base-networking/**"
+      - "stacks/ecs-cluster/**"
+      - ".github/workflows/automated-base-infrastructure-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
+
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  terraform_plan:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        environment: [dev]
+        terraform_stack:
+          [container-repositories, base-support, base-networking, ecs-cluster]
+    uses: ./.github/workflows/deploy-stack.yml
+    with:
+      environment: ${{ matrix.environment }}
+      terraform_stack: ${{ matrix.terraform_stack }}
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      git_ref: ${{ github.ref }}
+    secrets: inherit

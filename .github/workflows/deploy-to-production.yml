@@ -1,21 +1,23 @@
-name: Deploy to Production
+name: Deploy - Production
+
+run-name: "${{ inputs.git_ref }} | Terraform Apply? = ${{ inputs.is_deployment }}"
+
 on:
   workflow_dispatch:
-   inputs:
-      environment:
-        description: "Which Environment settings to use"
-        required: true
+    inputs:
+      git_ref:
+        description: "The git_ref to deploy"
         type: string
-        default: "prod"
+        default: main
       is_deployment:
-        description: "Do you want to run Terraform Apply"
+        description: "Do you want to run Terraform Apply?"
         type: boolean
         default: false
 
 permissions:
   pull-requests: write
-  id-token: write 
-  contents: read 
+  id-token: write
+  contents: read
 
 jobs:
   infra_terraform_plan_and_apply:
@@ -23,100 +25,111 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        terraform_stack: [container-repositories, base-support, base-networking, ecs-cluster]
+        terraform_stack:
+          [container-repositories, base-support, base-networking, ecs-cluster]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      environment: ${{ inputs.environment }}
       terraform_stack: ${{ matrix.terraform_stack }}
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   transfer-classifier:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: transfer-classifier
       image_tag: transfer_classifier
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   validate-metrics:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: validate-metrics
       build_lambda: true
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   ods-downloader:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: ods-downloader
       image_tag: ods_downloader
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   reports-generator:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: reports-generator
       image_tag: reports_generator
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   spine-exporter:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: spine-exporter
       image_tag: spine_exporter
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   metrics-calculator:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: metrics-calculator
       image_tag: metrics_calculator
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   email-and-alerting:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: email-and-alerting    
+      terraform_stack: email-and-alerting
       build_lambda: true
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   gp2gp-dashboard:
-    needs: [ infra_terraform_plan_and_apply ]
+    needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: gp2gp-dashboard
       image_tag: gp2gp_dashboard
       build_lambda: true
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   step-function:
-    needs: [ gp2gp-dashboard, email-and-alerting, metrics-calculator, spine-exporter, reports-generator, ods-downloader, validate-metrics, transfer-classifier ]
+    needs:
+      [
+        gp2gp-dashboard,
+        email-and-alerting,
+        metrics-calculator,
+        spine-exporter,
+        reports-generator,
+        ods-downloader,
+        validate-metrics,
+        transfer-classifier,
+      ]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
-      environment: ${{ inputs.environment }}
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: step-function
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit

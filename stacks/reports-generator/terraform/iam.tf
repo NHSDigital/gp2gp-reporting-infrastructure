@@ -6,11 +6,20 @@ resource "aws_iam_role" "reports_generator" {
   name               = "${var.environment}-registrations-reports-generator"
   description        = "Role for reports generator ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    data.aws_ssm_parameter.transfers_input_bucket_read_access_arn.value,
-    aws_iam_policy.reports_generator_output_buckets_write_access.arn,
-    aws_iam_policy.notebook_data_bucket_read_access.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "reports_generator_transfers_input_bucket_read_access" {
+  role       = aws_iam_role.reports_generator.name
+  policy_arn = data.aws_ssm_parameter.transfers_input_bucket_read_access_arn.value
+}
+resource "aws_iam_role_policy_attachment" "reports_generator_output_buckets_write_access" {
+  role       = aws_iam_role.reports_generator.name
+  policy_arn = aws_iam_policy.reports_generator_output_buckets_write_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "reports_generator_notebook_data_bucket_read_access" {
+  role       = aws_iam_role.reports_generator.name
+  policy_arn = aws_iam_policy.notebook_data_bucket_read_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {

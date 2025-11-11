@@ -15,8 +15,16 @@ resource "aws_s3_bucket" "transfer_classifier" {
 }
 
 resource "aws_s3_bucket_acl" "transfer_classifier" {
+  bucket     = aws_s3_bucket.transfer_classifier.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.transfer_classifier]
+}
+
+resource "aws_s3_bucket_ownership_controls" "transfer_classifier" {
   bucket = aws_s3_bucket.transfer_classifier.id
-  acl    = "private"
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "transfer_classifier" {

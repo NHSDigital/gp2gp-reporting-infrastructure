@@ -6,11 +6,20 @@ resource "aws_iam_role" "gp2gp_dashboard" {
   name               = "${var.environment}-registrations-gp2gp-dashboard"
   description        = "Role for gp2gp dashboard ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.gp2gp_dashboard_output_bucket_write_access.arn,
-    aws_iam_policy.metrics_input_bucket_read_access.arn,
-    aws_iam_policy.metrics_ssm_parameter_read_access.arn
-  ]
+}
+resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_output_bucket_write_access" {
+  role       = aws_iam_role.gp2gp_dashboard.name
+  policy_arn = aws_iam_policy.gp2gp_dashboard_output_bucket_write_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_metrics_input_bucket_read_access" {
+  role       = aws_iam_role.gp2gp_dashboard.name
+  policy_arn = aws_iam_policy.metrics_input_bucket_read_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "gp2gp_dashboard_metrics_ssm_parameter_read_access" {
+  role       = aws_iam_role.gp2gp_dashboard.name
+  policy_arn = aws_iam_policy.metrics_ssm_parameter_read_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {
@@ -103,8 +112,8 @@ data "aws_iam_policy_document" "metrics_ssm_parameter_read_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/practice-metrics-s3-path",
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/national-metrics-s3-path"
+      "arn:aws:ssm:${data.aws_region.current.region}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/practice-metrics-s3-path",
+      "arn:aws:ssm:${data.aws_region.current.region}:${local.account_id}:parameter/registrations/${var.environment}/data-pipeline/metrics-calculator/national-metrics-s3-path"
     ]
   }
 }

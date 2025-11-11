@@ -15,8 +15,16 @@ resource "aws_s3_bucket" "reports_generator" {
 }
 
 resource "aws_s3_bucket_acl" "reports_generator" {
+  bucket     = aws_s3_bucket.reports_generator.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.reports_generator]
+}
+
+resource "aws_s3_bucket_ownership_controls" "reports_generator" {
   bucket = aws_s3_bucket.reports_generator.id
-  acl    = "private"
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "reports_generator" {

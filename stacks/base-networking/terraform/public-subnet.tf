@@ -50,7 +50,7 @@ resource "aws_nat_gateway" "nat_gateway" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 
   tags = merge(
     local.common_tags,

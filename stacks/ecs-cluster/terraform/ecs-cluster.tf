@@ -56,7 +56,7 @@ resource "aws_iam_policy" "ecs_execution" {
 }
 
 locals {
-  ecr_arn_prefix = "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}"
+  ecr_arn_prefix = "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}"
 }
 
 data "aws_region" "current" {}

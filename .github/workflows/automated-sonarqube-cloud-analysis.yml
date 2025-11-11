@@ -1,17 +1,18 @@
-name: SonarCloud-Analysis
+name: "Z-AUTOMATED: SonarQube Cloud Analysis"
+
 on:
   push:
     branches:
       - main
+
   pull_request:
     types: [opened, synchronize, reopened]
-
 
 permissions:
   pull-requests: write
   id-token: write # This is required for requesting the JWT
   contents: read # This is required for actions/checkout
-  
+
 jobs:
   sonarcloud:
     name: SonarCloud
@@ -20,10 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

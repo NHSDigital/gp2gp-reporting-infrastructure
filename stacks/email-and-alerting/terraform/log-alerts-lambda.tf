@@ -33,8 +33,8 @@ resource "aws_lambda_permission" "log_alerts_technical_failures_above_threshold_
   statement_id  = "log-alerts-technical-failures-above-threshold-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alerts_technical_failures_above_threshold_lambda.function_name
-  principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
-  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
+  principal     = "logs.${data.aws_region.current.region}.amazonaws.com"
+  source_arn    = "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts_technical_failures_above_threshold" {
@@ -81,8 +81,8 @@ resource "aws_lambda_permission" "log_alerts_pipeline_error_lambda_allow_cloudwa
   statement_id  = "log-alerts-pipeline-error-lambda-allow-cloudwatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.log_alerts_pipeline_error_lambda.function_name
-  principal     = "logs.${data.aws_region.current.name}.amazonaws.com"
-  source_arn    = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
+  principal     = "logs.${data.aws_region.current.region}.amazonaws.com"
+  source_arn    = "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:${data.aws_ssm_parameter.cloud_watch_log_group.value}:*"
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "log_alerts_pipeline_error" {

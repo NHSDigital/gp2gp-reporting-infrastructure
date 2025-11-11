@@ -2,10 +2,16 @@ resource "aws_iam_role" "dashboard_pipeline_step_function" {
   name               = "${var.environment}-dashboard-pipeline-step-function"
   description        = "StepFunction role for dashboard pipeline (responsible for deploying FE)"
   assume_role_policy = data.aws_iam_policy_document.step_function_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.dashboard_pipeline_step_function.arn,
-    aws_iam_policy.metrics_calculator_step_function.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_step_function" {
+  role       = aws_iam_role.dashboard_pipeline_step_function.name
+  policy_arn = aws_iam_policy.dashboard_pipeline_step_function.arn
+}
+
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_step_function_metrics_calculater_step_function" {
+  role       = aws_iam_role.dashboard_pipeline_step_function.name
+  policy_arn = aws_iam_policy.metrics_calculator_step_function.arn
 }
 
 resource "aws_iam_policy" "dashboard_pipeline_step_function" {
@@ -80,7 +86,7 @@ data "aws_iam_policy_document" "dashboard_pipeline_step_function" {
       "events:DescribeRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
   }
 
@@ -136,7 +142,7 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
       "events:DescribeRule"
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
   }
 
@@ -154,10 +160,14 @@ data "aws_iam_policy_document" "metrics_calculator_step_function" {
 
 # Event trigger
 resource "aws_iam_role" "dashboard_pipeline_trigger" {
-  name                = "${var.environment}-dashboard-pipeline-trigger"
-  description         = "Role used by EventBridge to trigger step function"
-  assume_role_policy  = data.aws_iam_policy_document.assume_event.json
-  managed_policy_arns = [aws_iam_policy.dashboard_pipeline_trigger.arn]
+  name               = "${var.environment}-dashboard-pipeline-trigger"
+  description        = "Role used by EventBridge to trigger step function"
+  assume_role_policy = data.aws_iam_policy_document.assume_event.json
+}
+
+resource "aws_iam_role_policy_attachment" "dashboard_pipeline_trigger" {
+  role       = aws_iam_role.dashboard_pipeline_trigger.name
+  policy_arn = aws_iam_policy.dashboard_pipeline_trigger.arn
 }
 
 resource "aws_iam_policy" "dashboard_pipeline_trigger" {

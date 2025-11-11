@@ -2,10 +2,16 @@ resource "aws_iam_role" "spine_exporter" {
   name               = "${var.environment}-registrations-spine-exporter"
   description        = "Role for spine exporter ECS task"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
-  managed_policy_arns = [
-    aws_iam_policy.spine_exporter_output_bucket_write_access.arn,
-    aws_iam_policy.ssm_access.arn
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "spine_exporter_output_bucket_write_access" {
+  role       = aws_iam_role.spine_exporter.name
+  policy_arn = aws_iam_policy.spine_exporter_output_bucket_write_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "spine_exporter_ssm_access" {
+  role       = aws_iam_role.spine_exporter.name
+  policy_arn = aws_iam_policy.ssm_access.arn
 }
 
 data "aws_iam_policy_document" "ecs_assume" {
@@ -35,7 +41,7 @@ data "aws_iam_policy_document" "ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${local.account_id}:parameter/registrations/${var.environment}/user-input/splunk-*"
+      "arn:aws:ssm:${data.aws_region.current.region}:${local.account_id}:parameter/registrations/${var.environment}/user-input/splunk-*"
     ]
   }
 }

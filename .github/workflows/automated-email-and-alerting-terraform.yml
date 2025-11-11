@@ -1,0 +1,46 @@
+name: "Z-AUTOMATED: Email and Alerting Terraform Plan/Apply"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "stacks/email-and-alerting/**"
+      - "stacks/gp2gp-dashboard/**"
+      - ".github/workflows/automated-email-and-alerting-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
+
+  pull_request:
+    branches: [main]
+    paths:
+      - "stacks/email-and-alerting/**"
+      - "stacks/gp2gp-dashboard/**"
+      - ".github/workflows/automated-email-and-alerting-terraform.yml"
+      - ".github/workflows/deploy-stack.yml"
+
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  email-and-alerting:
+    uses: ./.github/workflows/deploy-stack.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: email-and-alerting
+      build_lambda: true
+      git_ref: ${{ github.ref }}
+    secrets: inherit
+
+  gp2gp-dashboard:
+    needs: email-and-alerting
+    uses: ./.github/workflows/deploy-stack.yml
+    with:
+      environment: dev
+      is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      terraform_stack: gp2gp-dashboard
+      image_tag: gp2gp_dashboard
+      build_lambda: true
+      git_ref: ${{ github.ref }}
+    secrets: inherit

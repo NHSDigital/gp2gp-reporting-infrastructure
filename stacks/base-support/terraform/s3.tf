@@ -1,18 +1,9 @@
 resource "aws_s3_bucket" "terraform_state" {
   bucket = var.s3_terraform_state_bucket_name
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true
-  }
-
-  # To cleanup old states eventually
-  lifecycle_rule {
-    enabled = true
-
-    noncurrent_version_expiration {
-      days = 360
-    }
+    ignore_changes  = [grant]
   }
 
   tags = merge(
@@ -22,6 +13,41 @@ resource "aws_s3_bucket" "terraform_state" {
       ApplicationRole = "AwsS3Bucket"
     }
   )
+}
+
+resource "aws_s3_bucket_acl" "terraform_state" {
+  bucket     = aws_s3_bucket.terraform_state.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.terraform_state]
+}
+
+resource "aws_s3_bucket_ownership_controls" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    id     = "Expire old versions after 360 days"
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days = 360
+    }
+  }
 }
 
 resource "aws_s3_bucket_acl" "metrics_calculator" {
@@ -44,4 +70,3 @@ resource "aws_s3_bucket_public_access_block" "terraform_state_block" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-

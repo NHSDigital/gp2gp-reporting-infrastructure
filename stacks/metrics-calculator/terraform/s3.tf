@@ -15,8 +15,16 @@ resource "aws_s3_bucket" "metrics_calculator" {
 }
 
 resource "aws_s3_bucket_acl" "metrics_calculator" {
+  bucket     = aws_s3_bucket.metrics_calculator.id
+  acl        = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.metrics_calculator]
+}
+
+resource "aws_s3_bucket_ownership_controls" "metrics_calculator" {
   bucket = aws_s3_bucket.metrics_calculator.id
-  acl    = "private"
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "reports_generator" {
