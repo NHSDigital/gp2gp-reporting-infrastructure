@@ -4,7 +4,7 @@ resource "aws_lambda_function" "validate_metrics_lambda" {
   role             = aws_iam_role.validate_metrics_lambda_role.arn
   handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${var.validate_metrics_lambda_zip}")
-  runtime          = "python3.9"
+  runtime          = "python3.14"
   timeout          = 15
   tags = merge(
     local.common_tags,
