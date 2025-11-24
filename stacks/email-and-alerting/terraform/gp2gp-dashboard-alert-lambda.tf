@@ -8,7 +8,7 @@ resource "aws_lambda_function" "gp2gp_dashboard_alert_lambda" {
   role             = aws_iam_role.log_alerts_lambda_role.arn
   handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${var.gp2gp_dashboard_alert_lambda_zip}")
-  runtime          = "python3.9"
+  runtime          = "python3.14"
   timeout          = 15
   tags = merge(
     local.common_tags,
