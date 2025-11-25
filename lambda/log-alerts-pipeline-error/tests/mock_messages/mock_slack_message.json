@@ -10,7 +10,7 @@
         "type": "section",
         "text": {
             "type": "plain_text",
-            "text": "Check the cloudwatch dashboard <https:cloudwatch>"
+            "text": "Check the Cloudwatch dashboard <https:cloudwatch>"
         }
     }
 ]
