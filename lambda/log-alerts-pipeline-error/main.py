@@ -26,7 +26,7 @@ class SsmSecretManager:
 def lambda_handler(event, context):
 
     try:
-        ssm = boto3.client("ssm", region_name="eu-west-2")
+        ssm = boto3.client("ssm")
         secret_manager = SsmSecretManager(ssm)
 
         slack_channel_id = secret_manager.get_secret(os.environ["SLACK_CHANNEL_ID_PARAM_NAME"])
