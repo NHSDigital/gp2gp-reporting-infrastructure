@@ -83,8 +83,8 @@ def create_slack_message():
         {
             "type": "section",
             "text": {
-                "type": "plain_text",
-                "text": f"Check the Cloudwatch dashboard <{cloudwatch_dashboard_url}>"
+                "type": "mrkdwn",
+                "text": f"Check the CloudWatch dashboard: <{cloudwatch_dashboard_url}|View CloudWatch Dashboard>"
             }
         }
     ]
