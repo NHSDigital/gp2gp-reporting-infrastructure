@@ -1,0 +1,16 @@
+[
+    {
+        "type": "header",
+        "text": {
+            "type": "plain_text",
+            "text": "Data Pipeline Error"
+        }
+    },
+    {
+        "type": "section",
+        "text": {
+            "type": "plain_text",
+            "text": "Check the Cloudwatch dashboard <https:cloudwatch>"
+        }
+    }
+]
