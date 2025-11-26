@@ -118,4 +118,5 @@ jobs:
         id: validate
         run: |
           BRANCH_NAME=${{ github.event.repository.default_branch }}
+          chmod +x scripts/markdown-validator.sh
           scripts/markdown-validator.sh
