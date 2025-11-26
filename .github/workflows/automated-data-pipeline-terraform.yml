@@ -13,6 +13,7 @@ on:
       - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
+      - "lambda/validate-metrics"
 
   pull_request:
     branches: [main]
