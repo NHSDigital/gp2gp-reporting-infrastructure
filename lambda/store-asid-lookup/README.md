@@ -1,10 +1,12 @@
 # Store-Asid-Lookup
 
 ## Purpose of the Lambda
+
 On the first day of each month, an email is received from the "DIR team" into the GP2GP mailbox; this email
 contains an attached CSV file called 'asidLookup.csv', which contains the latest set of active ASID codes.
 
 This file needs:
+
   1. Zipping.
   2. Storing in S3.
   3. Running against a step function
@@ -14,7 +16,7 @@ automatically each month but in case of a failure, a manual process is required
 
 ## Steps involved
 
-1. Email with 'asidLookup.csv' attached is sent to {email}
+1. Email with 'asidLookup.csv' attached is sent to {prm asid lookup email address}
 2. SES receives the email which:
 
    a. Stores the file in S3
@@ -31,10 +33,8 @@ automatically each month but in case of a failure, a manual process is required
    and the run title.
      - This will create the organisationMetadata.json file and store it in the 'prm-gp2gp-ods-metadata{env}' bucket.
 
-
-
-
 ## Manual Running process/Testing the Lambda
+
 Before being able to manually test this Lambda you will have to make sure that your email
 address has been added to the correct SSM parameter.
 
@@ -45,20 +45,22 @@ instructions below:
 - Ask a mailbox owner to forward the email to them.
 - Gzip the file:
   - ```gzip asidLookup.csv.gz```
-- Manually upload the asidLookup.csv.gz file into s3 - prm-gp2gp-asid-lookup-prod -> YYYY-M 
+- Manually upload the asidLookup.csv.gz file into s3 - prm-gp2gp-asid-lookup-prod -> YYYY-M
 (don't pad the month with a leading 0)
-- Start a new execution of the ods-downloader-pipeline State Machine (Step Function) With: 
+- Start a new execution of the ods-downloader-pipeline State Machine (Step Function) With:
 (make sure to replace Y/M with the appropriate month and year)
-    - Name = YYYY-M
-    - Input: 
+  - Name = YYYY-M
+  - Input:
+
     ```json
     {
     "time": "YYY-MM-01T00:00:00Z"
     }
     ```
+
 - After ~3m, the job will complete.
 - Smoke tests:
-  - check the prm-gp2gp-ods-metadata-prod bucket for the presence of ```v5/YYY/MM/organisationMetadata.json ```
+  - check the prm-gp2gp-ods-metadata-prod bucket for the presence of ```v5/YYY/MM/organisationMetadata.json```
   - Check the /aws/lambda/prod-event-enrichment-lambda Log group to ensure there are no errors.
   - Check the prod-gp-registrations-mi-events-queue-for-enrichment-dlq queue for the presence of any messages, -
  failues should result in messages appearing in the DLQ.
