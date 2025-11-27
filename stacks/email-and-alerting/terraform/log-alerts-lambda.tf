@@ -57,7 +57,7 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
   role             = aws_iam_role.log_alerts_lambda_role.arn
   handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256("${var.log_alerts_pipeline_error_lambda_zip}")
-  runtime          = "python3.9"
+  runtime          = "python3.14"
   timeout          = 15
   tags = merge(
     local.common_tags,
@@ -71,6 +71,8 @@ resource "aws_lambda_function" "log_alerts_pipeline_error_lambda" {
     variables = {
       LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME = var.log_alerts_general_webhook_url_param_name,
       CLOUDWATCH_DASHBOARD_URL                  = var.cloudwatch_dashboard_url
+      SLACK_BOT_TOKEN_PARAM_NAME                = var.log_alerts_slack_bot_token_param_name
+      SLACK_CHANNEL_ID_PARAM_NAME               = var.log_alerts_slack_channel_id_param_name
     }
   }
 }

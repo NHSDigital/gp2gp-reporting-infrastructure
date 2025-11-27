@@ -8,6 +8,11 @@ on:
       - "stacks/gp2gp-dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
+      - "lambda/email-report/**"
+      - "lambda/gp2gp-dashboard-alert/**"
+      - "lambda/log-alerts-pipeline-error/**"
+      - "lambda/log-alerts-technical-failures-above-threshold/**"
+      - "lambda/store-asid-lookup/**"
 
   pull_request:
     branches: [main]
