@@ -13,7 +13,7 @@ It will then send an alert to a Teams channel (a ticket will be raised for this 
 
 ## Steps involved
 
-When the lambda is triggered the event will contain which kind of failure caused the previous stage in the 
+When the lambda is triggered the event will contain which kind of failure caused the previous stage in the
 state machine to fail, these potential error messages are:
 
 1. metricsFailed:
