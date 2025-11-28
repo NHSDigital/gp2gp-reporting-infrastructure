@@ -35,7 +35,7 @@ The Lambda will require an error to be:
     }
     ```
 
-1. If you wish to manually trigger the lambda you will have to input the correct catch that would be expected from the  previous stage of the state machine:
+2. If you wish to manually trigger the lambda you will have to input the correct catch that would be expected from the  previous stage of the state machine:
     - If you want to see a TaskFailed error reported:
 
       ```json
