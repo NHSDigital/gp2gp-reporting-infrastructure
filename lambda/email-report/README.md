@@ -2,7 +2,7 @@
 
 ## Purpose of the lambda
 
-The purpose of the  email report lambda is to fetch the gp2gp report from the `prm-gp2gp-reports-prod` S3 bucket, extract the relevant information, structure and then send an email out to the relevant people.
+The purpose of the email report lambda is to fetch the gp2gp report from the `prm-gp2gp-reports-prod` S3 bucket, extract the relevant information, structure and then send an email out to the relevant people.
 
 ## Steps involved
 
