@@ -7,17 +7,17 @@ task="$1"
 function build_lambda {
     lambda_name=$1
 
-    build_dir=lambda/build/$lambda_name
-    utils_dir=lambda/$lambda_name/utils
+    build_dir=lambdas/build/$lambda_name
+    utils_dir=lambdas/$lambda_name/utils
     rm -rf $build_dir
     mkdir -p $build_dir
 
-    requirements_file=lambda/$lambda_name/requirements.txt
+    requirements_file=lambdas/$lambda_name/requirements.txt
     if test -f "$requirements_file"; then
         pip install -r $requirements_file -t $build_dir
     fi
 
-    cp lambda/$lambda_name/*.py $build_dir
+    cp lambdas/$lambda_name/*.py $build_dir
 
 
     if [ -d "$utils_dir" ]; then
