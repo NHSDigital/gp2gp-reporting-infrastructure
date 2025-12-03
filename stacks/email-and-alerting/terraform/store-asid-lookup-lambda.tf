@@ -2,7 +2,7 @@ resource "aws_lambda_function" "store_asid_lookup" {
   function_name    = "${var.environment}_${var.store_asid_lookup_lambda_name}"
   filename         = var.store_asid_lookup_lambda_zip
   role             = aws_iam_role.store_asid_lookup_lambda.arn
-  runtime          = "python3.9"
+  runtime          = "python3.14"
   handler          = "main.lambda_handler"
   timeout          = 60
   memory_size      = 1769
