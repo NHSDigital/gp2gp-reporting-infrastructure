@@ -13,19 +13,18 @@ Rolling out terraform against each environment is managed by the GoCD pipeline. 
 
 1. If you haven't already, add your profile to the AWS Vault
 
-`aws-vault add <profile-name>`
+    `aws-vault add <profile-name>`
 
-2. Enter the container:
+1. Enter the container:
 
-`aws-vault exec <profile-name> -- dojo`
+    `aws-vault exec <profile-name> -- dojo`
 
+1. Invoke terraform locally
 
-3. Invoke terraform locally
-
-```
-  ./tasks validate <stack-name> <environment>
-  ./tasks plan <stack-name> <environment>
-```
+    ```
+      ./tasks validate <stack-name> <environment>
+      ./tasks plan <stack-name> <environment>
+    ```
 
 The stack name denotes the specific stack you would like to validate.
 The environment can be `dev` or `prod`.

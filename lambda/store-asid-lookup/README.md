@@ -7,15 +7,15 @@ On the first day of each month, an email is received from the "DIR team" into th
 This file needs:
 
   1. Zipping.
-  2. Storing in S3.
-  3. Running against a step function
+  1. Storing in S3.
+  1. Running against a step function
 
 Which eventually turns it into a file called `organisationMetadata.json` as is stored in S3. This happens automatically each month but in case of a failure, a manual process is required
 
 ## Steps involved
 
 1. Email with `asidLookup.csv` attached is sent to {prm asid lookup email address}
-2. SES receives the email which:
+1. SES receives the email which:
 
    a. Stores the file in S3.
 
