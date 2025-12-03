@@ -34,7 +34,7 @@ echo "--- ${task} ---"
 case "${task}" in
 build-lambdas)
   build_lambda log-alerts-technical-failures-above-threshold
-  build_lambda log-alerts-pipeline-error
+  build_lambda log_alerts_pipeline_error
   build_lambda email-report
   build_lambda validate-metrics
   build_lambda gp2gp-dashboard-alert
