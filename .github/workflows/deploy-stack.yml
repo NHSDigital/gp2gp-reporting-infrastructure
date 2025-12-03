@@ -96,7 +96,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: 3.12
+          python-version: 3.14
 
       - name: Build Lambda Zip
         if: inputs.build_lambda && inputs.terraform_stack
