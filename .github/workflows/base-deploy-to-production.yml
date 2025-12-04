@@ -12,7 +12,7 @@ on:
         type: string
         required: true
       build_lambda:
-        description: "Does the workflow need a lambda build"
+        description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
       image_tag:
@@ -145,7 +145,7 @@ jobs:
           EOF
 
       - name: Setup Terraform variables for Build Lambda
-        id: update-lambda-build-references
+        id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
@@ -241,7 +241,7 @@ jobs:
           EOF
 
       - name: Setup Terraform variables for Build Lambda
-        id: update-lambda-build-references
+        id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
           image_key="${{ inputs.image_tag }}"
