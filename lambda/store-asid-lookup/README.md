@@ -36,7 +36,7 @@ Before being able to manually test this Lambda you will have to make sure that y
 
 If the SES/Lambda/Step Function fails:
 
-Once the email is received into the GP2GP mailbox, our tem must (within the first 14 days of a month) follow the instructions below:
+Once the email is received into the GP2GP mailbox, our team must (within the first 14 days of a month) follow the instructions below:
 
 - Ask a mailbox owner to forward the email to them.
 - Gzip the file:
