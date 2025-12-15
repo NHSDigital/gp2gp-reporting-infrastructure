@@ -32,7 +32,7 @@ Which eventually turns it into a file called `organisationMetadata.json` as is s
 
 ## Manual Running process/Testing the Lambda
 
-Before being able to manually test this Lambda you will have to make sure that your email address has been added to the correct SSM parameter(/registrations/dev/data-pipeline/gp2gp-dashboard/permitted-emails).
+Before being able to manually test this Lambda you will have to make sure that your email address has been added to the correct SSM parameter(/registrations/{env}/data-pipeline/gp2gp-dashboard/permitted-emails).
 
 If the SES/Lambda/Step Function fails:
 
