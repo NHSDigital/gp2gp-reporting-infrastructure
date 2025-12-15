@@ -1,4 +1,4 @@
-# Log-alerts-pipeline
+# Log-alerts-pipeline-error
 
 ## Purpose of the Lambda
 
