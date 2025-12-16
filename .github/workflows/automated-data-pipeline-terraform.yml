@@ -13,7 +13,7 @@ on:
       - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "../../lambdas/validate-metrics"
+      - "../../lambdas/validate_metrics"
 
   pull_request:
     branches: [main]
@@ -60,7 +60,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: validate-metrics
+      terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ github.ref }}
     secrets: inherit

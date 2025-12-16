@@ -49,7 +49,7 @@ on:
           - transfer-classifier
           - metrics-calculator
           - reports-generator
-          - validate-metrics
+          - validate_metrics
           - step-function
         required: true
       build_lambda:
