@@ -13,6 +13,7 @@ def set_environment(monkeypatch):
     monkeypatch.setenv("CLOUDWATCH_DASHBOARD_URL", "https:cloudwatch")
     monkeypatch.setenv("SLACK_CHANNEL_ID_PARAM_NAME", "slack_channel_id_param_name")
     monkeypatch.setenv("SLACK_BOT_TOKEN_PARAM_NAME", "slack_token_param_name")
+    monkeypatch.setenv("AWS_REGION", "eu-west-2")
 
 
 @pytest.fixture

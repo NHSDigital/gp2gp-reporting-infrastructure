@@ -43,8 +43,6 @@ jobs:
           cd ./ lambdas
           sed -i "s@filename=\"@filename=\"lambdas/@" coverage.xml
           cd ..
-        env:
-          AWS_REGION: eu-west-2
 
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
