@@ -40,7 +40,7 @@ jobs:
       - name: Test with pytest
         run: |
           make test-coverage
-          cd ./ lambdas
+          cd ./lambdas
           sed -i "s@filename=\"@filename=\"lambdas/@" coverage.xml
           cd ..
 
