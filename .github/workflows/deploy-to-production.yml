@@ -49,7 +49,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: validate_metrics
+      terraform_stack: validate-metrics
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
