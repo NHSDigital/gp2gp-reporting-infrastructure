@@ -14,6 +14,7 @@ def set_environment(monkeypatch):
     monkeypatch.setenv("SLACK_CHANNEL_ID_PARAM_NAME", "slack_channel_id_param_name")
     monkeypatch.setenv("SLACK_BOT_TOKEN_PARAM_NAME", "slack_token_param_name")
     monkeypatch.setenv("AWS_REGION", "eu-west-2")
+    monkeypatch.setenv("AWS_DEFAULT_REGION", "eu-west-2")
 
 
 @pytest.fixture
