@@ -155,7 +155,7 @@ jobs:
               log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
               gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
               email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
-              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
+              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate-metrics.zip"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
               store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
           EOF
@@ -252,7 +252,7 @@ jobs:
               log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
               gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
               email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
-              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
+              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate-metrics.zip"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/degrades-dashboards.zip"
               store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
           EOF
