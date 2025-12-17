@@ -85,7 +85,7 @@ variable "log_alerts_technical_failures_above_threshold_lambda_zip" {
 variable "log_alerts_pipeline_error_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambdas/build/log-alerts-pipeline-error.zip"
+  default     = "lambdas/build/log_alerts_pipeline_error.zip"
 }
 
 variable "gp2gp_dashboard_alert_lambda_zip" {
