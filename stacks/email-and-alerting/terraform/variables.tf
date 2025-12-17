@@ -22,7 +22,7 @@ variable "email_report_lambda_name" {
 variable "email_report_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for emailing reports"
-  default     = "lambda/build/email-report.zip"
+  default     = "lambdas/build/email-report.zip"
 }
 
 variable "store_asid_lookup_lambda_name" {
