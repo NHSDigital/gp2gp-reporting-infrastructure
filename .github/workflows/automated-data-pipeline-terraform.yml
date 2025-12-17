@@ -6,21 +6,21 @@ on:
     paths:
       - "stacks/step-function/**"
       - "stacks/transfer-classifier/**"
-      - "stacks/validate-metrics/**"
+      - "stacks/validate_metrics/**"
       - "stacks/ods-downloader/**"
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "../../lambdas/validate-metrics"
+      - "../../lambdas/validate_metrics"
 
   pull_request:
     branches: [main]
     paths:
       - "stacks/step-function/**"
       - "stacks/transfer-classifier/**"
-      - "stacks/validate-metrics/**"
+      - "stacks/validate_metrics/**"
       - "stacks/ods-downloader/**"
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
@@ -60,7 +60,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: validate-metrics
+      terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ github.ref }}
     secrets: inherit

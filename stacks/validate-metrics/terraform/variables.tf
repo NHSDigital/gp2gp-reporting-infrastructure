@@ -18,7 +18,7 @@ variable "repo_name" {
 variable "validate_metrics_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for metrics validation"
-  default     = "lambdas/build/validate-metrics.zip"
+  default     = "lambdas/build/validate_metrics.zip"
 }
 
 variable "validate_metrics_lambda_name" {
