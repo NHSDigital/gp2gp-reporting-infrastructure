@@ -44,7 +44,7 @@ jobs:
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
-  validate-metrics:
+  validate_metrics:
     needs: [infra_terraform_plan_and_apply]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
@@ -124,7 +124,7 @@ jobs:
         spine-exporter,
         reports-generator,
         ods-downloader,
-        validate-metrics,
+        validate_metrics,
         transfer-classifier,
       ]
     uses: ./.github/workflows/base-deploy-to-production.yml
