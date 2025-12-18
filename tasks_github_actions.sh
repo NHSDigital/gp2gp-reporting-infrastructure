@@ -38,7 +38,7 @@ build-lambdas)
   build_lambda email-report
   build_lambda validate_metrics
   build_lambda gp2gp-dashboard-alert
-  build_lambda store-asid-lookup
+  build_lambda store_asid_lookup
 ;;
 *)
   echo "Invalid task: '${task}'"

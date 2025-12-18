@@ -33,7 +33,7 @@ variable "store_asid_lookup_lambda_name" {
 variable "store_asid_lookup_lambda_zip" {
   type        = string
   description = "Path to zipfile containing code for asid lookup Lambda"
-  default     = "lambdas/build/store-asid-lookup.zip"
+  default     = "lambdas/build/store_asid_lookup.zip"
 }
 
 variable "log_alerts_technical_failures_above_threshold_rate_param_name" {

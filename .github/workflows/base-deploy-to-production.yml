@@ -157,7 +157,7 @@ jobs:
               email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email-report.zip"
               validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate_metrics.zip"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/degrades-dashboards.zip"
-              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store-asid-lookup.zip"
+              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store_asid_lookup.zip"
           EOF
 
       - name: Terraform Plan
@@ -254,7 +254,7 @@ jobs:
               email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email-report.zip"
               validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate_metrics.zip"
               degrades_dashboards_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/degrades-dashboards.zip"
-              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store-asid-lookup.zip"
+              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store_asid_lookup.zip"
           EOF
           if [[ -n "$image_key" ]]; then
             IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
