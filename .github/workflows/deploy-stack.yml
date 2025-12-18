@@ -156,7 +156,7 @@ jobs:
               gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/gp2gp-dashboard-alert.zip"
               email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email-report.zip"
               validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate_metrics.zip"
-              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store-asid-lookup.zip"
+              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store_asid_lookup.zip"
               region = "${{ vars.AWS_REGION }}"
           EOF
           if [[ -n "$image_key" ]]; then
