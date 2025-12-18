@@ -8,7 +8,7 @@ on:
       - "stacks/gp2gp-dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "../../lambdas/email-report/**"
+      - "../../lambdas/email_report/**"
       - "../../lambdas/gp2gp_dashboard_alert/**"
       - "../../lambdas/log_alerts_pipeline_error/**"
       - "../../lambdas/log_alerts_technical_failures_above_threshold/**"

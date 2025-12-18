@@ -154,7 +154,7 @@ jobs:
               log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/log_alerts_pipeline_error.zip"
               log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/log_alerts_technical_failures_above_threshold.zip"
               gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/gp2gp_dashboard_alert.zip"
-              email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email-report.zip"
+              email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email_report.zip"
               validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate_metrics.zip"
               store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store_asid_lookup.zip"
               region = "${{ vars.AWS_REGION }}"
