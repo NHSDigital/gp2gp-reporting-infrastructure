@@ -91,7 +91,7 @@ variable "log_alerts_pipeline_error_lambda_zip" {
 variable "gp2gp_dashboard_alert_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambdas/build/gp2gp-dashboard-alert.zip"
+  default     = "lambdas/build/gp2gp_dashboard_alert.zip"
 }
 
 variable "log_alerts_technical_failures_webhook_url_param_name" {
