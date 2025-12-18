@@ -26,7 +26,7 @@ jobs:
       max-parallel: 1
       matrix:
         terraform_stack:
-          [container-repositories, base-support, base-networking, ecs-cluster]
+          [container-repositories, base-support, base_networking, ecs-cluster]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
