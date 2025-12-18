@@ -33,7 +33,7 @@ function build_lambda {
 echo "--- ${task} ---"
 case "${task}" in
 build-lambdas)
-  build_lambda log-alerts-technical-failures-above-threshold
+  build_lambda log_alerts_technical_failures_above_threshold
   build_lambda log_alerts_pipeline_error
   build_lambda email-report
   build_lambda validate_metrics

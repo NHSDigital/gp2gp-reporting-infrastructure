@@ -11,7 +11,7 @@ on:
       - "../../lambdas/email-report/**"
       - "../../lambdas/gp2gp-dashboard-alert/**"
       - "../../lambdas/log_alerts_pipeline_error/**"
-      - "../../lambdas/log-alerts-technical-failures-above-threshold/**"
+      - "../../lambdas/log_alerts_technical_failures_above_threshold/**"
       - "../../lambdas/store_asid_lookup/**"
 
   pull_request:

@@ -79,7 +79,7 @@ variable "cloudwatch_dashboard_url" {
 variable "log_alerts_technical_failures_above_threshold_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambdas/build/log-alerts-technical-failures-above-threshold.zip"
+  default     = "lambdas/build/log-alerts-technical_failures_above_threshold.zip"
 }
 
 variable "log_alerts_pipeline_error_lambda_zip" {
