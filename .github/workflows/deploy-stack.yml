@@ -43,7 +43,7 @@ on:
         type: choice
         options:
           - email_and_alerting
-          - gp2gp-dashboard
+          - gp2gp_dashboard
           - spine-exporter
           - ods-downloader
           - transfer-classifier
