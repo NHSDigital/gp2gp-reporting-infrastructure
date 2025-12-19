@@ -4,13 +4,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "../../stacks/step_function/**"
-      - "../../stacks/transfer_classifier/**"
+      - "stacks/step-function/**"
+      - "stacks/transfer-classifier/**"
       - "stacks/validate_metrics/**"
-      - "../../stacks/ods_downloader/**"
-      - "../../stacks/reports_generator/**"
-      - "../../stacks/spine_exporter/**"
-      - "../../stacks/metrics_calculator/**"
+      - "stacks/ods-downloader/**"
+      - "stacks/reports-generator/**"
+      - "stacks/spine-exporter/**"
+      - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
       - "../../lambdas/validate_metrics"
@@ -18,13 +18,13 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "../../stacks/step_function/**"
-      - "../../stacks/transfer_classifier/**"
+      - "stacks/step-function/**"
+      - "stacks/transfer-classifier/**"
       - "stacks/validate_metrics/**"
-      - "../../stacks/ods_downloader/**"
-      - "../../stacks/reports_generator/**"
-      - "../../stacks/spine_exporter/**"
-      - "../../stacks/metrics_calculator/**"
+      - "stacks/ods-downloader/**"
+      - "stacks/reports-generator/**"
+      - "stacks/spine-exporter/**"
+      - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -39,7 +39,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: step_function
+      terraform_stack: step-function
       git_ref: ${{ github.ref }}
     secrets: inherit
 
@@ -49,7 +49,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: transfer_classifier
+      terraform_stack: transfer-classifier
       image_tag: transfer_classifier
       git_ref: ${{ github.ref }}
     secrets: inherit
@@ -71,7 +71,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: ods_downloader
+      terraform_stack: ods-downloader
       image_tag: ods_downloader
       git_ref: ${{ github.ref }}
     secrets: inherit
@@ -82,7 +82,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: reports_generator
+      terraform_stack: reports-generator
       image_tag: reports_generator
       git_ref: ${{ github.ref }}
     secrets: inherit
@@ -93,7 +93,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: spine_exporter
+      terraform_stack: spine-exporter
       image_tag: spine_exporter
       git_ref: ${{ github.ref }}
     secrets: inherit
@@ -104,7 +104,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: metrics_calculator
+      terraform_stack: metrics-calculator
       image_tag: metrics_calculator
       git_ref: ${{ github.ref }}
     secrets: inherit

@@ -7,7 +7,7 @@ on:
       - "../../stacks/container_repositories/**"
       - "../../stacks/base_support/**"
       - "../../stacks/base_networking/**"
-      - "../../stacks/ecs_cluster/**"
+      - "stacks/ecs-cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -17,7 +17,7 @@ on:
       - "../../stacks/container_repositories/**"
       - "../../stacks/base_support/**"
       - "../../stacks/base_networking/**"
-      - "../../stacks/ecs_cluster/**"
+      - "stacks/ecs-cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -34,7 +34,7 @@ jobs:
       matrix:
         environment: [dev]
         terraform_stack:
-          [container_repositories, base_support, base_networking, ecs_cluster]
+          [container_repositories, base_support, base_networking, ecs-cluster]
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: ${{ matrix.environment }}

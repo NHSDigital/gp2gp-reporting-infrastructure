@@ -48,7 +48,7 @@ def start_ods_downloader_step_function(execution_input):
     print(f"Getting State Machine arn")
     response = stepfunctions_client.list_state_machines()['stateMachines']
     for stepfn in response:
-        if stepfn['name'] == "ods_downloader-pipeline":
+        if stepfn['name'] == "ods-downloader-pipeline":
             ods_downloader_arn = stepfn['stateMachineArn']
     print(f'State Machine Arn found: {ods_downloader_arn}')
     print(f'Beginning Step Function execution')

@@ -26,7 +26,7 @@ jobs:
       max-parallel: 1
       matrix:
         terraform_stack:
-          [container_repositories, base_support, base_networking, ecs_cluster]
+          [container_repositories, base_support, base_networking, ecs-cluster]
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
@@ -39,7 +39,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: transfer_classifier
+      terraform_stack: transfer-classifier
       image_tag: transfer_classifier
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: ods_downloader
+      terraform_stack: ods-downloader
       image_tag: ods_downloader
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -69,7 +69,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: reports_generator
+      terraform_stack: reports-generator
       image_tag: reports_generator
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -79,7 +79,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: spine_exporter
+      terraform_stack: spine-exporter
       image_tag: spine_exporter
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -89,7 +89,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: metrics_calculator
+      terraform_stack: metrics-calculator
       image_tag: metrics_calculator
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -99,7 +99,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: email_and_alerting
+      terraform_stack: email-and-alerting
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
@@ -109,7 +109,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: gp2gp_dashboard
+      terraform_stack: gp2gp-dashboard
       image_tag: gp2gp_dashboard
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
@@ -130,6 +130,6 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: step_function
+      terraform_stack: step-function
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit

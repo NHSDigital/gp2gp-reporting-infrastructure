@@ -42,15 +42,15 @@ on:
         description: "Which terraform stack directory to run"
         type: choice
         options:
-          - email_and_alerting
-          - gp2gp_dashboard
-          - spine_exporter
-          - ods_downloader
-          - transfer_classifier
-          - metrics_calculator
-          - reports_generator
+          - email-and-alerting
+          - gp2gp-dashboard
+          - spine-exporter
+          - ods-downloader
+          - transfer-classifier
+          - metrics-calculator
+          - reports-generator
           - validate_metrics
-          - step_function
+          - step-function
         required: true
       build_lambda:
         description: "Does the workflow need a lambdas build"
