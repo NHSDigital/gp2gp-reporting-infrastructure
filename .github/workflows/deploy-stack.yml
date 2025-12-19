@@ -50,7 +50,7 @@ on:
           - metrics-calculator
           - reports-generator
           - validate_metrics
-          - step-function
+          - step_function
         required: true
       build_lambda:
         description: "Does the workflow need a lambdas build"
