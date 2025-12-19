@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "stacks/container-repositories/**"
+      - "../../stacks/container_repositories/**"
       - "../../stacks/base_support/**"
       - "../../stacks/base_networking/**"
       - "stacks/ecs-cluster/**"
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "stacks/container-repositories/**"
+      - "../../stacks/container_repositories/**"
       - "../../stacks/base_support/**"
       - "../../stacks/base_networking/**"
       - "stacks/ecs-cluster/**"
@@ -34,7 +34,7 @@ jobs:
       matrix:
         environment: [dev]
         terraform_stack:
-          [container-repositories, base_support, base_networking, ecs-cluster]
+          [container_repositories, base_support, base_networking, ecs-cluster]
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: ${{ matrix.environment }}
