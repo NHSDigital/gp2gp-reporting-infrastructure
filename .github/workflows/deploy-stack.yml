@@ -47,7 +47,7 @@ on:
         type: choice
         options:
           - email_and_alerting
-          - gp2gp-dashboard
+          - gp2gp_dashboard
           - spine-exporter
           - ods-downloader
           - transfer-classifier
@@ -64,7 +64,7 @@ on:
         description: "Does the workflow need an image tag"
         type: choice
         options:
-          - gp2gp-dashboard
+          - gp2gp_dashboard
           - spine_exporter
           - ods_downloader
           - transfer_classifier

@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "../../stacks/email_and_alerting/**"
-      - "../../stacks/gp2gp-dashboard/**"
+      - "../../stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
       - "../../lambdas/email_report/**"
@@ -18,7 +18,7 @@ on:
     branches: [main]
     paths:
       - "../../stacks/email_and_alerting/**"
-      - "../../stacks/gp2gp-dashboard/**"
+      - "../../stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -36,7 +36,6 @@ jobs:
       terraform_stack: email_and_alerting
       build_lambda: true
       git_ref: ${{ github.ref }}
-      image_tag: email-and-alerting
     secrets: inherit
 
   gp2gp-dashboard:
@@ -45,9 +44,8 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: gp2gp-dashboard
+      terraform_stack: gp2gp_dashboard
       image_tag: gp2gp-dashboard
       build_lambda: true
       git_ref: ${{ github.ref }}
-      ecr_alias: "gp2gp-dashboard"
     secrets: inherit
