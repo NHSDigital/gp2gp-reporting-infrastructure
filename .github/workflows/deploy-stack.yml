@@ -46,7 +46,7 @@ on:
         description: "Which terraform stack directory to run"
         type: choice
         options:
-          - email_and_alerting
+          - email-and-alerting
           - gp2gp-dashboard
           - spine-exporter
           - ods-downloader

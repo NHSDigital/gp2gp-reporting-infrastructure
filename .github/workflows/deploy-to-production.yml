@@ -99,7 +99,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: email_and_alerting
+      terraform_stack: email-and-alerting
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
