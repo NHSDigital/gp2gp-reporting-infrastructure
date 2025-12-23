@@ -121,7 +121,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
+          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.ecr_alias }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
