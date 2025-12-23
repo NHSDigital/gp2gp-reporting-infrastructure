@@ -141,10 +141,8 @@ jobs:
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
         if: inputs.image_tag
-        env:
-          ECR_ALIAS: ${{inputs.ecr_alias}}
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}$ECR_ALIAS --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.ecr_alias }}--query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
           ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
@@ -153,8 +151,6 @@ jobs:
       - name: Setup Terraform variables for Build Lambda
         id: update-lambdas-build-references
         if: inputs.build_lambda
-        env:
-          ECR_ALIAS: ${{inputs.ecr_alias}}
         run: |-
           image_key="${{ inputs.image_tag }}"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
@@ -169,7 +165,7 @@ jobs:
               region = "${{ vars.AWS_REGION }}"
           EOF
           if [[ -n "$image_key" ]]; then
-            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}$ECR_ALIAS --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.ecr_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             image_tag=$IMAGE_TAG
             echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
             cat pipeline.auto.tfvars
