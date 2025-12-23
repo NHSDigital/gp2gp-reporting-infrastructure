@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, call, patch
 
 from botocore.response import StreamingBody
 
-from main import fetch_metrics_from_s3, validate_metrics, _is_valid_national_metrics, \
+from lambdas.validate_metrics.main import fetch_metrics_from_s3, validate_metrics, _is_valid_national_metrics, \
     InvalidMetrics, _is_valid_practice_metrics, lambda_handler
 
 S3_METRICS_BUCKET_NAME = "metrics-bucket"
