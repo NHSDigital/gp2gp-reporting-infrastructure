@@ -176,7 +176,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform plan -input=false -no-color -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out ${{ vars.AWS_ENVIRONMENT }}.tfplan > plan_output.txt 2>&1 || { cat plan_output.txt; exit 1; }
+          terraform plan -input=false -no-color -var-file="../vars/${{ vars.AWS_ENVIRONMENT }}.tfvars" -out ${{ vars.AWS_ENVIRONMENT }}.tfplan > plan_output.txt 2>&1
           terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > tfplan.txt 2>&1
 
           # Mask sensitive URLs in the Terraform Plan output
