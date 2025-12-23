@@ -48,4 +48,5 @@ jobs:
       image_tag: gp2gp-dashboard
       build_lambda: true
       git_ref: ${{ github.ref }}
+      ecr_alias: "gp2gp-dashboard"
     secrets: inherit
