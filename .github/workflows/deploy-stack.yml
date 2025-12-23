@@ -50,7 +50,7 @@ on:
           - gp2gp_dashboard
           - spine-exporter
           - ods-downloader
-          - transfer-classifier
+          - transfer_classifier
           - metrics-calculator
           - reports-generator
           - validate_metrics

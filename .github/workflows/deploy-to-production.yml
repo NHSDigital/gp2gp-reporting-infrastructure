@@ -39,7 +39,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: transfer-classifier
+      terraform_stack: transfer_classifier
       image_tag: transfer_classifier
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit

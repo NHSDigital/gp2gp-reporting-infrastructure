@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "../../stacks/step-function/**"
-      - "stacks/transfer-classifier/**"
+      - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "stacks/ods-downloader/**"
       - "stacks/reports-generator/**"
@@ -19,7 +19,7 @@ on:
     branches: [main]
     paths:
       - "../../stacks/step-function/**"
-      - "stacks/transfer-classifier/**"
+      - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "stacks/ods-downloader/**"
       - "stacks/reports-generator/**"
@@ -50,9 +50,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: transfer-classifier
-      image_tag: transfer_classifier
+      terraform_stack: transfer_classifier
+      image_tag: transfer-classifier
       git_ref: ${{ github.ref }}
+      ecr_alias: "transfer-classifier"
     secrets: inherit
 
   validate-metrics:
