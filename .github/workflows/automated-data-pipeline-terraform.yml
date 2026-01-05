@@ -74,7 +74,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods_downloader
-      image_tag: ods_downloader
+      image_tag: ods-downloader
       git_ref: ${{ github.ref }}
       ecr_alias: "ods-downloader"
     secrets: inherit
