@@ -156,7 +156,7 @@ jobs:
         id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
-          image_key="${{ inputs.image_tag }}"
+          image_key="${{ inputs.terraform_stack}}"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
           cat > pipeline.auto.tfvars <<EOF
               environment = "$aws_env"
