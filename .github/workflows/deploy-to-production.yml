@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: ods-downloader
+      terraform_stack: ods_downloader
       image_tag: ods_downloader
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit

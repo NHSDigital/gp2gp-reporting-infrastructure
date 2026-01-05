@@ -53,7 +53,7 @@ on:
           - email_and_alerting
           - gp2gp_dashboard
           - spine-exporter
-          - ods-downloader
+          - ods_downloader
           - transfer_classifier
           - metrics-calculator
           - reports-generator

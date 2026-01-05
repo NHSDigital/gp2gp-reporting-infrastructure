@@ -7,7 +7,7 @@ on:
       - "../../stacks/step-function/**"
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
-      - "stacks/ods-downloader/**"
+      - "../../stacks/ods_downloader/**"
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
@@ -21,7 +21,7 @@ on:
       - "../../stacks/step-function/**"
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
-      - "stacks/ods-downloader/**"
+      - "../../stacks/ods_downloader/**"
       - "stacks/reports-generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
@@ -73,9 +73,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: ods-downloader
+      terraform_stack: ods_downloader
       image_tag: ods_downloader
       git_ref: ${{ github.ref }}
+      ecr_alias: "ods-downloader"
     secrets: inherit
 
   reports-generator:
