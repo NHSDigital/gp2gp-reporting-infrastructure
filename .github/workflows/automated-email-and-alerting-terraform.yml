@@ -37,7 +37,6 @@ jobs:
       build_lambda: true
       git_ref: ${{ github.ref }}
       ecr_alias: "email-and-alerting"
-      terraform_state: "email-and-alerting"
     secrets: inherit
 
   gp2gp-dashboard:
@@ -51,5 +50,4 @@ jobs:
       build_lambda: true
       git_ref: ${{ github.ref }}
       ecr_alias: "gp2gp-dashboard"
-      terraform_state: "gp2gp-dashboard"
     secrets: inherit
