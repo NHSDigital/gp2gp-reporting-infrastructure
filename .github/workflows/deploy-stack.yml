@@ -27,12 +27,8 @@ on:
         description: "The git_ref to checkout"
         type: string
         default: main
-      ecr_alias:
-        description: "ECR Repository Alias"
-        type: string
-        required: false
-      terraform_state:
-        description: "current terraform state"
+      hyphenated_alias:
+        description: "Hyphenated stack Alias"
         type: string
         required: false
   workflow_dispatch:
@@ -125,7 +121,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
+          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.hyphenated_alias }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
@@ -169,7 +165,7 @@ jobs:
               region = "${{ vars.AWS_REGION }}"
           EOF
           if [[ -n "$image_key" ]]; then
-            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.ecr_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             image_tag=$IMAGE_TAG
             echo "${{ inputs.terraform_stack }}_image_tag = $image_tag" >> pipeline.auto.tfvars
             cat pipeline.auto.tfvars
