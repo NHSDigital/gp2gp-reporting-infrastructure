@@ -34,11 +34,19 @@ jobs:
       matrix:
         environment: [dev]
         terraform_stack:
-          [container_repositories, base_support, base_networking, ecs_cluster]
+          - name: "container_repositories"
+            hyphenated_alias: "container_repositories"
+          - name: "base_support"
+            hyphenated_alias: "base_support"
+          - name: "base_networking"
+            hyphenated_alias: "base_networking"
+          - name: "ecs_cluster"
+            hyphenated_alias: "ecs_cluster"
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: ${{ matrix.environment }}
-      terraform_stack: ${{ matrix.terraform_stack }}
+      terraform_stack: ${{ matrix.terraform_stack.name }}
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       git_ref: ${{ github.ref }}
+      hyphenated_alias: ${{ matrix.terraform_stack.hyphenated_alias }}
     secrets: inherit
