@@ -55,7 +55,7 @@ on:
           - spine_exporter
           - ods_downloader
           - transfer_classifier
-          - metrics-calculator
+          - metrics_calculator
           - reports_generator
           - validate_metrics
           - step-function

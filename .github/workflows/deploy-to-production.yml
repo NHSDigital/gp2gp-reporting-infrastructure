@@ -89,7 +89,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: metrics-calculator
+      terraform_stack: metrics_calculator
       image_tag: metrics_calculator
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit

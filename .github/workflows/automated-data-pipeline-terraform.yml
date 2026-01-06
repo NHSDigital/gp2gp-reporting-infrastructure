@@ -10,7 +10,7 @@ on:
       - "../../stacks/ods_downloader/**"
       - "../../stacks/reports_generator/**"
       - "../../stacks/spine_exporter/**"
-      - "stacks/metrics-calculator/**"
+      - "../../stacks/metrics_calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
       - "../../lambdas/validate_metrics"
@@ -24,7 +24,7 @@ on:
       - "../../stacks/ods_downloader/**"
       - "../../stacks/reports_generator/**"
       - "../../stacks/spine_exporter/**"
-      - "stacks/metrics-calculator/**"
+      - "../../stacks/metrics_calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -109,7 +109,8 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: metrics-calculator
-      image_tag: metrics_calculator
+      terraform_stack: metrics_calculator
+      image_tag: metrics-calculator
       git_ref: ${{ github.ref }}
+      ecr_alias: "metrics_calculator"
     secrets: inherit
