@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "../../stacks/step-function/**"
+      - "../../stacks/step_function/**"
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
@@ -18,7 +18,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "../../stacks/step-function/**"
+      - "../../stacks/step_function/**"
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
@@ -39,9 +39,8 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: step-function
+      terraform_stack: step_function
       git_ref: ${{ github.ref }}
-      ecr_alias: "step-function"
     secrets: inherit
 
   transfer-classifier:
