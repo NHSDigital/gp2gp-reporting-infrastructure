@@ -79,7 +79,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: spine-exporter
+      terraform_stack: spine_exporter
       image_tag: spine_exporter
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit
