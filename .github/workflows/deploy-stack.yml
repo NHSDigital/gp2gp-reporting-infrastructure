@@ -30,7 +30,6 @@ on:
       hyphenated_alias:
         description: "Hyphenated stack Alias"
         type: string
-        required: false
   workflow_dispatch:
     inputs:
       environment:
