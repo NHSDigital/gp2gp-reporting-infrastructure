@@ -85,7 +85,7 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: reports-generator
+      terraform_stack: reports_generator
       image_tag: reports_generator
       git_ref: ${{ github.ref }}
       ecr_alias: "reports-generator"
