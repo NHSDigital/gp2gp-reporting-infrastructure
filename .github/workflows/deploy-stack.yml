@@ -56,7 +56,7 @@ on:
           - ods_downloader
           - transfer_classifier
           - metrics-calculator
-          - reports-generator
+          - reports_generator
           - validate_metrics
           - step-function
         required: true

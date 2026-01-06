@@ -69,7 +69,7 @@ jobs:
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
-      terraform_stack: reports-generator
+      terraform_stack: reports_generator
       image_tag: reports_generator
       git_ref: ${{ inputs.git_ref }}
     secrets: inherit

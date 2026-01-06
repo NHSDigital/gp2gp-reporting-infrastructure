@@ -8,7 +8,7 @@ on:
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
-      - "stacks/reports-generator/**"
+      - "../../stacks/reports_generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
@@ -22,7 +22,7 @@ on:
       - "../../stacks/transfer_classifier/**"
       - "stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
-      - "stacks/reports-generator/**"
+      - "../../stacks/reports_generator/**"
       - "stacks/spine-exporter/**"
       - "stacks/metrics-calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
@@ -86,9 +86,9 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: reports_generator
-      image_tag: reports_generator
+      image_tag: reports-generator
       git_ref: ${{ github.ref }}
-      ecr_alias: "reports-generator"
+      ecr_alias: "reports_generator"
     secrets: inherit
 
   spine-exporter:
