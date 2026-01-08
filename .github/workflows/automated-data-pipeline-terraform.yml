@@ -6,7 +6,7 @@ on:
     paths:
       - "../../stacks/step_function/**"
       - "../../stacks/transfer_classifier/**"
-      - "stacks/validate_metrics/**"
+      - "../../stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
       - "../../stacks/reports_generator/**"
       - "../../stacks/spine_exporter/**"
@@ -20,7 +20,7 @@ on:
     paths:
       - "../../stacks/step_function/**"
       - "../../stacks/transfer_classifier/**"
-      - "stacks/validate_metrics/**"
+      - "../../stacks/validate_metrics/**"
       - "../../stacks/ods_downloader/**"
       - "../../stacks/reports_generator/**"
       - "../../stacks/spine_exporter/**"

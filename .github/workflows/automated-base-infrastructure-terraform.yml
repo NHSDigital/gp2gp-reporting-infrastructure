@@ -35,13 +35,13 @@ jobs:
         environment: [dev]
         terraform_stack:
           - name: "container_repositories"
-            hyphenated_alias: "container_repositories"
+            hyphenated_alias: "container-repositories"
           - name: "base_support"
-            hyphenated_alias: "base_support"
+            hyphenated_alias: "base-support"
           - name: "base_networking"
-            hyphenated_alias: "base_networking"
+            hyphenated_alias: "base-networking"
           - name: "ecs_cluster"
-            hyphenated_alias: "ecs_cluster"
+            hyphenated_alias: "ecs-cluster"
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: ${{ matrix.environment }}
