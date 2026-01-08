@@ -1,7 +1,7 @@
 .terraform
 *.tfplan
 .idea
-lambda/build
+lambdas/build
 *.zip
 **/**/.terraform
 **/**/.terraform.*

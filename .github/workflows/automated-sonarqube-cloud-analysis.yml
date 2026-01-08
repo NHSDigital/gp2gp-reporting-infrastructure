@@ -23,8 +23,26 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.14
+
+      - name: Make virtual environment
+        run: |
+          make env
+
+      - name: Test with pytest
+        run: |
+          make test-coverage
+          cd ./lambdas
+          sed -i "s@filename=\"@filename=\"lambdas/@" coverage.xml
+          cd ..
+
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+#
