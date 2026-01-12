@@ -17,7 +17,7 @@ on:
         type: string
         required: true
       build_lambda:
-        description: "Does the workflow need a lambda build"
+        description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
       image_tag:
@@ -27,6 +27,9 @@ on:
         description: "The git_ref to checkout"
         type: string
         default: main
+      hyphenated_alias:
+        description: "Hyphenated stack Alias"
+        type: string
   workflow_dispatch:
     inputs:
       environment:
@@ -42,18 +45,18 @@ on:
         description: "Which terraform stack directory to run"
         type: choice
         options:
-          - email-and-alerting
-          - gp2gp-dashboard
-          - spine-exporter
-          - ods-downloader
-          - transfer-classifier
-          - metrics-calculator
-          - reports-generator
-          - validate-metrics
-          - step-function
+          - email_and_alerting
+          - gp2gp_dashboard
+          - spine_exporter
+          - ods_downloader
+          - transfer_classifier
+          - metrics_calculator
+          - reports_generator
+          - validate_metrics
+          - step_function
         required: true
       build_lambda:
-        description: "Does the workflow need a lambda build"
+        description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
       image_tag:
@@ -117,7 +120,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.terraform_stack }}/terraform.tfstate" \
+          terraform init -no-color -backend-config="key=data-pipeline/${{ inputs.hyphenated_alias }}/terraform.tfstate" \
           -backend-config="bucket=${{ secrets.AWS_STATE_BUCKET }}" \
           -backend-config="dynamodb_table=${{ secrets.AWS_STATE_LOCK_TABLE }}"
         shell: bash
@@ -132,37 +135,38 @@ jobs:
           cat > pipeline.auto.tfvars <<EOF
             environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
+          
 
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
         if: inputs.image_tag
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.image_tag }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
-          ${{ inputs.image_tag }}_image_tag = $IMAGE_TAG
+          ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
           EOF
 
       - name: Setup Terraform variables for Build Lambda
-        id: update-lambda-build-references
+        id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
           image_key="${{ inputs.image_tag }}"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
           cat > pipeline.auto.tfvars <<EOF
               environment = "$aws_env"
-              log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-pipeline-error.zip"
-              log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/log-alerts-technical-failures-above-threshold.zip"
-              gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/gp2gp-dashboard-alert.zip"
-              email_report_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/email-report.zip"
-              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/validate-metrics.zip"
-              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambda/build/store-asid-lookup.zip"
+              log_alerts_pipeline_error_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/log_alerts_pipeline_error.zip"
+              log_alerts_technical_failures_above_threshold_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/log_alerts_technical_failures_above_threshold.zip"
+              gp2gp_dashboard_alert_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/gp2gp_dashboard_alert.zip"
+              email_report_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/email_report.zip"
+              validate_metrics_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/validate_metrics.zip"
+              store_asid_lookup_lambda_zip = "$GITHUB_WORKSPACE/lambdas/build/store_asid_lookup.zip"
               region = "${{ vars.AWS_REGION }}"
           EOF
           if [[ -n "$image_key" ]]; then
-            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.terraform_stack }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+            IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
             image_tag=$IMAGE_TAG
-            echo "${image_key}_image_tag = $image_tag" >> pipeline.auto.tfvars
+            echo "${{ inputs.terraform_stack }}_image_tag = $image_tag" >> pipeline.auto.tfvars
             cat pipeline.auto.tfvars
           fi
 

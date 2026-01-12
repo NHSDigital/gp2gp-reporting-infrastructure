@@ -9,8 +9,8 @@
     {
         "type": "section",
         "text": {
-            "type": "plain_text",
-            "text": "Check the Cloudwatch dashboard <https:cloudwatch>"
+            "type": "mrkdwn",
+            "text": "Check the CloudWatch dashboard: <https:cloudwatch|View CloudWatch Dashboard>"
         }
     }
 ]

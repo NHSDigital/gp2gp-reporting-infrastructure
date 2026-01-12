@@ -4,20 +4,20 @@ on:
   push:
     branches: [main]
     paths:
-      - "stacks/container-repositories/**"
-      - "stacks/base-support/**"
-      - "stacks/base-networking/**"
-      - "stacks/ecs-cluster/**"
+      - "../../stacks/container_repositories/**"
+      - "../../stacks/base_support/**"
+      - "../../stacks/base_networking/**"
+      - "../../stacks/ecs_cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
   pull_request:
     branches: [main]
     paths:
-      - "stacks/container-repositories/**"
-      - "stacks/base-support/**"
-      - "stacks/base-networking/**"
-      - "stacks/ecs-cluster/**"
+      - "../../stacks/container_repositories/**"
+      - "../../stacks/base_support/**"
+      - "../../stacks/base_networking/**"
+      - "../../stacks/ecs_cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -34,11 +34,19 @@ jobs:
       matrix:
         environment: [dev]
         terraform_stack:
-          [container-repositories, base-support, base-networking, ecs-cluster]
+          - name: "container_repositories"
+            hyphenated_alias: "container-repositories"
+          - name: "base_support"
+            hyphenated_alias: "base-support"
+          - name: "base_networking"
+            hyphenated_alias: "base-networking"
+          - name: "ecs_cluster"
+            hyphenated_alias: "ecs-cluster"
     uses: ./.github/workflows/deploy-stack.yml
     with:
       environment: ${{ matrix.environment }}
-      terraform_stack: ${{ matrix.terraform_stack }}
+      terraform_stack: ${{ matrix.terraform_stack.name }}
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       git_ref: ${{ github.ref }}
+      hyphenated_alias: ${{ matrix.terraform_stack.hyphenated_alias }}
     secrets: inherit

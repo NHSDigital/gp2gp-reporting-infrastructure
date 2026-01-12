@@ -1,12 +1,11 @@
 import json
 import os
-
 import boto3
 import pytest
 import requests
 from moto import mock_aws
+from lambdas.log_alerts_pipeline_error.main import create_slack_message, SsmSecretManager, send_slack_alert, lambda_handler
 
-from main import create_slack_message, SsmSecretManager, send_slack_alert, lambda_handler
 
 
 @pytest.fixture
@@ -14,6 +13,8 @@ def set_environment(monkeypatch):
     monkeypatch.setenv("CLOUDWATCH_DASHBOARD_URL", "https:cloudwatch")
     monkeypatch.setenv("SLACK_CHANNEL_ID_PARAM_NAME", "slack_channel_id_param_name")
     monkeypatch.setenv("SLACK_BOT_TOKEN_PARAM_NAME", "slack_token_param_name")
+    monkeypatch.setenv("AWS_REGION", "eu-west-2")
+    monkeypatch.setenv("AWS_DEFAULT_REGION", "eu-west-2")
 
 
 @pytest.fixture
@@ -39,21 +40,21 @@ def read_json(filename: str) -> str:
 
 
 def test_logs_alert_pipeline_error_lambda_handler_happy_path(mock_ssm, mocker, set_environment):
-    mock_send_slack_alert = mocker.patch("main.send_slack_alert")
+    mock_send_slack_alert = mocker.patch("lambdas.log_alerts_pipeline_error.main.send_slack_alert")
     lambda_handler(None, None)
 
     mock_send_slack_alert.assert_called_with(channel_id="slack_channel_id", bot_token="slack_token")
 
 
 def test_create_slack_message_template(set_environment):
-    expected = read_json("./mock_messages/mock_slack_message.json")
+    expected = read_json("mock_messages/mock_slack_message.json")
     actual = create_slack_message()
 
     assert actual == expected
 
 
 def test_send_slack_message_happy_path(mocker, set_environment):
-    mock_post = mocker.patch("main.requests.post")
+    mock_post = mocker.patch("lambdas.log_alerts_pipeline_error.main.requests.post")
 
     slack_message = {
         "channel": "channel_id",
@@ -69,7 +70,7 @@ def test_send_slack_message_happy_path(mocker, set_environment):
 
 
 def test_send_slack_message_http_error_logs_error(mocker, set_environment, caplog):
-    mock_post = mocker.patch("main.requests.post")
+    mock_post = mocker.patch("lambdas.log_alerts_pipeline_error.main.requests.post")
     mock_post.side_effect = requests.exceptions.HTTPError()
 
     send_slack_alert(channel_id="channel_id", bot_token="bot_token")

@@ -22,7 +22,7 @@ variable "email_report_lambda_name" {
 variable "email_report_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for emailing reports"
-  default     = "lambda/build/email-report.zip"
+  default     = "lambdas/build/email_report.zip"
 }
 
 variable "store_asid_lookup_lambda_name" {
@@ -33,7 +33,7 @@ variable "store_asid_lookup_lambda_name" {
 variable "store_asid_lookup_lambda_zip" {
   type        = string
   description = "Path to zipfile containing code for asid lookup Lambda"
-  default     = "lambda/build/store-asid-lookup.zip"
+  default     = "lambdas/build/store_asid_lookup.zip"
 }
 
 variable "log_alerts_technical_failures_above_threshold_rate_param_name" {
@@ -79,19 +79,19 @@ variable "cloudwatch_dashboard_url" {
 variable "log_alerts_technical_failures_above_threshold_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambda/build/log-alerts-technical-failures-above-threshold.zip"
+  default     = "lambdas/build/log_alerts_technical_failures_above_threshold.zip"
 }
 
 variable "log_alerts_pipeline_error_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambda/build/log-alerts-pipeline-error.zip"
+  default     = "lambdas/build/log_alerts_pipeline_error.zip"
 }
 
 variable "gp2gp_dashboard_alert_lambda_zip" {
   type        = string
   description = "Path to zipfile containing lambda code for log alerts"
-  default     = "lambda/build/gp2gp-dashboard-alert.zip"
+  default     = "lambdas/build/gp2gp_dashboard_alert.zip"
 }
 
 variable "log_alerts_technical_failures_webhook_url_param_name" {

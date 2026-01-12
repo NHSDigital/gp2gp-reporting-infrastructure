@@ -4,27 +4,27 @@ on:
   push:
     branches: [main]
     paths:
-      - "stacks/step-function/**"
-      - "stacks/transfer-classifier/**"
-      - "stacks/validate-metrics/**"
-      - "stacks/ods-downloader/**"
-      - "stacks/reports-generator/**"
-      - "stacks/spine-exporter/**"
-      - "stacks/metrics-calculator/**"
+      - "../../stacks/step_function/**"
+      - "../../stacks/transfer_classifier/**"
+      - "../../stacks/validate_metrics/**"
+      - "../../stacks/ods_downloader/**"
+      - "../../stacks/reports_generator/**"
+      - "../../stacks/spine_exporter/**"
+      - "../../stacks/metrics_calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "lambda/validate-metrics"
+      - "../../lambdas/validate_metrics"
 
   pull_request:
     branches: [main]
     paths:
-      - "stacks/step-function/**"
-      - "stacks/transfer-classifier/**"
-      - "stacks/validate-metrics/**"
-      - "stacks/ods-downloader/**"
-      - "stacks/reports-generator/**"
-      - "stacks/spine-exporter/**"
-      - "stacks/metrics-calculator/**"
+      - "../../stacks/step_function/**"
+      - "../../stacks/transfer_classifier/**"
+      - "../../stacks/validate_metrics/**"
+      - "../../stacks/ods_downloader/**"
+      - "../../stacks/reports_generator/**"
+      - "../../stacks/spine_exporter/**"
+      - "../../stacks/metrics_calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -39,8 +39,9 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: step-function
+      terraform_stack: step_function
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "step-function"
     secrets: inherit
 
   transfer-classifier:
@@ -49,9 +50,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: transfer-classifier
-      image_tag: transfer_classifier
+      terraform_stack: transfer_classifier
+      image_tag: transfer-classifier
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "transfer-classifier"
     secrets: inherit
 
   validate-metrics:
@@ -60,9 +62,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: validate-metrics
+      terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "validate-metrics"
     secrets: inherit
 
   ods-downloader:
@@ -71,9 +74,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: ods-downloader
-      image_tag: ods_downloader
+      terraform_stack: ods_downloader
+      image_tag: ods-downloader
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "ods-downloader"
     secrets: inherit
 
   reports-generator:
@@ -82,9 +86,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: reports-generator
-      image_tag: reports_generator
+      terraform_stack: reports_generator
+      image_tag: reports-generator
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "reports_generator"
     secrets: inherit
 
   spine-exporter:
@@ -93,9 +98,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: spine-exporter
-      image_tag: spine_exporter
+      terraform_stack: spine_exporter
+      image_tag: spine-exporter
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "spine-exporter"
     secrets: inherit
 
   metrics-calculator:
@@ -104,7 +110,8 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: metrics-calculator
-      image_tag: metrics_calculator
+      terraform_stack: metrics_calculator
+      image_tag: metrics-calculator
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "metrics_calculator"
     secrets: inherit

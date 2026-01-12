@@ -4,21 +4,21 @@ on:
   push:
     branches: [main]
     paths:
-      - "stacks/email-and-alerting/**"
-      - "stacks/gp2gp-dashboard/**"
+      - "../../stacks/email_and_alerting/**"
+      - "../../stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "lambda/email-report/**"
-      - "lambda/gp2gp-dashboard-alert/**"
-      - "lambda/log-alerts-pipeline-error/**"
-      - "lambda/log-alerts-technical-failures-above-threshold/**"
-      - "lambda/store-asid-lookup/**"
+      - "../../lambdas/email_report/**"
+      - "../../lambdas/gp2gp_dashboard_alert/**"
+      - "../../lambdas/log_alerts_pipeline_error/**"
+      - "../../lambdas/log_alerts_technical_failures_above_threshold/**"
+      - "../../lambdas/store_asid_lookup/**"
 
   pull_request:
     branches: [main]
     paths:
-      - "stacks/email-and-alerting/**"
-      - "stacks/gp2gp-dashboard/**"
+      - "../../stacks/email_and_alerting/**"
+      - "../../stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
@@ -33,9 +33,10 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: email-and-alerting
+      terraform_stack: email_and_alerting
       build_lambda: true
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "email-and-alerting"
     secrets: inherit
 
   gp2gp-dashboard:
@@ -44,8 +45,9 @@ jobs:
     with:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
-      terraform_stack: gp2gp-dashboard
-      image_tag: gp2gp_dashboard
+      terraform_stack: gp2gp_dashboard
+      image_tag: gp2gp-dashboard
       build_lambda: true
       git_ref: ${{ github.ref }}
+      hyphenated_alias: "gp2gp-dashboard"
     secrets: inherit
