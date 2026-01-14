@@ -44,5 +44,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+      
+      - name: Verify files analyzed by SonarQube Cloud
+        run: |
+          sonar-scanner -X | tee sonar-debug.txt
+          grep -E "Excluded|Indexed" sonar-debug.txt
 #
