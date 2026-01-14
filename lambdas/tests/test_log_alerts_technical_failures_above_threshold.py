@@ -4,6 +4,7 @@ import zlib
 from unittest.mock import Mock
 
 import pytest
+from unittest.mock import ANY
 from botocore.exceptions import ClientError
 
 from lambdas.log_alerts_technical_failures_above_threshold import main as tf_alerts
@@ -83,7 +84,7 @@ def test_lambda_handler_below_threshold_sends_one_post(monkeypatch):
 
     assert http.request.call_count == 1
     http.request.assert_called_with(
-        "POST", url="https://example.com/daily", body=pytest.ANY
+        "POST", url="https://example.com/daily", body=ANY
     )
 
 
