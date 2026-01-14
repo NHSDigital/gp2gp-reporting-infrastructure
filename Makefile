@@ -15,6 +15,7 @@ env:
 	@./lambdas/venv/bin/pip3 install -r $(CORE_REQUIREMENTS) --no-cache-dir
 	@./lambdas/venv/bin/pip3 install -r $(TEST_REQUIREMENTS) --no-cache-dir
 	@echo "Now activate your venv."
+	@echo AWS_REGION=eu-west-2
 
 test-coverage:
 	cd ./lambdas && ./venv/bin/python3 -m pytest tests --cov=. --cov-report xml:coverage.xml

@@ -32,7 +32,7 @@ jobs:
         run: |
           make env
 
-      - name: Test with pytest
+      - name: Run tests with coverage
         run: |
           make test-coverage
           cd ./lambdas
