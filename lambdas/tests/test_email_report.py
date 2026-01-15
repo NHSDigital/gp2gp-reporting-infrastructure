@@ -75,9 +75,9 @@ def mock_smtp(monkeypatch, *, explode_on_send=False):
     monkeypatch.setattr(email_report.smtplib, "SMTP", lambda host, port: smtp)
     return smtp
 
-
-def test_should_send_email_notification_true():
-    assert email_report._should_send_email_notification(report_metadata("true")) is True
+@pytest.mark.parametrize("val", ["true", "TRUE", "TrUe"])
+def test_should_send_email_notification_true(val):
+    assert email_report._should_send_email_notification(report_metadata(val)) is True
 
 
 @pytest.mark.parametrize("val", ["false", "FALSE", "FaLsE"])

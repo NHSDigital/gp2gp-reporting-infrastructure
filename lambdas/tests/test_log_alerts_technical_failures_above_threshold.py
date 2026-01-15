@@ -11,13 +11,11 @@ from lambdas.log_alerts_technical_failures_above_threshold import main as tf_ale
 
 
 def cw_event(message_dict: dict) -> dict:
-    """Build CloudWatch Logs subscription event payload expected by the lambda."""
     payload = {
         "logEvents": [{"message": json.dumps(message_dict)}],
     }
     raw = json.dumps(payload).encode("utf-8")
 
-    # gzip wrapper (wbits=16+MAX_WBITS) to match lambda's zlib.decompress(..., 16+MAX_WBITS)
     gz = zlib.compressobj(wbits=16 + zlib.MAX_WBITS)
     compressed = gz.compress(raw) + gz.flush()
 
@@ -148,5 +146,4 @@ def test_lambda_handler_catches_client_error(monkeypatch):
         }
     )
 
-    # Should not raise (lambda catches ClientError)
     tf_alerts.lambda_handler(event, None)

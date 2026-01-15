@@ -15,7 +15,6 @@ S3_PRACTICE_METRICS_FILEPATH_PARAM_NAME = "path-to-practice-metrics"
 
 
 class TestMain(unittest.TestCase):
-
     @patch('boto3.client')
     @patch.dict(os.environ, {"S3_METRICS_BUCKET_NAME": S3_METRICS_BUCKET_NAME,
                              "S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME": S3_NATIONAL_METRICS_FILEPATH_PARAM_NAME,
