@@ -31,7 +31,7 @@ def set_required_env(monkeypatch):
     monkeypatch.setenv("LOG_ALERTS_GENERAL_WEBHOOK_URL_PARAM_NAME", "/webhook/general")
 
 
-def wire_ssm(monkeypatch, *, daily, threshold_rate, threshold, general):
+def mock_ssm(monkeypatch, *, daily, threshold_rate, threshold, general):
     ssm = Mock()
     ssm.get_parameter.side_effect = lambda Name, WithDecryption: {
         "Parameter": {
@@ -59,7 +59,7 @@ def test_secret_manager_get_secret():
 
 def test_lambda_handler_below_threshold_sends_one_post(monkeypatch):
     set_required_env(monkeypatch)
-    wire_ssm(
+    mock_ssm(
         monkeypatch,
         daily="https://example.com/daily",
         threshold_rate=10,
@@ -90,7 +90,7 @@ def test_lambda_handler_below_threshold_sends_one_post(monkeypatch):
 
 def test_lambda_handler_above_threshold_sends_three_posts(monkeypatch):
     set_required_env(monkeypatch)
-    wire_ssm(
+    mock_ssm(
         monkeypatch,
         daily="https://example.com/daily",
         threshold_rate=10,
@@ -124,7 +124,7 @@ def test_lambda_handler_above_threshold_sends_three_posts(monkeypatch):
 
 def test_lambda_handler_catches_client_error(monkeypatch):
     set_required_env(monkeypatch)
-    wire_ssm(
+    mock_ssm(
         monkeypatch,
         daily="https://example.com/daily",
         threshold_rate=10,

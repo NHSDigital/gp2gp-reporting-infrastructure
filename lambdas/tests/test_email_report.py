@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -31,7 +30,7 @@ def report_metadata(send="true"):
     }
 
 
-def wire_ssm(monkeypatch):
+def mock_ssm(monkeypatch):
     ssm = Mock()
     ssm.get_parameter.side_effect = lambda Name, WithDecryption: {
         "Parameter": {
@@ -46,7 +45,7 @@ def wire_ssm(monkeypatch):
     return ssm
 
 
-def wire_s3(monkeypatch, *, metadata, file_bytes=b"col1,col2\n1,2\n"):
+def mock_s3(monkeypatch, *, metadata, file_bytes=b"col1,col2\n1,2\n"):
     s3 = Mock()
     s3.get_object.return_value = {"Metadata": metadata}
 
@@ -57,7 +56,7 @@ def wire_s3(monkeypatch, *, metadata, file_bytes=b"col1,col2\n1,2\n"):
     return s3
 
 
-def wire_boto3(monkeypatch, *, ssm, s3):
+def mock_boto3(monkeypatch, *, ssm, s3):
     def client(service):
         if service == "ssm":
             return ssm
@@ -68,7 +67,7 @@ def wire_boto3(monkeypatch, *, ssm, s3):
     monkeypatch.setattr(email_report.boto3, "client", client)
 
 
-def wire_smtp(monkeypatch, *, explode_on_send=False):
+def mock_smtp(monkeypatch, *, explode_on_send=False):
     smtp = Mock()
     if explode_on_send:
         smtp.sendmail.side_effect = RuntimeError("SMTP send failure")
@@ -96,11 +95,11 @@ def test_construct_subject_contains_dates_and_cutoff():
 def test_lambda_handler_sends_two_emails(monkeypatch):
     set_required_env(monkeypatch)
 
-    ssm = wire_ssm(monkeypatch)
-    s3 = wire_s3(monkeypatch, metadata=report_metadata("true"))
-    wire_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ssm = mock_ssm(monkeypatch)
+    s3 = mock_s3(monkeypatch, metadata=report_metadata("true"))
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
 
-    smtp = wire_smtp(monkeypatch)
+    smtp = mock_smtp(monkeypatch)
 
     email_report.lambda_handler(s3_event(), None)
 
@@ -121,11 +120,11 @@ def test_lambda_handler_sends_two_emails(monkeypatch):
 def test_lambda_handler_skips_when_notification_false(monkeypatch):
     set_required_env(monkeypatch)
 
-    ssm = wire_ssm(monkeypatch)
-    s3 = wire_s3(monkeypatch, metadata=report_metadata("false"))
-    wire_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ssm = mock_ssm(monkeypatch)
+    s3 = mock_s3(monkeypatch, metadata=report_metadata("false"))
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
 
-    smtp = wire_smtp(monkeypatch)
+    smtp = mock_smtp(monkeypatch)
 
     email_report.lambda_handler(s3_event(), None)
 
@@ -136,11 +135,11 @@ def test_lambda_handler_skips_when_notification_false(monkeypatch):
 def test_lambda_handler_catches_smtp_exception(monkeypatch):
     set_required_env(monkeypatch)
 
-    ssm = wire_ssm(monkeypatch)
-    s3 = wire_s3(monkeypatch, metadata=report_metadata("true"))
-    wire_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ssm = mock_ssm(monkeypatch)
+    s3 = mock_s3(monkeypatch, metadata=report_metadata("true"))
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
 
-    wire_smtp(monkeypatch, explode_on_send=True)
+    mock_smtp(monkeypatch, explode_on_send=True)
 
     # Should not raise; handler catches Exception and returns
     email_report.lambda_handler(s3_event(), None)
