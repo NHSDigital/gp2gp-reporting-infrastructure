@@ -7,4 +7,4 @@ lambdas/build
 **/**/.terraform.*
 venv/
 __pycache__
-
+.vscode/*

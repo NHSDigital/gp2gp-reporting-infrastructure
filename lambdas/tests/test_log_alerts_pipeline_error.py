@@ -7,7 +7,6 @@ from moto import mock_aws
 from lambdas.log_alerts_pipeline_error.main import create_slack_message, SsmSecretManager, send_slack_alert, lambda_handler
 
 
-
 @pytest.fixture
 def set_environment(monkeypatch):
     monkeypatch.setenv("CLOUDWATCH_DASHBOARD_URL", "https:cloudwatch")
