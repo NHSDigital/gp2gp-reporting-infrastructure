@@ -12,7 +12,7 @@ function build_lambda {
     rm -rf $build_dir
     mkdir -p $build_dir
 
-    requirements_file=lambdas/$lambda_name/requirements.txt
+    requirements_file=lambdas/requirements/requirements.txt
     if test -f "$requirements_file"; then
         pip install -r $requirements_file -t $build_dir
     fi
