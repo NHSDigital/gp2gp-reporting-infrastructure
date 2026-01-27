@@ -61,7 +61,7 @@ jobs:
       terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "validate_metrics"
+      hyphenated_alias: "validate-metrics"
     secrets: inherit
 
   ods-downloader:
