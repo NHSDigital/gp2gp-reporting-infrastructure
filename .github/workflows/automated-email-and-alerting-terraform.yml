@@ -4,21 +4,21 @@ on:
   push:
     branches: [main]
     paths:
-      - "../../stacks/email_and_alerting/**"
-      - "../../stacks/gp2gp_dashboard/**"
+      - "stacks/email_and_alerting/**"
+      - "stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
-      - "../../lambdas/email_report/**"
-      - "../../lambdas/gp2gp_dashboard_alert/**"
-      - "../../lambdas/log_alerts_pipeline_error/**"
-      - "../../lambdas/log_alerts_technical_failures_above_threshold/**"
-      - "../../lambdas/store_asid_lookup/**"
+      - "lambdas/email_report/**"
+      - "lambdas/gp2gp_dashboard_alert/**"
+      - "lambdas/log_alerts_pipeline_error/**"
+      - "lambdas/log_alerts_technical_failures_above_threshold/**"
+      - "lambdas/store_asid_lookup/**"
 
   pull_request:
     branches: [main]
     paths:
-      - "../../stacks/email_and_alerting/**"
-      - "../../stacks/gp2gp_dashboard/**"
+      - "stacks/email_and_alerting/**"
+      - "stacks/gp2gp_dashboard/**"
       - ".github/workflows/automated-email-and-alerting-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 

@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - "../../stacks/container_repositories/**"
-      - "../../stacks/base_support/**"
-      - "../../stacks/base_networking/**"
-      - "../../stacks/ecs_cluster/**"
+      - "stacks/container_repositories/**"
+      - "stacks/base_support/**"
+      - "stacks/base_networking/**"
+      - "stacks/ecs_cluster/**"
       - ".github/workflows/automated-base-infrastructure-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 

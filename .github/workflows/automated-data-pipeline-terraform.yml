@@ -18,13 +18,13 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "../../stacks/step_function/**"
-      - "../../stacks/transfer_classifier/**"
-      - "../../stacks/validate_metrics/**"
-      - "../../stacks/ods_downloader/**"
-      - "../../stacks/reports_generator/**"
-      - "../../stacks/spine_exporter/**"
-      - "../../stacks/metrics_calculator/**"
+      - "stacks/step_function/**"
+      - "stacks/transfer_classifier/**"
+      - "stacks/validate_metrics/**"
+      - "stacks/ods_downloader/**"
+      - "stacks/reports_generator/**"
+      - "stacks/spine_exporter/**"
+      - "stacks/metrics_calculator/**"
       - ".github/workflows/automated-data-pipeline-terraform.yml"
       - ".github/workflows/deploy-stack.yml"
 
