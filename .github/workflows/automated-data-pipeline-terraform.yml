@@ -89,7 +89,7 @@ jobs:
       terraform_stack: reports_generator
       image_tag: reports-generator
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "reports_generator"
+      hyphenated_alias: "reports-generator"
     secrets: inherit
 
   spine-exporter:
@@ -113,5 +113,5 @@ jobs:
       terraform_stack: metrics_calculator
       image_tag: metrics-calculator
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "metrics_calculator"
+      hyphenated_alias: "metrics-calculator"
     secrets: inherit
