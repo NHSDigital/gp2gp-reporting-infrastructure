@@ -16,27 +16,40 @@ resource "aws_s3_bucket" "dashboard_website" {
   }
 }
 
-resource "aws_s3_bucket_acl" "dashboard_website" {
-  bucket     = aws_s3_bucket.dashboard_website.id
-  acl        = "public-read"
-  depends_on = [aws_s3_bucket_ownership_controls.dashboard_website]
-}
-
 resource "aws_s3_bucket_ownership_controls" "dashboard_website" {
   bucket = aws_s3_bucket.dashboard_website.id
   rule {
-    object_ownership = "ObjectWriter"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "dashboard_website" {
+resource "aws_s3_bucket_policy" "dashboard_website" {
   bucket = aws_s3_bucket.dashboard_website.id
+  policy = data.aws_iam_policy_document.dashboard_website.json
+}
 
-  index_document {
-    suffix = "index.html"
-  }
+data "aws_iam_policy_document" "dashboard_website" {
+  statement {
+    sid    = "AllowCloudFrontRead"
+    effect = "Allow"
 
-  error_document {
-    key = "404.html"
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.dashboard_website.arn}/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.dashboard_s3_distribution.arn]
+    }
   }
 }

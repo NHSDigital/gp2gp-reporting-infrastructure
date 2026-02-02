@@ -13,20 +13,23 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
   aliases = [var.alternate_domain_name]
 
   origin {
-    domain_name = aws_s3_bucket_website_configuration.dashboard_website.website_endpoint
+    domain_name = aws_s3_bucket.dashboard_website.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
+
+    origin_access_control_id = aws_cloudfront_origin_access_control.dashboard.id
 
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
       origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
+  price_class         = "PriceClass_100"
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -41,6 +44,11 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
       }
     }
 
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.append_index_html.arn
+    }
+
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
@@ -49,7 +57,8 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "none"
+      restriction_type = "whitelist"
+      locations        = ["GB"]
     }
   }
 
@@ -68,4 +77,36 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
     minimum_protocol_version       = "TLSv1.2_2019"
     ssl_support_method             = "sni-only"
   }
+}
+
+resource "aws_cloudfront_origin_access_control" "dashboard" {
+  name                              = "dashboard_s3_oac_policy"
+  description                       = "CloudFront S3 OAC"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_function" "append_index_html" {
+  name    = "rewrite-index-html"
+  runtime = "cloudfront-js-2.0"
+  comment = "Appends index.html to subfolder requests"
+  publish = true
+  code    = <<EOF
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Append index.html if the URI ends with /
+    if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+    } 
+    // Append /index.html if the URI has no extension (a folder)
+    else if (!uri.includes('.')) {
+        request.uri += '/index.html';
+    }
+
+    return request;
+}
+EOF
 }
