@@ -23,18 +23,6 @@ resource "aws_s3_bucket_ownership_controls" "dashboard_website" {
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "dashboard_website" {
-  bucket = aws_s3_bucket.dashboard_website.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "404.html"
-  }
-}
-
 resource "aws_s3_bucket_policy" "dashboard_website" {
   bucket = aws_s3_bucket.dashboard_website.id
   policy = data.aws_iam_policy_document.dashboard_website.json
