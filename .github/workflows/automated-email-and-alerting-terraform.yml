@@ -46,7 +46,6 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp_dashboard
-      has_image: true
       build_lambda: false
       git_ref: ${{ github.ref }}
       hyphenated_alias: "gp2gp-dashboard"
