@@ -139,7 +139,7 @@ jobs:
 
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
-        if: ${{ inputs.has_image == true }}
+        if: ${{ inputs.has_image }}
         run: |-
           IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
