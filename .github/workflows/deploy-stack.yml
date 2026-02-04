@@ -20,9 +20,10 @@ on:
         description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
-      image_tag:
+      has_image:
         description: "Does the workflow need an image tag"
-        type: string
+        type: boolean
+        default: false
       git_ref:
         description: "The git_ref to checkout"
         type: string
@@ -59,16 +60,16 @@ on:
         description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
-      image_tag:
+      hyphenated_alias:
         description: "Does the workflow need an image tag"
         type: choice
         options:
-          - gp2gp_dashboard
-          - spine_exporter
-          - ods_downloader
-          - transfer_classifier
-          - metrics_calculator
-          - reports_generator
+          - gp2gp-dashboard
+          - spine-exporter
+          - ods-downloader
+          - transfer-classifier
+          - metrics-calculator
+          - reports-generator
       git_ref:
         description: "The git_ref to deploy"
         type: string
@@ -138,9 +139,9 @@ jobs:
 
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
-        if: inputs.image_tag
+        if: inputs.has_image
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.image_tag }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
           ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
@@ -150,7 +151,7 @@ jobs:
         id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
-          image_key="${{ inputs.image_tag }}"
+          image_key="${{ inputs.hyphenated_alias }}"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
           cat > pipeline.auto.tfvars <<EOF
           environment = "$aws_env"
