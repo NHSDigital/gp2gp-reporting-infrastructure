@@ -37,7 +37,7 @@ jobs:
   promote-images-to-prod:
     environment: prod-deploy
     name: Promote images to Production
-    if: ${{ inputs.has_image && inputs.is_deployment }}
+    if: ${{ inputs.has_image == true && inputs.is_deployment }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
