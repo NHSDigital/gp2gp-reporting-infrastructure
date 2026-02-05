@@ -47,6 +47,7 @@ jobs:
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp_dashboard
       build_lambda: false
+      has_image: true
       git_ref: ${{ github.ref }}
       hyphenated_alias: "gp2gp-dashboard"
     secrets: inherit
