@@ -177,7 +177,7 @@ jobs:
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
 
   deploy-infra-with-images:
-    if: ${{ always() && inputs.has_image && inputs.is_deployment && needs.plan-infra.result == 'success' }}
+    if: ${{ always() && inputs.has_image == true && inputs.is_deployment && needs.plan-infra.result == 'success' }}
     environment: prod-deploy
     name: Deploy Infrastructure (with new image)
     needs: [promote-images-to-prod, plan-infra]
@@ -237,7 +237,7 @@ jobs:
 
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
-        if: inputs.has_image
+        if: inputs.has_image == true
         run: |-
           IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
