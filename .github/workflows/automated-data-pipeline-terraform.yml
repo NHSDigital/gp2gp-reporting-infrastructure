@@ -41,7 +41,7 @@ jobs:
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: step_function
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "step-function"
+      hyphenated_alias: step-function
     secrets: inherit
 
   transfer-classifier:
@@ -53,7 +53,7 @@ jobs:
       terraform_stack: transfer_classifier
       has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "transfer-classifier"
+      hyphenated_alias: transfer-classifier
     secrets: inherit
 
   validate-metrics:
@@ -65,7 +65,7 @@ jobs:
       terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "validate-metrics"
+      hyphenated_alias: validate-metrics
     secrets: inherit
 
   ods-downloader:
@@ -77,7 +77,7 @@ jobs:
       terraform_stack: ods_downloader
       has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "ods-downloader"
+      hyphenated_alias: ods-downloader
     secrets: inherit
 
   reports-generator:
@@ -89,7 +89,7 @@ jobs:
       terraform_stack: reports_generator
       has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "reports-generator"
+      hyphenated_alias: reports-generator
     secrets: inherit
 
   spine-exporter:
@@ -101,7 +101,7 @@ jobs:
       terraform_stack: spine_exporter
       has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "spine-exporter"
+      hyphenated_alias: spine-exporter
     secrets: inherit
 
   metrics-calculator:
@@ -113,5 +113,5 @@ jobs:
       terraform_stack: metrics_calculator
       has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "metrics-calculator"
+      hyphenated_alias: metrics-calculator
     secrets: inherit
