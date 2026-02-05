@@ -152,7 +152,6 @@ jobs:
         if: inputs.build_lambda
         run: |-
           image_key="${{ inputs.has_image && inputs.hyphenated_alias || '' }}"
-          echo "DEBUG: image_key is [$image_key]"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
           cat > pipeline.auto.tfvars <<EOF
           environment = "$aws_env"
