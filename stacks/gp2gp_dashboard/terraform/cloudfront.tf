@@ -13,10 +13,10 @@ resource "aws_cloudfront_distribution" "dashboard_s3_distribution" {
   aliases = [var.alternate_domain_name]
 
   origin {
-    domain_name = aws_s3_bucket.dashboard_website.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
-
-    origin_access_control_id = aws_cloudfront_origin_access_control.dashboard.id
+    domain_name                 = aws_s3_bucket.dashboard_website.bucket_regional_domain_name
+    origin_id                   = local.s3_origin_id
+    response_completion_timeout = 0
+    origin_access_control_id    = aws_cloudfront_origin_access_control.dashboard.id
 
     s3_origin_config {
       origin_access_identity = ""

@@ -15,10 +15,10 @@ on:
         description: "Does the workflow need a lambdas build"
         type: boolean
         default: false
-      image_tag:
+      has_image:
         description: "Does the workflow need an image tag"
-        type: string
-        default: ""
+        type: boolean
+        default: false
       git_ref:
         description: "The git_ref to deploy"
         type: string
@@ -37,7 +37,7 @@ jobs:
   promote-images-to-prod:
     environment: prod-deploy
     name: Promote images to Production
-    if: ${{ inputs.image_tag && inputs.is_deployment }}
+    if: ${{ inputs.has_image == true && inputs.is_deployment }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -84,14 +84,14 @@ jobs:
       environment: prod
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: ${{ inputs.terraform_stack }}
-      image_tag: ${{ inputs.image_tag }}
+      has_image: ${{ inputs.has_image }}
       build_lambda: ${{ inputs.build_lambda }}
       git_ref: ${{ inputs.git_ref }}
       hyphenated_alias: ${{ inputs.hyphenated_alias }}
     secrets: inherit
 
   deploy-infra-no-images:
-    if: ${{ always() && inputs.image_tag == '' && inputs.is_deployment && needs.plan-infra.result == 'success' }}
+    if: ${{ always() && inputs.has_image == false && inputs.is_deployment && needs.plan-infra.result == 'success' }}
     environment: prod-deploy
     name: Deploy Infrastructure (no images)
     needs: [plan-infra]
@@ -177,7 +177,7 @@ jobs:
         run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
 
   deploy-infra-with-images:
-    if: ${{ always() && inputs.image_tag && inputs.is_deployment && needs.plan-infra.result == 'success' }}
+    if: ${{ always() && inputs.has_image == true && inputs.is_deployment && needs.plan-infra.result == 'success' }}
     environment: prod-deploy
     name: Deploy Infrastructure (with new image)
     needs: [promote-images-to-prod, plan-infra]
@@ -237,9 +237,9 @@ jobs:
 
       - name: Setup Terraform variables for Image Tag
         id: vars-image-tag
-        if: inputs.image_tag
+        if: inputs.has_image == true
         run: |-
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.image_tag }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.AWS_ECR_REPOSITORY }}${{ inputs.hyphenated_alias }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
           cat > pipeline.auto.tfvars <<EOF
           ${{ inputs.terraform_stack }}_image_tag = $IMAGE_TAG
           environment = "${{ vars.AWS_ENVIRONMENT }}"
@@ -249,7 +249,7 @@ jobs:
         id: update-lambdas-build-references
         if: inputs.build_lambda
         run: |-
-          image_key="${{ inputs.image_tag }}"
+          image_key="${{ inputs.hyphenated_alias }}"
           aws_env="${{ vars.AWS_ENVIRONMENT }}"
           cat > pipeline.auto.tfvars <<EOF
           environment = "$aws_env"

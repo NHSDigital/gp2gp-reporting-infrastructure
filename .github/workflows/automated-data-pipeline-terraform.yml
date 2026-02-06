@@ -41,7 +41,7 @@ jobs:
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: step_function
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "step-function"
+      hyphenated_alias: step-function
     secrets: inherit
 
   transfer-classifier:
@@ -51,9 +51,9 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: transfer_classifier
-      image_tag: transfer-classifier
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "transfer-classifier"
+      hyphenated_alias: transfer-classifier
     secrets: inherit
 
   validate-metrics:
@@ -65,7 +65,7 @@ jobs:
       terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "validate-metrics"
+      hyphenated_alias: validate-metrics
     secrets: inherit
 
   ods-downloader:
@@ -75,9 +75,9 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: ods_downloader
-      image_tag: ods-downloader
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "ods-downloader"
+      hyphenated_alias: ods-downloader
     secrets: inherit
 
   reports-generator:
@@ -87,9 +87,9 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: reports_generator
-      image_tag: reports-generator
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "reports-generator"
+      hyphenated_alias: reports-generator
     secrets: inherit
 
   spine-exporter:
@@ -99,9 +99,9 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: spine_exporter
-      image_tag: spine-exporter
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "spine-exporter"
+      hyphenated_alias: spine-exporter
     secrets: inherit
 
   metrics-calculator:
@@ -111,7 +111,7 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: metrics_calculator
-      image_tag: metrics-calculator
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "metrics-calculator"
+      hyphenated_alias: metrics-calculator
     secrets: inherit

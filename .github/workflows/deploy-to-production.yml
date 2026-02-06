@@ -27,13 +27,13 @@ jobs:
       matrix:
         terraform_stack:
           - name: "container_repositories"
-            hyphenated_alias: "container-repositories"
+            hyphenated_alias: container-repositories
           - name: "base_support"
-            hyphenated_alias: "base-support"
+            hyphenated_alias: base-support
           - name: "base_networking"
-            hyphenated_alias: "base-networking"
+            hyphenated_alias: base-networking
           - name: "ecs_cluster"
-            hyphenated_alias: "ecs-cluster"
+            hyphenated_alias: ecs-cluster
     uses: ./.github/workflows/base-deploy-to-production.yml
     with:
       is_deployment: ${{ inputs.is_deployment }}
@@ -48,9 +48,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: transfer_classifier
-      image_tag: transfer-classifier
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "transfer-classifier"
+      hyphenated_alias: transfer-classifier
     secrets: inherit
 
   validate_metrics:
@@ -61,7 +61,7 @@ jobs:
       terraform_stack: validate_metrics
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "validate-metrics"
+      hyphenated_alias: validate-metrics
     secrets: inherit
 
   ods-downloader:
@@ -70,9 +70,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: ods_downloader
-      image_tag: ods-downloader
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "ods-downloader"
+      hyphenated_alias: ods-downloader
     secrets: inherit
 
   reports-generator:
@@ -81,9 +81,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: reports_generator
-      image_tag: reports-generator
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "reports-generator"
+      hyphenated_alias: reports-generator
     secrets: inherit
 
   spine-exporter:
@@ -92,9 +92,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: spine_exporter
-      image_tag: spine-exporter
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "spine-exporter"
+      hyphenated_alias: spine-exporter
     secrets: inherit
 
   metrics-calculator:
@@ -103,9 +103,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: metrics_calculator
-      image_tag: metrics-calculator
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "metrics-calculator"
+      hyphenated_alias: metrics-calculator
     secrets: inherit
 
   email-and-alerting:
@@ -116,7 +116,7 @@ jobs:
       terraform_stack: email_and_alerting
       build_lambda: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "email-and-alerting"
+      hyphenated_alias: email-and-alerting
     secrets: inherit
 
   gp2gp-dashboard:
@@ -125,10 +125,9 @@ jobs:
     with:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: gp2gp_dashboard
-      image_tag: gp2gp-dashboard
-      build_lambda: true
+      has_image: true
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "gp2gp-dashboard"
+      hyphenated_alias: gp2gp-dashboard
     secrets: inherit
 
   step-function:
@@ -148,5 +147,5 @@ jobs:
       is_deployment: ${{ inputs.is_deployment }}
       terraform_stack: step_function
       git_ref: ${{ inputs.git_ref }}
-      hyphenated_alias: "step-function"
+      hyphenated_alias: step-function
     secrets: inherit

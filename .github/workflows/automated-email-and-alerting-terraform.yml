@@ -36,7 +36,7 @@ jobs:
       terraform_stack: email_and_alerting
       build_lambda: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "email-and-alerting"
+      hyphenated_alias: email-and-alerting
     secrets: inherit
 
   gp2gp-dashboard:
@@ -46,8 +46,8 @@ jobs:
       environment: dev
       is_deployment: ${{ github.ref == 'refs/heads/main' }}
       terraform_stack: gp2gp_dashboard
-      image_tag: gp2gp-dashboard
       build_lambda: false
+      has_image: true
       git_ref: ${{ github.ref }}
-      hyphenated_alias: "gp2gp-dashboard"
+      hyphenated_alias: gp2gp-dashboard
     secrets: inherit
