@@ -40,6 +40,11 @@ variable "splunk_url_param_name" {
   description = "Splunk URL param name"
 }
 
+variable "splunk_index_param_name" {
+  type        = string
+  description = "Splunk index param name"
+}
+
 variable "splunk_api_token_param_name" {
   type        = string
   description = "Splunk API token param name"
