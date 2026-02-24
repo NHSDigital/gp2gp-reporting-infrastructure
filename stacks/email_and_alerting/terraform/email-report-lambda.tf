@@ -46,7 +46,6 @@ resource "aws_lambda_permission" "allow_trigger_from_s3_object_created" {
 }
 
 resource "aws_s3_bucket_notification" "reports_generator_s3_object_created" {
-  count  = var.environment == "dev" ? 0 : 1
   bucket = data.aws_ssm_parameter.reports_generator_bucket_name.value
 
   lambda_function {
@@ -58,6 +57,3 @@ resource "aws_s3_bucket_notification" "reports_generator_s3_object_created" {
     aws_lambda_permission.allow_trigger_from_s3_object_created,
   ]
 }
-
-
-
