@@ -1,4 +1,6 @@
 resource "aws_cloudwatch_event_target" "monthly_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-monthly-reports-generator-transfer-outcomes-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_month_on_15th_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -13,6 +15,8 @@ resource "aws_cloudwatch_event_target" "monthly_transfer_outcomes_per_supplier_p
 }
 
 resource "aws_cloudwatch_event_target" "monthly_sicbl_level_integration_times_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-monthly-reports-generator-sicbl-level-integr-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_month_on_15th_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -27,6 +31,8 @@ resource "aws_cloudwatch_event_target" "monthly_sicbl_level_integration_times_re
 }
 
 resource "aws_cloudwatch_event_target" "weekly_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-weekly-reports-generator-transfer-outcomes-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -41,6 +47,8 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_outcomes_per_supplier_pa
 }
 
 resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-weekly-reports-generator-transfer-level-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -55,6 +63,8 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_level_technical_failures
 }
 
 resource "aws_cloudwatch_event_target" "weekly_transfer_details_by_hour_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-weekly-reports-generator-transfer-hourly-trigger"
   rule      = aws_cloudwatch_event_rule.run_once_a_week_on_monday_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -69,6 +79,8 @@ resource "aws_cloudwatch_event_target" "weekly_transfer_details_by_hour_report_e
 }
 
 resource "aws_cloudwatch_event_target" "daily_transfer_outcomes_per_supplier_pathway_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-daily-reports-generator-transfer-outcomes-trigger"
   rule      = aws_cloudwatch_event_rule.run_daily_7am_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -83,6 +95,8 @@ resource "aws_cloudwatch_event_target" "daily_transfer_outcomes_per_supplier_pat
 }
 
 resource "aws_cloudwatch_event_target" "daily_transfer_level_technical_failures_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-daily-reports-transfer-level-technical-failures-trigger"
   rule      = aws_cloudwatch_event_rule.run_daily_7am_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
@@ -97,6 +111,8 @@ resource "aws_cloudwatch_event_target" "daily_transfer_level_technical_failures_
 }
 
 resource "aws_cloudwatch_event_target" "daily_transfer_details_by_hour_report_event_trigger" {
+  count = var.environment == "dev" ? 0 : 1
+
   target_id = "${var.environment}-daily-reports-details-by-hour-trigger"
   rule      = aws_cloudwatch_event_rule.run_daily_7am_cron_expression.name
   arn       = aws_sfn_state_machine.reports_generator.arn
