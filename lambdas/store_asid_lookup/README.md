@@ -49,7 +49,7 @@ Once the email is received into the GP2GP mailbox, our team must (within the fir
 
     ```json
     {
-      "time": "YYY-MM-01T00:00:00Z"
+      "time": "YYYY-MM-01T00:00:00Z"
     }
     ```
 
