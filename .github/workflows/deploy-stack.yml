@@ -75,6 +75,11 @@ on:
         type: string
         default: main
 
+permissions:
+  pull-requests: write
+  id-token: write
+  contents: read
+
 jobs:
   terraform_plan_and_apply:
     runs-on: ubuntu-latest
@@ -110,7 +115,7 @@ jobs:
           ./tasks_github_actions.sh build-lambdas
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: latest
 
