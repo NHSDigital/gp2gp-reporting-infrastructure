@@ -16,10 +16,9 @@ resource "aws_lambda_function" "email_report_lambda" {
 
   environment {
     variables = {
-      EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME             = var.email_report_sender_email_param_name,
+      EMAIL_REPORT_SENDER                              = local.from_email
       EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME          = var.email_report_recipient_email_param_name
       EMAIL_REPORT_RECIPIENT_INTERNAL_EMAIL_PARAM_NAME = var.email_report_recipient_internal_email_param_name
-      EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME         = var.email_report_sender_email_key_param_name
     }
   }
 }

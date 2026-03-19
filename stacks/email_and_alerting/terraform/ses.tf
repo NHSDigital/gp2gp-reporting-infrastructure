@@ -1,18 +1,10 @@
 locals {
   ses_domain = "mail.${var.hosted_zone_name}"
+  from_email = "gp2gp-reports@${aws_ses_domain_identity.gp2gp_inbox.domain}"
 }
 
 data "aws_ssm_parameter" "asid_lookup_address_prefix" {
   name = var.asid_lookup_inbox_prefix_param_name
-}
-
-resource "aws_ses_email_identity" "gp2gp_inbox_sender_address" {
-  email = data.aws_ssm_parameter.email_report_sender_email.value
-}
-
-moved {
-  from = aws_ses_email_identity.email_report
-  to   = aws_ses_email_identity.gp2gp_inbox_sender_address
 }
 
 resource "aws_ses_domain_identity" "gp2gp_inbox" {
@@ -71,7 +63,34 @@ resource "aws_route53_record" "gp2gp_inbox_dmarc" {
   type    = "TXT"
   ttl     = 300
 
+  records = ["v=DMARC1; p=none; adkim=s; aspf=s"]
+}
+
+resource "aws_ses_domain_mail_from" "sending" {
+  domain           = aws_ses_domain_identity.ndr_ses.domain
+  mail_from_domain = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+
+  behavior_on_mx_failure = "UseDefaultValue"
+}
+
+resource "aws_route53_record" "ses_mail_from_mx" {
+  zone_id = data.aws_route53_zone.gp_registrations.zone_id
+  name    = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+  type    = "MX"
+  ttl     = 600
+
   records = [
-    "v=DMARC1; p=none;"
+    "10 feedback-smtp.eu-west-2.amazonses.com"
+  ]
+}
+
+resource "aws_route53_record" "ses_mail_from_spf" {
+  zone_id = data.aws_route53_zone.gp_registrations.zone_id
+  name    = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+  type    = "TXT"
+  ttl     = 600
+
+  records = [
+    "v=spf1 include:amazonses.com -all"
   ]
 }

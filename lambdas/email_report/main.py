@@ -38,8 +38,7 @@ def lambda_handler(event, context):
     BODY_HTML = _construct_email_body(BODY_TEXT, transfer_report_meta_data)
     SUBJECT = _construct_email_subject(transfer_report_meta_data)
 
-    SENDER = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME"])
-    SENDER_KEY = secret_manager.get_secret(os.environ["EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME"])
+    SENDER = os.environ["EMAIL_REPORT_SENDER"]
     RECIPIENT = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME"])
     RECIPIENT_INTERNAL = secret_manager.get_secret(os.environ["EMAIL_REPORT_RECIPIENT_INTERNAL_EMAIL_PARAM_NAME"])
 
