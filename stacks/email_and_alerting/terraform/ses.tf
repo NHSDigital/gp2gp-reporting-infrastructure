@@ -67,15 +67,15 @@ resource "aws_route53_record" "gp2gp_inbox_dmarc" {
 }
 
 resource "aws_ses_domain_mail_from" "sending" {
-  domain           = aws_ses_domain_identity.ndr_ses.domain
-  mail_from_domain = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+  domain           = aws_ses_domain_identity.gp2gp_inbox.domain
+  mail_from_domain = "mail.${aws_ses_domain_identity.gp2gp_inbox.domain}"
 
   behavior_on_mx_failure = "UseDefaultValue"
 }
 
 resource "aws_route53_record" "ses_mail_from_mx" {
   zone_id = data.aws_route53_zone.gp_registrations.zone_id
-  name    = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+  name    = "mail.${aws_ses_domain_identity.gp2gp_inbox.domain}"
   type    = "MX"
   ttl     = 600
 
@@ -86,7 +86,7 @@ resource "aws_route53_record" "ses_mail_from_mx" {
 
 resource "aws_route53_record" "ses_mail_from_spf" {
   zone_id = data.aws_route53_zone.gp_registrations.zone_id
-  name    = "mail.${aws_ses_domain_identity.ndr_ses.domain}"
+  name    = "mail.${aws_ses_domain_identity.gp2gp_inbox.domain}"
   type    = "TXT"
   ttl     = 600
 
