@@ -72,12 +72,12 @@ def lambda_handler(event, context):
             _send_raw(
                 ses_client=ses_client,
                 msg=msg,
-                to_address=RECIPIENT,
+                to_address=RECIPIENT_INTERNAL,
             )
             _send_raw(
                 ses_client=ses_client,
                 msg=msg,
-                to_address=RECIPIENT_INTERNAL,
+                to_address=RECIPIENT,
 
             )
             print('Email successfully sent to: ', RECIPIENT)
