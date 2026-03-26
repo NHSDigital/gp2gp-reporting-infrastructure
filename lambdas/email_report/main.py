@@ -5,6 +5,12 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+from typing import Any, Dict, Iterable, Optional
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 class SsmSecretManager:
     def __init__(self, ssm):
@@ -19,6 +25,7 @@ def lambda_handler(event, context):
     ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
     s3 = boto3.client("s3")
+    ses_client = boto3.client("ses")
 
     print("Event: ", event)
 
@@ -62,16 +69,17 @@ def lambda_handler(event, context):
 
     if _should_send_email_notification(transfer_report_meta_data):
         try:
-            server = smtplib.SMTP("smtp.office365.com", 587)
-            server.starttls()
-            server.login(SENDER, SENDER_KEY)
+            _send_raw(
+                ses_client=ses_client,
+                msg=msg,
+                to_address=RECIPIENT,
+            )
+            _send_raw(
+                ses_client=ses_client,
+                msg=msg,
+                to_address=RECIPIENT_INTERNAL,
 
-            msg['To'] = RECIPIENT_INTERNAL
-            server.sendmail(SENDER, RECIPIENT_INTERNAL, msg.as_string())
-            print('Email successfully sent to: ', RECIPIENT_INTERNAL)
-
-            msg['To'] = RECIPIENT
-            server.sendmail(SENDER, RECIPIENT, msg.as_string())
+            )
             print('Email successfully sent to: ', RECIPIENT)
         except Exception as e:
             print("Failed to send email")
@@ -79,6 +87,41 @@ def lambda_handler(event, context):
             return
     else:
         print(f"Skipping sending email to: {RECIPIENT} with the following metadata: {transfer_report_meta_data}")
+
+def _send_raw(
+    ses_client,
+    *,
+    msg: MIMEMultipart,
+    to_address: str,
+    configuration_set: Optional[str] = None,
+    tags: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    subject = msg.get("Subject", "")
+    from_address = msg.get("From", "")
+
+    logger.info(
+        f"Sending SES raw email: subject={subject!r}, from={from_address!r}, to={to_address!r}, "
+        f"configuration_set={configuration_set!r}, tags={tags!r}",
+    )
+
+    kwargs: Dict[str, Any] = {
+        "Source": from_address,
+        "RawMessage": {"Data": msg.as_string()},
+        "Destinations": [to_address],
+    }
+
+    if configuration_set:
+        kwargs["ConfigurationSetName"] = configuration_set
+
+    if tags:
+        kwargs["Tags"] = [{"Name": k, "Value": v} for k, v in tags.items()]
+
+    resp = ses_client.send_raw_email(**kwargs)
+
+    logger.info(
+        f"SES accepted email: subject={subject!r}, message_id={resp.get('MessageId')}",
+    )
+    return resp
 
 
 def _construct_email_subject(transfer_report_meta_data):
