@@ -7,6 +7,7 @@ from lambdas.email_report import main as email_report
 
 
 def set_required_env(monkeypatch):
+    monkeypatch.setenv("AWS_DEFAULT_REGION", "us-east-1")
     monkeypatch.setenv("EMAIL_REPORT_SENDER", "sender@example.com")
     monkeypatch.setenv("EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME", "/email/key")
     monkeypatch.setenv("EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME", "/email/recipient")
