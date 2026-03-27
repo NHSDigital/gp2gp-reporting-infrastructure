@@ -1,7 +1,7 @@
 import os.path
 import boto3
+from botocore.config import Config
 from datetime import datetime, timedelta
-import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -11,6 +11,11 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+email_config = Config(connect_timeout=5, read_timeout=5)
+
+ses_client = boto3.client("ses", config=email_config)
+s3 = boto3.client("s3")
+ssm = boto3.client("ssm")
 
 class SsmSecretManager:
     def __init__(self, ssm):
@@ -22,10 +27,7 @@ class SsmSecretManager:
 
 
 def lambda_handler(event, context):
-    ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
-    s3 = boto3.client("s3")
-    ses_client = boto3.client("ses")
 
     print("Event: ", event)
 
@@ -74,6 +76,7 @@ def lambda_handler(event, context):
                 msg=msg,
                 to_address=RECIPIENT_INTERNAL,
             )
+            print('Email successfully sent to: ', RECIPIENT_INTERNAL)
             _send_raw(
                 ses_client=ses_client,
                 msg=msg,
