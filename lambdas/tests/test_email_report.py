@@ -7,7 +7,7 @@ from lambdas.email_report import main as email_report
 
 
 def set_required_env(monkeypatch):
-    monkeypatch.setenv("EMAIL_REPORT_SENDER_EMAIL_PARAM_NAME", "/email/sender")
+    monkeypatch.setenv("EMAIL_REPORT_SENDER", "sender@example.com")
     monkeypatch.setenv("EMAIL_REPORT_SENDER_EMAIL_KEY_PARAM_NAME", "/email/key")
     monkeypatch.setenv("EMAIL_REPORT_RECIPIENT_EMAIL_PARAM_NAME", "/email/recipient")
     monkeypatch.setenv("EMAIL_REPORT_RECIPIENT_INTERNAL_EMAIL_PARAM_NAME", "/email/recipient_internal")
@@ -56,24 +56,18 @@ def mock_s3(monkeypatch, *, metadata, file_bytes=b"col1,col2\n1,2\n"):
     return s3
 
 
-def mock_boto3(monkeypatch, *, ssm, s3):
-    def client(service):
-        if service == "ssm":
-            return ssm
-        if service == "s3":
-            return s3
-        raise AssertionError(f"Unexpected boto3 client: {service}")
+def mock_boto3(monkeypatch, *, ssm, s3, ses):
+    monkeypatch.setattr(email_report, "ssm", ssm)
+    monkeypatch.setattr(email_report, "s3", s3)
+    monkeypatch.setattr(email_report, "ses_client", ses)
 
-    monkeypatch.setattr(email_report.boto3, "client", client)
-
-
-def mock_smtp(monkeypatch, *, explode_on_send=False):
-    smtp = Mock()
+def mock_ses(monkeypatch, *, explode_on_send=False):
+    ses = Mock()
     if explode_on_send:
-        smtp.sendmail.side_effect = RuntimeError("SMTP send failure")
-
-    monkeypatch.setattr(email_report.smtplib, "SMTP", lambda host, port: smtp)
-    return smtp
+        ses.send_raw_email.side_effect = RuntimeError("SES send failure")
+    else:
+        ses.send_raw_email.return_value = {"MessageId": "mock-message-id-123"}
+    return ses
 
 @pytest.mark.parametrize("val", ["true", "TRUE", "TrUe"])
 def test_should_send_email_notification_true(val):
@@ -97,9 +91,9 @@ def test_lambda_handler_sends_two_emails(monkeypatch):
 
     ssm = mock_ssm(monkeypatch)
     s3 = mock_s3(monkeypatch, metadata=report_metadata("true"))
-    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ses = mock_ses(monkeypatch)
 
-    smtp = mock_smtp(monkeypatch)
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3, ses=ses)
 
     email_report.lambda_handler(s3_event(), None)
 
@@ -107,13 +101,10 @@ def test_lambda_handler_sends_two_emails(monkeypatch):
     s3.get_object.assert_called_once_with(Bucket="my-bucket", Key="reports/report.csv")
     assert s3.download_file.call_count == 1
 
-    # SMTP interactions
-    smtp.starttls.assert_called_once()
-    smtp.login.assert_called_once_with("sender@example.com", "super-secret")
-    assert smtp.sendmail.call_count == 2
+    assert ses.send_raw_email.call_count == 2
 
     # recipients are internal then external
-    recipients = [c.args[1] for c in smtp.sendmail.call_args_list]
+    recipients = [c.kwargs['Destinations'][0] for c in ses.send_raw_email.call_args_list]
     assert recipients == ["internal@example.com", "recipient@example.com"]
 
 
@@ -122,24 +113,25 @@ def test_lambda_handler_skips_when_notification_false(monkeypatch):
 
     ssm = mock_ssm(monkeypatch)
     s3 = mock_s3(monkeypatch, metadata=report_metadata("false"))
-    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ses = mock_ses(monkeypatch)
 
-    smtp = mock_smtp(monkeypatch)
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3, ses=ses)
 
     email_report.lambda_handler(s3_event(), None)
 
-    smtp.sendmail.assert_not_called()
-    smtp.login.assert_not_called()
+    ses.send_raw_email.assert_not_called()
 
 
-def test_lambda_handler_catches_smtp_exception(monkeypatch):
+def test_lambda_handler_catches_ses_exception(monkeypatch):
     set_required_env(monkeypatch)
 
     ssm = mock_ssm(monkeypatch)
     s3 = mock_s3(monkeypatch, metadata=report_metadata("true"))
-    mock_boto3(monkeypatch, ssm=ssm, s3=s3)
+    ses = mock_ses(monkeypatch, explode_on_send=True)
 
-    mock_smtp(monkeypatch, explode_on_send=True)
+    mock_boto3(monkeypatch, ssm=ssm, s3=s3, ses=ses)
 
     # Should not raise; handler catches Exception and returns
     email_report.lambda_handler(s3_event(), None)
+
+    assert ses.send_raw_email.call_count == 1

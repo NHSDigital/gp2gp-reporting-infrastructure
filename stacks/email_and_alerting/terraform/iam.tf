@@ -62,10 +62,8 @@ data "aws_iam_policy_document" "email_report_lambda_ssm_access" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_param_name}",
       "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_email_param_name}",
       "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_recipient_internal_email_param_name}",
-      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter${var.email_report_sender_email_key_param_name}",
     ]
   }
 }
@@ -115,10 +113,6 @@ resource "aws_iam_policy" "email_report_lambda_send_raw_email" {
   policy = data.aws_iam_policy_document.email_report_send_raw_email.json
 }
 
-data "aws_ssm_parameter" "email_report_sender_email" {
-  name = var.email_report_sender_email_param_name
-}
-
 data "aws_iam_policy_document" "email_report_send_raw_email" {
   statement {
     sid = "SendEmailWithAttachment"
@@ -128,7 +122,7 @@ data "aws_iam_policy_document" "email_report_send_raw_email" {
     ]
 
     resources = [
-      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${data.aws_ssm_parameter.email_report_sender_email.value}",
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${local.from_email}",
     ]
   }
 }
