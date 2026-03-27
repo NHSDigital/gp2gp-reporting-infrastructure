@@ -57,16 +57,9 @@ def mock_s3(monkeypatch, *, metadata, file_bytes=b"col1,col2\n1,2\n"):
 
 
 def mock_boto3(monkeypatch, *, ssm, s3, ses):
-    def client(service):
-        if service == "ssm":
-            return ssm
-        if service == "s3":
-            return s3
-        if service == "ses":
-            return ses
-        raise AssertionError(f"Unexpected boto3 client: {service}")
-
-    monkeypatch.setattr(email_report.boto3, "client", client)
+    monkeypatch.setattr(email_report, "ssm", ssm)
+    monkeypatch.setattr(email_report, "s3", s3)
+    monkeypatch.setattr(email_report, "ses_client", ses)
 
 def mock_ses(monkeypatch, *, explode_on_send=False):
     ses = Mock()
